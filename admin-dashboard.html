@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - VIP Center</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="admin-styles.css">
+    <title>VIP Center - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
-    <div class="admin-dashboard">
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+                    <h1>لوحة التحكم الإدارية</h1>
+                </div>
+                <div class="admin-user-info">
+                    <span>مرحباً، أحمد حسين</span>
+                    <span>|</span>
+                    <span id="currentDateTime"></span>
+                </div>
+                <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+            </div>
+        </header>
+
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
@@ -220,6 +234,7 @@
         </main>
     </div>
 
-    <script src="admin-script.js"></script>
+    <script src="js/admin-script.js"></script>
+    <script src="js/supabase-config.js"></script>
 </body>
 </html>

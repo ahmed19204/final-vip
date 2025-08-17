@@ -3,19 +3,26 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>الإعدادات والنظام - VIP Center</title>
-	<link rel="stylesheet" href="styles.css">
-	<link rel="stylesheet" href="admin-styles.css">
+	<title>VIP Center - الإعدادات</title>
+	<link rel="stylesheet" href="css/admin-styles.css">
 	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
-	<div class="admin-dashboard">
-		<aside class="admin-sidebar">
-			<div class="admin-sidebar-header">
-				<img src="vip-logo.jpg" alt="VIP Center">
-				<h3>لوحة التحكم</h3>
+<body>
+	<div class="admin-container">
+		<header class="admin-header">
+			<div class="header-content">
+				<div class="logo-section">
+					<img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+					<h1>الإعدادات</h1>
+				</div>
 				<div class="admin-role">مدير عام</div>
 			</div>
+			<div class="admin-header-actions">
+				<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+			</div>
+		</header>
+
+		<aside class="admin-sidebar">
 			<nav class="admin-nav">
 				<div class="admin-nav-item"><a href="admin-dashboard.html" class="admin-nav-link"><span class="admin-nav-icon">🏠</span><span>الرئيسية</span></a></div>
 				<div class="admin-nav-item"><a href="admin-settings.html" class="admin-nav-link active"><span class="admin-nav-icon">⚙️</span><span>الإعدادات</span></a></div>
@@ -25,14 +32,8 @@
 				<div class="admin-nav-item"><a href="admin-codes.html" class="admin-nav-link"><span class="admin-nav-icon">🔐</span><span>الأكواد</span></a></div>
 			</nav>
 		</aside>
-		<main class="admin-main">
-			<header class="admin-header">
-				<h1>إعدادات النظام والتكامل</h1>
-				<div class="admin-header-actions">
-					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
-				</div>
-			</header>
 
+		<main class="admin-main">
 			<div class="admin-form-container">
 				<h2 style="color:#fff;margin-bottom:1rem;">إعدادات قاعدة البيانات</h2>
 				<div class="admin-form-row">
@@ -84,7 +85,8 @@
 		</main>
 	</div>
 
-	<script src="admin-script.js"></script>
+	<script src="js/admin-script.js"></script>
+	<script src="js/supabase-config.js"></script>
 	<script>
 		function saveSettings(){
 			const settings={

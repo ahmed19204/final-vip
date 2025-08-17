@@ -3,226 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الأكواد - VIP Center</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="admin-styles.css">
+    <title>VIP Center - إدارة الأكواد</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
-    <div class="admin-dashboard">
-        <!-- Admin Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="admin-sidebar-header">
-                <img src="vip-logo.jpg" alt="VIP Center">
-                <h3>لوحة التحكم</h3>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+                    <h1>إدارة الأكواد</h1>
+                </div>
                 <div class="admin-role">مدير عام</div>
             </div>
+            <div class="admin-header-actions">
+                <button class="admin-btn admin-btn-primary" onclick="showAddCodeModal()">
+                    <span>➕</span>
+                    إنشاء كود جديد
+                </button>
+                <button class="admin-btn admin-btn-secondary" onclick="generateBulkCodes()">
+                    <span>📝</span>
+                    إنشاء أكواد متعددة
+                </button>
+                <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+            </div>
+        </header>
+
+        <!-- Code Statistics -->
+        <div class="admin-cards-grid">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">إجمالي الأكواد</h3>
+                    <span class="admin-card-icon">🔐</span>
+                </div>
+                <div class="admin-card-value">456</div>
+                <p class="admin-card-description">كود منشأ</p>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">الأكواد النشطة</h3>
+                    <span class="admin-card-icon">✅</span>
+                </div>
+                <div class="admin-card-value">298</div>
+                <p class="admin-card-description">كود نشط</p>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">الأكواد المستخدمة</h3>
+                    <span class="admin-card-icon">🎯</span>
+                </div>
+                <div class="admin-card-value">189</div>
+                <p class="admin-card-description">كود مستخدم</p>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">معدل الاستخدام</h3>
+                    <span class="admin-card-icon">📊</span>
+                </div>
+                <div class="admin-card-value">63.4%</div>
+                <p class="admin-card-description">من الأكواد النشطة</p>
+            </div>
+        </div>
+
+        <!-- Code Management Table -->
+        <div class="admin-table-container">
+            <div class="admin-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #ffffff; margin: 0;">قائمة الأكواد</h2>
+                <div class="admin-table-filters">
+                    <select class="admin-form-select" style="width: auto; margin-left: 1rem;" onchange="filterCodes(this.value)">
+                        <option value="all">جميع الأكواد</option>
+                        <option value="active">النشطة</option>
+                        <option value="used">المستخدمة</option>
+                        <option value="expired">منتهية الصلاحية</option>
+                        <option value="unlimited">غير محدودة</option>
+                        <option value="single-use">استخدام واحد</option>
+                    </select>
+                    <input type="text" class="admin-form-input" placeholder="البحث في الأكواد..." style="width: 250px;" onkeyup="searchCodes(this.value)">
+                </div>
+            </div>
             
-            <nav class="admin-nav">
-                <div class="admin-nav-item">
-                    <a href="admin-dashboard.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">🏠</span>
-                        <span>الرئيسية</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-courses.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">📚</span>
-                        <span>إدارة الكورسات</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-teachers.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">👨‍🏫</span>
-                        <span>إدارة المدرسين</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-videos.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">🎥</span>
-                        <span>إدارة الفيديوهات</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-codes.html" class="admin-nav-link active">
-                        <span class="admin-nav-icon">🔐</span>
-                        <span>إدارة الأكواد</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-students.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">👥</span>
-                        <span>إدارة الطلاب</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-subjects.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">📖</span>
-                        <span>إدارة التخصصات</span>
-                    </a>
-                </div>
-                <div class="admin-nav-item">
-                    <a href="admin-settings.html" class="admin-nav-link">
-                        <span class="admin-nav-icon">⚙️</span>
-                        <span>الإعدادات</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Admin Main Content -->
-        <main class="admin-main">
-            <!-- Admin Header -->
-            <header class="admin-header">
-                <h1>إدارة الأكواد</h1>
-                <div class="admin-header-actions">
-                    <button class="admin-btn admin-btn-primary" onclick="showAddCodeModal()">
-                        <span>➕</span>
-                        إنشاء كود جديد
-                    </button>
-                    <button class="admin-btn admin-btn-secondary" onclick="generateBulkCodes()">
-                        <span>📝</span>
-                        إنشاء أكواد متعددة
-                    </button>
-                    <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
-                </div>
-            </header>
-
-            <!-- Code Statistics -->
-            <div class="admin-cards-grid">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">إجمالي الأكواد</h3>
-                        <span class="admin-card-icon">🔐</span>
-                    </div>
-                    <div class="admin-card-value">456</div>
-                    <p class="admin-card-description">كود منشأ</p>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">الأكواد النشطة</h3>
-                        <span class="admin-card-icon">✅</span>
-                    </div>
-                    <div class="admin-card-value">298</div>
-                    <p class="admin-card-description">كود نشط</p>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">الأكواد المستخدمة</h3>
-                        <span class="admin-card-icon">🎯</span>
-                    </div>
-                    <div class="admin-card-value">189</div>
-                    <p class="admin-card-description">كود مستخدم</p>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">معدل الاستخدام</h3>
-                        <span class="admin-card-icon">📊</span>
-                    </div>
-                    <div class="admin-card-value">63.4%</div>
-                    <p class="admin-card-description">من الأكواد النشطة</p>
-                </div>
-            </div>
-
-            <!-- Code Management Table -->
-            <div class="admin-table-container">
-                <div class="admin-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2 style="color: #ffffff; margin: 0;">قائمة الأكواد</h2>
-                    <div class="admin-table-filters">
-                        <select class="admin-form-select" style="width: auto; margin-left: 1rem;" onchange="filterCodes(this.value)">
-                            <option value="all">جميع الأكواد</option>
-                            <option value="active">النشطة</option>
-                            <option value="used">المستخدمة</option>
-                            <option value="expired">منتهية الصلاحية</option>
-                            <option value="unlimited">غير محدودة</option>
-                            <option value="single-use">استخدام واحد</option>
-                        </select>
-                        <input type="text" class="admin-form-input" placeholder="البحث في الأكواد..." style="width: 250px;" onkeyup="searchCodes(this.value)">
-                    </div>
-                </div>
-                
-                <table class="admin-table" id="codesTable">
-                    <thead>
-                        <tr>
-                            <th>الكود</th>
-                            <th>الفيديو/الكورس المرتبط</th>
-                            <th>نوع الاستخدام</th>
-                            <th>عدد الاستخدامات</th>
-                            <th>الحد الأقصى</th>
-                            <th>تاريخ الانتهاء</th>
-                            <th>الحالة</th>
-                            <th>تاريخ الإنشاء</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
-                                    PHYSICS101
-                                </div>
-                            </td>
-                            <td>مقدمة في الموجات الكهرومغناطيسية</td>
-                            <td>متعدد الاستخدام</td>
-                            <td>23</td>
-                            <td>100</td>
-                            <td>2025-03-15</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
-                            <td>2025-01-10</td>
-                            <td>
-                                <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCode('PHYSICS101')">تعديل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('PHYSICS101')">نسخ</button>
-                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deactivateCode('PHYSICS101')">إلغاء</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
-                                    CHEMISTRY202
-                                </div>
-                            </td>
-                            <td>التفاعلات الكيميائية المعقدة</td>
-                            <td>استخدام واحد</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>2025-02-28</td>
-                            <td><span class="admin-btn admin-btn-danger admin-action-btn">مستخدم</span></td>
-                            <td>2025-01-08</td>
-                            <td>
-                                <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="viewCodeUsage('CHEMISTRY202')">التفاصيل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('CHEMISTRY202')">نسخ</button>
-                                    <button class="admin-btn admin-btn-success admin-action-btn" onclick="resetCode('CHEMISTRY202')">إعادة تفعيل</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
-                                    BIOLOGY303
-                                </div>
-                            </td>
-                            <td>علم الوراثة المتقدم</td>
-                            <td>محدود</td>
-                            <td>45</td>
-                            <td>50</td>
-                            <td>2025-04-20</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
-                            <td>2025-01-05</td>
-                            <td>
-                                <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCode('BIOLOGY303')">تعديل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('BIOLOGY303')">نسخ</button>
-                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deactivateCode('BIOLOGY303')">إلغاء</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
+            <table class="admin-table" id="codesTable">
+                <thead>
+                    <tr>
+                        <th>الكود</th>
+                        <th>الفيديو/الكورس المرتبط</th>
+                        <th>نوع الاستخدام</th>
+                        <th>عدد الاستخدامات</th>
+                        <th>الحد الأقصى</th>
+                        <th>تاريخ الانتهاء</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                PHYSICS101
+                            </div>
+                        </td>
+                        <td>مقدمة في الموجات الكهرومغناطيسية</td>
+                        <td>متعدد الاستخدام</td>
+                        <td>23</td>
+                        <td>100</td>
+                        <td>2025-03-15</td>
+                        <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                        <td>2025-01-10</td>
+                        <td>
+                            <div class="admin-actions">
+                                <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCode('PHYSICS101')">تعديل</button>
+                                <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('PHYSICS101')">نسخ</button>
+                                <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deactivateCode('PHYSICS101')">إلغاء</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                CHEMISTRY202
+                            </div>
+                        </td>
+                        <td>التفاعلات الكيميائية المعقدة</td>
+                        <td>استخدام واحد</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>2025-02-28</td>
+                        <td><span class="admin-btn admin-btn-danger admin-action-btn">مستخدم</span></td>
+                        <td>2025-01-08</td>
+                        <td>
+                            <div class="admin-actions">
+                                <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="viewCodeUsage('CHEMISTRY202')">التفاصيل</button>
+                                <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('CHEMISTRY202')">نسخ</button>
+                                <button class="admin-btn admin-btn-success admin-action-btn" onclick="resetCode('CHEMISTRY202')">إعادة تفعيل</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-family: monospace; font-weight: bold; color: #ff4d4d; background: rgba(255,77,77,0.1); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                                BIOLOGY303
+                            </div>
+                        </td>
+                        <td>علم الوراثة المتقدم</td>
+                        <td>محدود</td>
+                        <td>45</td>
+                        <td>50</td>
+                        <td>2025-04-20</td>
+                        <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                        <td>2025-01-05</td>
+                        <td>
+                            <div class="admin-actions">
+                                <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCode('BIOLOGY303')">تعديل</button>
+                                <button class="admin-btn admin-btn-primary admin-action-btn" onclick="copyCode('BIOLOGY303')">نسخ</button>
+                                <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deactivateCode('BIOLOGY303')">إلغاء</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Add/Edit Code Modal -->
@@ -438,7 +379,7 @@
         }
     </style>
 
-    <script src="admin-script.js"></script>
-    <script src="admin-codes.js"></script>
+    <script src="js/admin-script.js"></script>
+    <script src="js/admin-codes.js"></script>
 </body>
 </html>

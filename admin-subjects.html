@@ -3,35 +3,25 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>إدارة التخصصات - VIP Center</title>
-	<link rel="stylesheet" href="styles.css">
-	<link rel="stylesheet" href="admin-styles.css">
+	<title>VIP Center - إدارة التخصصات</title>
+	<link rel="stylesheet" href="css/admin-styles.css">
 	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body">
-	<div class="admin-dashboard">
-		<aside class="admin-sidebar">
-			<div class="admin-sidebar-header">
-				<img src="vip-logo.jpg" alt="VIP Center">
-				<h3>لوحة التحكم</h3>
-				<div class="admin-role">مدير عام</div>
-			</div>
-			<nav class="admin-nav">
-				<div class="admin-nav-item"><a href="admin-dashboard.html" class="admin-nav-link"><span class="admin-nav-icon">🏠</span><span>الرئيسية</span></a></div>
-				<div class="admin-nav-item"><a href="admin-subjects.html" class="admin-nav-link active"><span class="admin-nav-icon">📖</span><span>إدارة التخصصات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-courses.html" class="admin-nav-link"><span class="admin-nav-icon">📚</span><span>إدارة الكورسات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-videos.html" class="admin-nav-link"><span class="admin-nav-icon">🎥</span><span>إدارة الفيديوهات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-settings.html" class="admin-nav-link"><span class="admin-nav-icon">⚙️</span><span>الإعدادات</span></a></div>
-			</nav>
-		</aside>
-		<main class="admin-main">
-			<header class="admin-header">
-				<h1>إدارة التخصصات</h1>
+	<div class="admin-container">
+		<header class="admin-header">
+			<div class="header-content">
+				<div class="logo-section">
+					<img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+					<h1>إدارة التخصصات</h1>
+				</div>
 				<div class="admin-header-actions">
 					<button class="admin-btn admin-btn-primary" onclick="showAddSubjectModal()">➕ إضافة تخصص</button>
 					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
 				</div>
-			</header>
+			</div>
+		</header>
+		<main class="admin-main">
 			<div class="admin-table-container">
 				<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
 					<h2 style="color:#fff;margin:0;">قائمة التخصصات</h2>
@@ -79,7 +69,7 @@
 		</div>
 	</div>
 
-	<script src="admin-script.js"></script>
-	<script src="admin-subjects.js"></script>
+	<script src="js/admin-script.js"></script>
+	<script src="js/admin-subjects.js"></script>
 </body>
 </html>
