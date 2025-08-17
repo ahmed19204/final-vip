@@ -1,6 +1,6 @@
 // Supabase Configuration
-const SUPABASE_URL = 'https://hlzmijhlijnzrzzoeopf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsem1pamhsaWpuenJ6em9lb3BmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5NTQyNTgsImV4cCI6MjA3MDUzMDI1OH0.hRfEZeQE_yuvIZWhh3wYvXyDt6w9HHh4I67EJU4xg-g';
+const SUPABASE_URL = 'https://jiwxilwzqmnwtusysdok.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd3hpbHd6cW1ud3R1c3lzZG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0Njk3NTUsImV4cCI6MjA3MTA0NTc1NX0.lvOW9haq2OsSu3tX38QQlfx5bavx-K_Qsv4zl_I6vdU';
 
 // Create Supabase client
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -15,12 +15,12 @@ async function testSupabaseConnection() {
             .from('teachers')
             .select('count')
             .limit(1);
-        
+
         if (error) {
             console.log('Supabase connection test:', error.message);
             return false;
         }
-        
+
         console.log('✅ Supabase connection successful!');
         return true;
     } catch (err) {
@@ -36,9 +36,9 @@ async function addTeacher(teacherData) {
             .from('teachers')
             .insert([teacherData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding teacher:', error);
         return { success: false, error: error.message };
@@ -51,11 +51,42 @@ async function getAllTeachers() {
             .from('teachers')
             .select('*')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
         console.error('Error fetching teachers:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function updateTeacher(id, updates) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('teachers')
+            .update(updates)
+            .eq('id', id)
+            .select();
+
+        if (error) throw error;
+        return { success: true, data: data[0] };
+    } catch (error) {
+        console.error('Error updating teacher:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function deleteTeacher(id) {
+    try {
+        const { error } = await supabaseClient
+            .from('teachers')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting teacher:', error);
         return { success: false, error: error.message };
     }
 }
@@ -66,9 +97,9 @@ async function addCourse(courseData) {
             .from('courses')
             .insert([courseData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding course:', error);
         return { success: false, error: error.message };
@@ -79,9 +110,9 @@ async function getAllCourses() {
     try {
         const { data, error } = await supabaseClient
             .from('courses')
-            .select('*')
+            .select('*, subjects(name), teachers(name)')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
@@ -96,9 +127,9 @@ async function addSubject(subjectData) {
             .from('subjects')
             .insert([subjectData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding subject:', error);
         return { success: false, error: error.message };
@@ -111,7 +142,7 @@ async function getAllSubjects() {
             .from('subjects')
             .select('*')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
@@ -126,9 +157,9 @@ async function addStudent(studentData) {
             .from('students')
             .insert([studentData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding student:', error);
         return { success: false, error: error.message };
@@ -141,7 +172,7 @@ async function getAllStudents() {
             .from('students')
             .select('*')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
@@ -156,9 +187,9 @@ async function addVideo(videoData) {
             .from('videos')
             .insert([videoData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding video:', error);
         return { success: false, error: error.message };
@@ -169,9 +200,9 @@ async function getAllVideos() {
     try {
         const { data, error } = await supabaseClient
             .from('videos')
-            .select('*')
+            .select('*, courses(title), subjects(name)')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
@@ -186,9 +217,9 @@ async function addAccessCode(codeData) {
             .from('access_codes')
             .insert([codeData])
             .select();
-        
+
         if (error) throw error;
-        return { success: true, data };
+        return { success: true, data: data[0] };
     } catch (error) {
         console.error('Error adding access code:', error);
         return { success: false, error: error.message };
@@ -199,9 +230,9 @@ async function getAllAccessCodes() {
     try {
         const { data, error } = await supabaseClient
             .from('access_codes')
-            .select('*')
+            .select('*, courses(title)')
             .order('created_at', { ascending: false });
-        
+
         if (error) throw error;
         return { success: true, data };
     } catch (error) {
@@ -216,14 +247,25 @@ async function validateAccessCode(code) {
             .from('access_codes')
             .select('*, courses(*)')
             .eq('code', code)
-            .eq('is_active', true)
+            .eq('status', 'active')
             .single();
-        
+
         if (error) throw error;
+
+        // Check if code is expired
+        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+            return { success: false, error: 'كود الوصول منتهي الصلاحية' };
+        }
+
+        // Check if code usage limit reached
+        if (data.max_uses && data.current_uses >= data.max_uses) {
+            return { success: false, error: 'تم استنفاذ عدد مرات استخدام الكود' };
+        }
+
         return { success: true, data };
     } catch (error) {
         console.error('Error validating access code:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: 'كود الوصول غير صحيح' };
     }
 }
 
@@ -235,17 +277,17 @@ async function updateCodeUsage(codeId) {
             .select('current_uses')
             .eq('id', codeId)
             .single();
-        
+
         if (fetchError) throw fetchError;
-        
+
         // Update with incremented value
         const { error: updateError } = await supabaseClient
             .from('access_codes')
             .update({ current_uses: (currentCode.current_uses || 0) + 1 })
             .eq('id', codeId);
-        
+
         if (updateError) throw updateError;
-        
+
         return { success: true };
     } catch (error) {
         console.error('Error updating code usage:', error);
@@ -258,6 +300,8 @@ window.supabaseFunctions = {
     testSupabaseConnection,
     addTeacher,
     getAllTeachers,
+    updateTeacher,
+    deleteTeacher,
     addCourse,
     getAllCourses,
     addSubject,

@@ -6,8 +6,6 @@
 	<title>VIP Center - إدارة المدرسين</title>
 	<link rel="stylesheet" href="css/admin-styles.css">
 	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
 </head>
 <body class="admin-body">
 	<div class="admin-container">
@@ -76,7 +74,7 @@
 				<h1>إدارة المدرسين</h1>
 				<div class="admin-header-actions">
 					<a href="admin-courses.html" class="admin-btn admin-btn-secondary">الانتقال إلى الكورسات</a>
-					<button class="admin-btn admin-btn-primary" onclick="showAddTeacherModal()">
+					<button class="admin-btn admin-btn-primary" onclick="openModal('addTeacherModal')">
 						<span>➕</span>
 						إضافة مدرس جديد
 					</button>
@@ -88,124 +86,176 @@
 				<div class="admin-table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
 					<h2 style="color:#fff;margin:0;">قائمة المدرسين</h2>
 					<div class="admin-table-filters">
-						<input type="text" class="admin-form-input" placeholder="البحث عن مدرس..." style="width: 280px;" onkeyup="searchTeachers(this.value)">
+						<input type="text" id="teacherSearch" class="admin-form-input" placeholder="البحث عن مدرس..." style="width: 280px;">
 					</div>
 				</div>
+
+				<!-- Loading indicator -->
+				<div id="loading" class="loading" style="display: none;">جاري التحميل...</div>
 
 				<table class="admin-table" id="teachersTable">
 					<thead>
 						<tr>
-							<th>الصورة</th>
-							<th>الاسم</th>
-							<th>التخصصات</th>
-							<th>طرق التواصل</th>
-							<th>عدد الكورسات</th>
+							<th>المدرس</th>
+							<th>البريد الإلكتروني</th>
+							<th>الهاتف</th>
+							<th>الخبرة</th>
+							<th>التعليم</th>
+							<th>الحالة</th>
+							<th>عدد الطلاب</th>
 							<th>الإجراءات</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><div style="width:48px;height:48px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">👤</div></td>
-							<td>أ. مصطفى إبراهيم</td>
-							<td>فيزياء</td>
-							<td>+20 100 000 000 | physics@example.com</td>
-							<td>8</td>
-							<td>
-								<div class="admin-actions">
-									<button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editTeacher(1)">تعديل</button>
-									<a href="admin-courses.html" class="admin-btn admin-btn-primary admin-action-btn">كورسات</a>
-									<button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteTeacher(1)">حذف</button>
-								</div>
-							</td>
-						</tr>
+						<!-- Data will be loaded dynamically -->
 					</tbody>
 				</table>
 			</div>
 		</main>
 	</div>
 
-	<!-- Add/Edit Teacher Modal -->
-	<div id="teacherModal" class="modal" style="display:none;">
+	<!-- Add Teacher Modal -->
+	<div id="addTeacherModal" class="modal" style="display:none;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h2 id="teacherModalTitle">إضافة مدرس جديد</h2>
-				<button class="modal-close" onclick="closeTeacherModal()">&times;</button>
+				<h2>إضافة مدرس جديد</h2>
+				<button class="modal-close" onclick="closeModal('addTeacherModal')">&times;</button>
 			</div>
-			<form id="teacherForm" class="admin-form-container">
+			<form id="addTeacherForm" class="admin-form-container">
 				<div class="admin-form-row">
 					<div class="admin-form-group">
 						<label class="admin-form-label">اسم المدرس *</label>
-						<input type="text" id="teacherName" class="admin-form-input" required>
+						<input type="text" name="name" class="admin-form-input" required>
 					</div>
 					<div class="admin-form-group">
-						<label class="admin-form-label">التخصصات *</label>
-						<select id="teacherSubjects" class="admin-form-select" multiple required>
-							<option value="physics">فيزياء</option>
-							<option value="chemistry">كيمياء</option>
-							<option value="biology">أحياء</option>
-							<option value="math">رياضيات</option>
-							<option value="geology">جيولوجيا</option>
-							<option value="english">لغة إنجليزية</option>
-						</select>
+						<label class="admin-form-label">البريد الإلكتروني *</label>
+						<input type="email" name="email" class="admin-form-input" required>
 					</div>
 				</div>
 
 				<div class="admin-form-row">
 					<div class="admin-form-group">
 						<label class="admin-form-label">الهاتف</label>
-						<input type="tel" id="teacherPhone" class="admin-form-input" placeholder="01000000000">
+						<input type="tel" name="phone" class="admin-form-input" placeholder="01000000000">
 					</div>
 					<div class="admin-form-group">
-						<label class="admin-form-label">البريد الإلكتروني</label>
-						<input type="email" id="teacherEmail" class="admin-form-input" placeholder="teacher@example.com">
+						<label class="admin-form-label">التخصص</label>
+						<input type="text" name="subject" class="admin-form-input" placeholder="مثال: الرياضيات">
 					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">سنوات الخبرة</label>
+						<input type="number" name="experience_years" class="admin-form-input" min="0" value="0">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">المؤهل العلمي</label>
+						<input type="text" name="education" class="admin-form-input" placeholder="مثال: ماجستير">
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">التخصصات (افصل بينها بفواصل)</label>
+					<input type="text" name="specializations" class="admin-form-input" placeholder="مثال: جبر، هندسة، تفاضل">
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السعر بالساعة</label>
+					<input type="number" name="hourly_rate" class="admin-form-input" min="0" step="0.01" value="0">
 				</div>
 
 				<div class="admin-form-group">
 					<label class="admin-form-label">السيرة الذاتية</label>
-					<div id="teacherBioEditor" style="background:#fff;color:#000;border-radius:8px;"></div>
-				</div>
-
-				<div class="admin-form-group">
-					<label class="admin-form-label">الصورة الشخصية</label>
-					<div class="admin-file-upload">
-						<input type="file" id="teacherImage" class="admin-file-input" accept="image/*">
-						<label for="teacherImage" class="admin-file-label">
-							<span>🖼️</span>
-							<span>اختر صورة للمدرس</span>
-						</label>
-					</div>
-					<div id="teacherImagePreview" class="admin-file-preview" style="display:none;"></div>
+					<textarea name="bio" class="admin-form-input" rows="4" placeholder="اكتب السيرة الذاتية للمدرس..."></textarea>
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeTeacherModal()">إلغاء</button>
+					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('addTeacherModal')">إلغاء</button>
 					<button type="submit" class="admin-btn admin-btn-primary">حفظ المدرس</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
-	<!-- Image Cropper Modal -->
-	<div id="imageCropperModal" class="modal" style="display:none;">
-		<div class="modal-content" style="max-width:900px;">
+	<!-- Edit Teacher Modal -->
+	<div id="editTeacherModal" class="modal" style="display:none;">
+		<div class="modal-content">
 			<div class="modal-header">
-				<h2>قص الصورة</h2>
-				<button class="modal-close" onclick="closeImageCropper()">&times;</button>
+				<h2>تعديل بيانات المدرس</h2>
+				<button class="modal-close" onclick="closeModal('editTeacherModal')">&times;</button>
 			</div>
-			<div style="padding:1rem 2rem;">
-				<img id="cropperImage" src="" alt="Crop" style="max-width:100%;display:block;">
-			</div>
-			<div class="modal-footer">
-				<button class="admin-btn admin-btn-secondary" onclick="closeImageCropper()">إلغاء</button>
-				<button class="admin-btn admin-btn-primary" onclick="applyImageCrop()">تطبيق</button>
-			</div>
+			<form id="editTeacherForm" class="admin-form-container">
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">اسم المدرس *</label>
+						<input type="text" id="editTeacherName" name="name" class="admin-form-input" required>
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">البريد الإلكتروني *</label>
+						<input type="email" id="editTeacherEmail" name="email" class="admin-form-input" required>
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">الهاتف</label>
+						<input type="tel" id="editTeacherPhone" name="phone" class="admin-form-input" placeholder="01000000000">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">التخصص</label>
+						<input type="text" id="editTeacherSubject" name="subject" class="admin-form-input" placeholder="مثال: الرياضيات">
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">سنوات الخبرة</label>
+						<input type="number" id="editTeacherExperience" name="experience_years" class="admin-form-input" min="0">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">المؤهل العلمي</label>
+						<input type="text" id="editTeacherEducation" name="education" class="admin-form-input" placeholder="مثال: ماجستير">
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">التخصصات (افصل بينها بفواصل)</label>
+					<input type="text" id="editTeacherSpecializations" name="specializations" class="admin-form-input" placeholder="مثال: جبر، هندسة، تفاضل">
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">السعر بالساعة</label>
+						<input type="number" id="editTeacherHourlyRate" name="hourly_rate" class="admin-form-input" min="0" step="0.01">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">الحالة</label>
+						<select id="editTeacherStatus" name="status" class="admin-form-select">
+							<option value="active">نشط</option>
+							<option value="inactive">غير نشط</option>
+							<option value="suspended">معلق</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السيرة الذاتية</label>
+					<textarea id="editTeacherBio" name="bio" class="admin-form-input" rows="4" placeholder="اكتب السيرة الذاتية للمدرس..."></textarea>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('editTeacherModal')">إلغاء</button>
+					<button type="submit" class="admin-btn admin-btn-primary">تحديث البيانات</button>
+				</div>
+			</form>
 		</div>
 	</div>
 
+	<!-- Scripts -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="js/supabase-config.js"></script>
 	<script src="js/admin-script.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
 	<script src="js/admin-teachers.js"></script>
 </body>
 </html>

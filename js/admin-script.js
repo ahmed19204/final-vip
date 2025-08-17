@@ -468,3 +468,221 @@ window.formatFileSize = formatFileSize;
 window.generateUniqueId = generateUniqueId;
 window.validateEmail = validateEmail;
 window.validateUrl = validateUrl;
+
+// Admin Script - General Functions
+let currentUser = null;
+
+// Check admin authentication
+function checkAdminAuth() {
+    // For now, use simple authentication
+    // In production, implement proper JWT or session-based auth
+    const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
+    
+    if (!isAuthenticated) {
+        // Redirect to login if not authenticated
+        if (window.location.pathname !== '/admin-login.html' && !window.location.pathname.includes('admin-login.html')) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Initialize admin page
+function initializeAdminPage() {
+    if (!checkAdminAuth()) return;
+    
+    // Set current user
+    currentUser = {
+        name: 'مدير عام',
+        role: 'admin',
+        email: 'admin@vipcenter.com'
+    };
+    
+    // Update UI with user info
+    updateUserInfo();
+    
+    // Add event listeners
+    setupAdminEventListeners();
+}
+
+// Update user information in UI
+function updateUserInfo() {
+    const userInfoElements = document.querySelectorAll('.admin-user-info');
+    userInfoElements.forEach(element => {
+        element.innerHTML = `
+            <div class="user-name">${currentUser.name}</div>
+            <div class="user-role">${currentUser.role}</div>
+        `;
+    });
+}
+
+// Setup admin event listeners
+function setupAdminEventListeners() {
+    // Logout functionality
+    const logoutButtons = document.querySelectorAll('.admin-logout-btn');
+    logoutButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    });
+    
+    // Sidebar toggle for mobile
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+}
+
+// Logout function
+function logout() {
+    // Clear session
+    sessionStorage.removeItem('adminAuthenticated');
+    
+    // Redirect to login
+    window.location.href = 'admin-login.html';
+}
+
+// Toggle sidebar on mobile
+function toggleSidebar() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const main = document.querySelector('.admin-main');
+    
+    if (sidebar && main) {
+        sidebar.classList.toggle('collapsed');
+        main.classList.toggle('expanded');
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Open modal
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+        // Add body scroll lock
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Close modal
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal[style*="display: block"]');
+        openModals.forEach(modal => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+});
+
+// Format date
+function formatDate(dateString) {
+    if (!dateString) return 'غير محدد';
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ar-EG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// Format currency
+function formatCurrency(amount) {
+    if (!amount) return '0 جنيه';
+    
+    return new Intl.NumberFormat('ar-EG', {
+        style: 'currency',
+        currency: 'EGP'
+    }).format(amount);
+}
+
+// Validate email
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Validate phone number (Egyptian format)
+function validatePhone(phone) {
+    const phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
+    return phoneRegex.test(phone);
+}
+
+// Show loading
+function showLoading(message = 'جاري التحميل...') {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.textContent = message;
+        loadingDiv.style.display = 'block';
+    }
+}
+
+// Hide loading
+function hideLoading() {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if we're on an admin page
+    if (window.location.pathname.includes('admin') || window.location.pathname.includes('admin-')) {
+        initializeAdminPage();
+    }
+});
+
+// Export functions for global use
+window.checkAdminAuth = checkAdminAuth;
+window.showNotification = showNotification;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.formatDate = formatDate;
+window.formatCurrency = formatCurrency;
+window.validateEmail = validateEmail;
+window.validatePhone = validatePhone;
+window.showLoading = showLoading;
+window.hideLoading = hideLoading;
