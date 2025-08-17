@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الإدارة - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-login-container">
+        <div class="admin-login-card">
+            <div class="admin-logo">
+                <img src="vip-logo.jpg" alt="VIP Center Admin">
+                <h2>لوحة التحكم الإدارية</h2>
+            </div>
+            
+            <form id="adminLoginForm" class="admin-login-form">
+                <div class="form-group">
+                    <label for="adminUsername" class="form-label">اسم المستخدم الإداري</label>
+                    <input type="text" id="adminUsername" name="adminUsername" class="form-input" placeholder="أدخل اسم المستخدم" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminPassword" class="form-label">كلمة المرور</label>
+                    <input type="password" id="adminPassword" name="adminPassword" class="form-input" placeholder="أدخل كلمة المرور" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminRole" class="form-label">الصلاحية</label>
+                    <select id="adminRole" name="adminRole" class="form-select" required>
+                        <option value="">اختر الصلاحية</option>
+                        <option value="super_admin">مدير عام</option>
+                        <option value="content_admin">مدير محتوى</option>
+                        <option value="teacher_admin">مدير مدرسين</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="admin-login-btn">دخول لوحة التحكم</button>
+                
+                <div id="adminLoginError" class="error-message" style="display: none;">
+                    بيانات الدخول غير صحيحة
+                </div>
+            </form>
+            
+            <div class="admin-info">
+                <p>للوصول إلى لوحة التحكم، يجب أن تكون لديك صلاحيات إدارية</p>
+                <a href="index.html" class="back-to-site">العودة للموقع الرئيسي</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

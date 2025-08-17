@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="vip-logo.jpg" alt="VIP Center" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="home.html" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="teachers.html" class="nav-link">المدرسين</a>
+                </li>
+                <li class="nav-item">
+                    <a href="video-access.html" class="nav-link">فتح الفيديو</a>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link">تسجيل الدخول</a>
+                </li>
+                <li class="nav-item">
+                    <a href="register.html" class="nav-link register-btn">سجل الآن</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="form-container">
+        <div class="form-card">
+            <div class="form-logo">
+                <img src="vip-logo.jpg" alt="VIP Center">
+            </div>
+            
+            <form id="registerForm" class="register-form">
+                <div class="form-group">
+                    <label for="fullName" class="form-label">الاسم الكامل</label>
+                    <input type="text" id="fullName" name="fullName" class="form-input" placeholder="الاسم الكامل" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="البريد الإلكتروني" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">كلمة المرور</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="كلمة المرور" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="تأكيد كلمة المرور" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grade" class="form-label">السنة الدراسية</label>
+                    <select id="grade" name="grade" class="form-select" required>
+                        <option value="">اختر السنة الدراسية</option>
+                        <option value="grade12">الصف الثالث الثانوي</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="governorate" class="form-label">المحافظة</label>
+                    <select id="governorate" name="governorate" class="form-select" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="cairo">القاهرة</option>
+                        <option value="alexandria">الإسكندرية</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country" class="form-label">الدولة</label>
+                    <select id="country" name="country" class="form-select" required>
+                        <option value="">اختر الدولة</option>
+                        <option value="egypt">🇪🇬 مصر</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="form-submit">إنشاء الحساب</button>
+                
+                <div class="form-links">
+                    <a href="login.html">لديك حساب بالفعل؟ سجل دخولك.</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

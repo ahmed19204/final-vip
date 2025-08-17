@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="vip-logo.jpg" alt="VIP Center">
+                <h3>لوحة التحكم</h3>
+                <div class="admin-role">مدير عام</div>
+            </div>
+            
+            <nav class="admin-nav">
+                <div class="admin-nav-item">
+                    <a href="admin-dashboard.html" class="admin-nav-link active">
+                        <span class="admin-nav-icon">🏠</span>
+                        <span>الرئيسية</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-courses.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📚</span>
+                        <span>إدارة الكورسات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-teachers.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👨‍🏫</span>
+                        <span>إدارة المدرسين</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-videos.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🎥</span>
+                        <span>إدارة الفيديوهات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-codes.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🔐</span>
+                        <span>إدارة الأكواد</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-students.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👥</span>
+                        <span>إدارة الطلاب</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-subjects.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📖</span>
+                        <span>إدارة التخصصات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-settings.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">⚙️</span>
+                        <span>الإعدادات</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <!-- Admin Header -->
+            <header class="admin-header">
+                <h1>مرحباً بك في لوحة التحكم</h1>
+                <div class="admin-header-actions">
+                    <div class="admin-user-info">
+                        <span>مرحباً، أحمد حسين</span>
+                        <span>|</span>
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+                </div>
+            </header>
+
+            <!-- Dashboard Statistics -->
+            <div class="admin-cards-grid">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الطلاب</h3>
+                        <span class="admin-card-icon">👥</span>
+                    </div>
+                    <div class="admin-card-value" id="totalStudents">1,245</div>
+                    <p class="admin-card-description">طالب مسجل في المنصة</p>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الكورسات</h3>
+                        <span class="admin-card-icon">📚</span>
+                    </div>
+                    <div class="admin-card-value" id="totalCourses">48</div>
+                    <p class="admin-card-description">كورس متاح</p>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي المدرسين</h3>
+                        <span class="admin-card-icon">👨‍🏫</span>
+                    </div>
+                    <div class="admin-card-value" id="totalTeachers">12</div>
+                    <p class="admin-card-description">مدرس في المنصة</p>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الفيديوهات</h3>
+                        <span class="admin-card-icon">🎥</span>
+                    </div>
+                    <div class="admin-card-value" id="totalVideos">324</div>
+                    <p class="admin-card-description">فيديو تعليمي</p>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">الأكواد النشطة</h3>
+                        <span class="admin-card-icon">🔐</span>
+                    </div>
+                    <div class="admin-card-value" id="activeCodes">156</div>
+                    <p class="admin-card-description">كود فعال</p>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">المشاهدات اليوم</h3>
+                        <span class="admin-card-icon">📊</span>
+                    </div>
+                    <div class="admin-card-value" id="todayViews">2,847</div>
+                    <p class="admin-card-description">مشاهدة اليوم</p>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="admin-table-container">
+                <h2 style="color: #ffffff; margin-bottom: 1rem;">الأنشطة الأخيرة</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>الوقت</th>
+                            <th>النشاط</th>
+                            <th>المستخدم</th>
+                            <th>التفاصيل</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentActivities">
+                        <tr>
+                            <td>2025-01-17 14:30</td>
+                            <td>تسجيل طالب جديد</td>
+                            <td>محمد أحمد</td>
+                            <td>تسجيل في كورس الفيزياء</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-17 14:25</td>
+                            <td>رفع فيديو جديد</td>
+                            <td>أ. مصطفى إبراهيم</td>
+                            <td>درس الموجات الكهرومغناطيسية</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-17 14:20</td>
+                            <td>إنشاء كود جديد</td>
+                            <td>المدير العام</td>
+                            <td>كود للوحدة الثالثة - كيمياء</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-17 14:15</td>
+                            <td>تحديث معلومات مدرس</td>
+                            <td>أ. إيمان خفاجي</td>
+                            <td>تحديث الصورة الشخصية والسيرة</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-17 14:10</td>
+                            <td>محاولة دخول خاطئة</td>
+                            <td>غير معروف</td>
+                            <td>محاولة دخول بكود غير صحيح</td>
+                            <td><span class="admin-btn admin-btn-danger admin-action-btn">فشل</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="admin-form-container" style="margin-top: 2rem;">
+                <h2 style="color: #ffffff; margin-bottom: 1rem;">إجراءات سريعة</h2>
+                <div class="admin-form-row">
+                    <a href="admin-courses.html" class="admin-btn admin-btn-primary">
+                        <span>📚</span>
+                        إضافة كورس جديد
+                    </a>
+                    <a href="admin-teachers.html" class="admin-btn admin-btn-primary">
+                        <span>👨‍🏫</span>
+                        إضافة مدرس جديد
+                    </a>
+                    <a href="admin-videos.html" class="admin-btn admin-btn-primary">
+                        <span>🎥</span>
+                        رفع فيديو جديد
+                    </a>
+                    <a href="admin-codes.html" class="admin-btn admin-btn-primary">
+                        <span>🔐</span>
+                        إنشاء كود جديد
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الكورسات - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="vip-logo.jpg" alt="VIP Center">
+                <h3>لوحة التحكم</h3>
+                <div class="admin-role">مدير عام</div>
+            </div>
+            
+            <nav class="admin-nav">
+                <div class="admin-nav-item">
+                    <a href="admin-dashboard.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🏠</span>
+                        <span>الرئيسية</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-courses.html" class="admin-nav-link active">
+                        <span class="admin-nav-icon">📚</span>
+                        <span>إدارة الكورسات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-teachers.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👨‍🏫</span>
+                        <span>إدارة المدرسين</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-videos.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🎥</span>
+                        <span>إدارة الفيديوهات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-codes.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🔐</span>
+                        <span>إدارة الأكواد</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-students.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👥</span>
+                        <span>إدارة الطلاب</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-subjects.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📖</span>
+                        <span>إدارة التخصصات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-settings.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">⚙️</span>
+                        <span>الإعدادات</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <!-- Admin Header -->
+            <header class="admin-header">
+                <h1>إدارة الكورسات</h1>
+                <div class="admin-header-actions">
+                    <button class="admin-btn admin-btn-primary" onclick="showAddCourseModal()">
+                        <span>➕</span>
+                        إضافة كورس جديد
+                    </button>
+                    <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+                </div>
+            </header>
+
+            <!-- Course Statistics -->
+            <div class="admin-cards-grid">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الكورسات</h3>
+                        <span class="admin-card-icon">📚</span>
+                    </div>
+                    <div class="admin-card-value">48</div>
+                    <p class="admin-card-description">كورس متاح</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">الكورسات المميزة</h3>
+                        <span class="admin-card-icon">⭐</span>
+                    </div>
+                    <div class="admin-card-value">12</div>
+                    <p class="admin-card-description">كورس مميز</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الطلاب المسجلين</h3>
+                        <span class="admin-card-icon">👥</span>
+                    </div>
+                    <div class="admin-card-value">3,247</div>
+                    <p class="admin-card-description">طالب مسجل</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">متوسط التقييم</h3>
+                        <span class="admin-card-icon">⭐</span>
+                    </div>
+                    <div class="admin-card-value">4.8</div>
+                    <p class="admin-card-description">من 5 نجوم</p>
+                </div>
+            </div>
+
+            <!-- Course Management Table -->
+            <div class="admin-table-container">
+                <div class="admin-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="color: #ffffff; margin: 0;">قائمة الكورسات</h2>
+                    <div class="admin-table-filters">
+                        <select class="admin-form-select" style="width: auto; margin-left: 1rem;" onchange="filterCourses(this.value)">
+                            <option value="all">جميع الكورسات</option>
+                            <option value="featured">المميزة</option>
+                            <option value="active">النشطة</option>
+                            <option value="inactive">غير النشطة</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                        </select>
+                        <input type="text" class="admin-form-input" placeholder="البحث في الكورسات..." style="width: 250px;" onkeyup="searchCourses(this.value)">
+                    </div>
+                </div>
+                
+                <table class="admin-table" id="coursesTable">
+                    <thead>
+                        <tr>
+                            <th>الصورة</th>
+                            <th>اسم الكورس</th>
+                            <th>التخصص</th>
+                            <th>المدرس</th>
+                            <th>السعر</th>
+                            <th>المسجلين</th>
+                            <th>التقييم</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الفيزياء المتقدمة</td>
+                            <td>الفيزياء</td>
+                            <td>أ. مصطفى إبراهيم</td>
+                            <td>299 جنيه</td>
+                            <td>245</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.8</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>2025-01-10</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(1)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(1)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(1)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الكيمياء العضوية</td>
+                            <td>الكيمياء</td>
+                            <td>أ. مصطفى حمدي</td>
+                            <td>249 جنيه</td>
+                            <td>189</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.6</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>2025-01-08</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(2)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(2)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(2)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الأحياء الجزيئية</td>
+                            <td>الأحياء</td>
+                            <td>أ. إيمان خفاجي</td>
+                            <td>279 جنيه</td>
+                            <td>312</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.9</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">مميز</span></td>
+                            <td>2025-01-05</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(3)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(3)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(3)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Course Modal -->
+    <div id="courseModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="courseModalTitle">إضافة كورس جديد</h2>
+                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
+            </div>
+            
+            <form id="courseForm" class="admin-form-container">
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">اسم الكورس *</label>
+                        <input type="text" id="courseName" class="admin-form-input" placeholder="أدخل اسم الكورس" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">التخصص *</label>
+                        <select id="courseSubject" class="admin-form-select" required>
+                            <option value="">اختر التخصص</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                            <option value="geology">الجيولوجيا</option>
+                            <option value="english">اللغة الإنجليزية</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المدرس المسؤول *</label>
+                        <select id="courseTeacher" class="admin-form-select" required>
+                            <option value="">اختر المدرس</option>
+                            <option value="1">أ. مصطفى إبراهيم - فيزياء</option>
+                            <option value="2">أ. إيمان خفاجي - أحياء</option>
+                            <option value="3">أ. مصطفى حمدي - كيمياء</option>
+                            <option value="4">أ. مصطفى إسماعيل - رياضيات</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">السعر (بالجنيه) *</label>
+                        <input type="number" id="coursePrice" class="admin-form-input" placeholder="0" min="0" required>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">وصف الكورس *</label>
+                    <textarea id="courseDescription" class="admin-form-textarea" placeholder="أدخل وصف تفصيلي للكورس..." required></textarea>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المتطلبات المسبقة</label>
+                        <textarea id="coursePrerequisites" class="admin-form-textarea" placeholder="أدخل المتطلبات المسبقة (إن وجدت)..." style="min-height: 80px;"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المواد التعليمية المرفقة</label>
+                        <textarea id="courseMaterials" class="admin-form-textarea" placeholder="أدخل قائمة بالمواد التعليمية..." style="min-height: 80px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Course Image Upload -->
+                <div class="admin-form-group">
+                    <label class="admin-form-label">صورة الكورس</label>
+                    <div class="admin-file-upload">
+                        <input type="file" id="courseImage" class="admin-file-input" accept="image/*" onchange="handleCourseImageUpload(this)">
+                        <label for="courseImage" class="admin-file-label">
+                            <span>🖼️</span>
+                            <span>اختر صورة للكورس</span>
+                        </label>
+                    </div>
+                    <div id="courseImagePreview" class="admin-file-preview" style="display: none;"></div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">مدة الكورس (بالساعات)</label>
+                        <input type="number" id="courseDuration" class="admin-form-input" placeholder="0" min="1">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">عدد الدروس</label>
+                        <input type="number" id="courseLessons" class="admin-form-input" placeholder="0" min="1">
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">مستوى الكورس</label>
+                        <select id="courseLevel" class="admin-form-select">
+                            <option value="beginner">مبتدئ</option>
+                            <option value="intermediate">متوسط</option>
+                            <option value="advanced">متقدم</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">الحالة</label>
+                        <select id="courseStatus" class="admin-form-select">
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                            <option value="featured">مميز</option>
+                            <option value="draft">مسودة</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">الكلمات المفتاحية</label>
+                    <input type="text" id="courseTags" class="admin-form-input" placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="closeCourseModal()">إلغاء</button>
+                    <button type="submit" class="admin-btn admin-btn-primary">حفظ الكورس</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+    <script src="admin-script.js"></script>
+    <script src="admin-courses.js"></script>
+</body>
+</html>

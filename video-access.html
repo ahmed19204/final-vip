@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فتح الفيديو - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="vip-logo.jpg" alt="VIP Center" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="home.html" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="teachers.html" class="nav-link">المدرسين</a>
+                </li>
+                <li class="nav-item">
+                    <a href="video-access.html" class="nav-link">فتح الفيديو</a>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link">تسجيل الدخول</a>
+                </li>
+                <li class="nav-item">
+                    <a href="register.html" class="nav-link register-btn">سجل الآن</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="video-container">
+            <section class="section">
+                <h1 class="section-title">فتح الفيديو باستخدام الكود</h1>
+                
+                <div class="video-form">
+                    <form id="videoCodeForm">
+                        <div class="form-group">
+                            <label for="videoCode" class="form-label">أدخل الكود</label>
+                            <input type="text" id="videoCode" name="videoCode" class="form-input" placeholder="الكود الخاص بالفيديو" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">فتح الفيديو</button>
+                        
+                        <div id="codeError" class="error-message" style="display: none;">
+                            الكود غير صحيح. يرجى المحاولة مرة أخرى.
+                        </div>
+                        
+                        <div id="codeSuccess" class="success-message" style="display: none;">
+                            تم التحقق من الكود بنجاح! يتم تحميل الفيديو...
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Video Player -->
+                <div id="videoPlayer" class="video-player">
+                    <div class="video-placeholder">
+                        <h3>🎬 مشغل الفيديو</h3>
+                        <p>سيظهر الفيديو هنا بعد إدخال الكود الصحيح</p>
+                        <div class="video-controls">
+                            <button class="video-btn play-btn">▶️ تشغيل</button>
+                            <button class="video-btn pause-btn" style="display: none;">⏸️ إيقاف مؤقت</button>
+                            <button class="video-btn fullscreen-btn">🔲 ملء الشاشة</button>
+                        </div>
+                        <div class="video-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <span class="video-time">00:00 / 00:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>تواصل معنا</h3>
+                <p>للاستفسارات والدعم الفني</p>
+            </div>
+            <div class="footer-section">
+                <h3>الدعم</h3>
+                <p>نحن هنا لمساعدتك</p>
+            </div>
+            <div class="footer-section">
+                <div class="social-icons">
+                    <a href="#" class="social-icon whatsapp">📱</a>
+                    <a href="#" class="social-icon facebook">📘</a>
+                    <a href="#" class="social-icon youtube">📺</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <div class="app-stores">
+                    <img src="app-store.png" alt="App Store" class="store-badge">
+                    <img src="google-play.png" alt="Google Play" class="store-badge">
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Powered By ahmed hussien | 2025 © جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="admin-script.js"></script>
+    <script src="admin-codes.js"></script>
+    <script>
+        // Enhanced video access validation with admin integration
+        document.getElementById('videoCodeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const code = document.getElementById('videoCode').value.trim();
+            const errorDiv = document.getElementById('codeError');
+            const successDiv = document.getElementById('codeSuccess');
+            const videoPlayer = document.getElementById('videoPlayer');
+            
+            // Clear previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            if (!code) {
+                errorDiv.textContent = 'يرجى إدخال كود الوصول.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Use the code validator from admin system
+            if (typeof codeValidator !== 'undefined') {
+                const result = codeValidator.useCode(code.toUpperCase());
+                
+                if (result.valid) {
+                    successDiv.textContent = result.message;
+                    successDiv.style.display = 'block';
+                    
+                    // Load content based on code
+                    if (result.content) {
+                        loadContent(result.content);
+                    } else {
+                        loadDefaultVideo();
+                    }
+                } else {
+                    errorDiv.textContent = result.message;
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                // Fallback validation for when admin system is not loaded
+                const validCodes = ['VIP2025', 'PHYSICS101', 'CHEMISTRY202', 'BIOLOGY303'];
+                
+                if (validCodes.includes(code.toUpperCase())) {
+                    successDiv.textContent = 'تم قبول الكود! يمكنك الآن مشاهدة الفيديو.';
+                    successDiv.style.display = 'block';
+                    loadDefaultVideo();
+                } else {
+                    errorDiv.textContent = 'كود غير صحيح. يرجى المحاولة مرة أخرى.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        });
+        
+        // Load content based on code validation result
+        function loadContent(content) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            
+            if (content.type === 'video') {
+                // Single video
+                showVideoPlayer(content.title, content.url);
+            } else if (content.type === 'course' || content.type === 'subject') {
+                // Multiple videos - show playlist
+                showVideoPlaylist(content.title, content.videos);
+            }
+        }
+        
+        // Show single video player
+        function showVideoPlayer(title, videoUrl) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.innerHTML = `
+                <div class="video-content">
+                    <h3 class="video-title">${title}</h3>
+                    <video id="mainVideo" controls style="width: 100%; max-height: 500px; border-radius: 8px;">
+                        <source src="${videoUrl || 'sample-video.mp4'}" type="video/mp4">
+                        متصفحك لا يدعم تشغيل الفيديو.
+                    </video>
+                    <div class="video-info" style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <p style="color: #cccccc;">✅ تم فتح الفيديو بنجاح</p>
+                        <p style="color: #cccccc; font-size: 14px;">يمكنك الآن مشاهدة المحتوى التعليمي</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show video playlist
+        function showVideoPlaylist(title, videos) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.innerHTML = `
+                <div class="video-content">
+                    <h3 class="video-title">${title}</h3>
+                    <video id="mainVideo" controls style="width: 100%; max-height: 400px; border-radius: 8px;">
+                        <source src="${videos[0] || 'sample-video.mp4'}" type="video/mp4">
+                        متصفحك لا يدعم تشغيل الفيديو.
+                    </video>
+                    <div class="video-playlist" style="margin-top: 2rem;">
+                        <h4 style="color: #ffffff; margin-bottom: 1rem;">📚 قائمة الفيديوهات</h4>
+                        <div class="playlist-items"></div>
+                    </div>
+                </div>
+            `;
+            
+            const playlistContainer = videoPlayer.querySelector('.playlist-items');
+            videos.forEach((video, index) => {
+                const item = document.createElement('div');
+                item.className = 'playlist-item';
+                item.style.cssText = `
+                    padding: 1rem;
+                    margin-bottom: 0.5rem;
+                    background: ${index === 0 ? 'rgba(255, 77, 77, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    color: ${index === 0 ? '#ffffff' : '#cccccc'};
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                `;
+                
+                item.innerHTML = `
+                    <span style="color: #ff4d4d; font-weight: bold; min-width: 30px;">${index + 1}</span>
+                    <span style="flex: 1;">الدرس ${index + 1}</span>
+                    <span style="font-size: 0.9rem;">${index === 0 ? '🔴 قيد التشغيل' : '▶️'}</span>
+                `;
+                
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    playlistContainer.querySelectorAll('.playlist-item').forEach(i => {
+                        i.style.background = 'rgba(255, 255, 255, 0.1)';
+                        i.style.color = '#cccccc';
+                        i.querySelector('span:last-child').textContent = '▶️';
+                    });
+                    
+                    // Add active class to clicked item
+                    this.style.background = 'rgba(255, 77, 77, 0.2)';
+                    this.style.color = '#ffffff';
+                    this.querySelector('span:last-child').textContent = '🔴 قيد التشغيل';
+                    
+                    // Load selected video
+                    const mainVideo = document.getElementById('mainVideo');
+                    mainVideo.querySelector('source').src = video;
+                    mainVideo.load();
+                });
+                
+                playlistContainer.appendChild(item);
+            });
+        }
+        
+        // Load default video
+        function loadDefaultVideo() {
+            showVideoPlayer('فيديو تعليمي', '');
+        }
+    </script>
+</body>
+</html>

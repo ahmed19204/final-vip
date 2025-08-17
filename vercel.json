@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "name": "vip-center",
+  "builds": [
+    {
+      "src": "**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "**/*.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "functions": {},
+  "env": {
+    "SUPABASE_URL": "https://hlzmijhlijnzrzzoeopf.supabase.co",
+    "SUPABASE_ANON_KEY": "sb_publishable_HX2dsVz99s38yrTMZrbvJQ_-eEWdb4E"
+  }
+}

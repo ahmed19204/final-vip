@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الفيديوهات - VIP Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="vip-logo.jpg" alt="VIP Center">
+                <h3>لوحة التحكم</h3>
+                <div class="admin-role">مدير عام</div>
+            </div>
+            
+            <nav class="admin-nav">
+                <div class="admin-nav-item">
+                    <a href="admin-dashboard.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🏠</span>
+                        <span>الرئيسية</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-courses.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📚</span>
+                        <span>إدارة الكورسات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-teachers.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👨‍🏫</span>
+                        <span>إدارة المدرسين</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-videos.html" class="admin-nav-link active">
+                        <span class="admin-nav-icon">🎥</span>
+                        <span>إدارة الفيديوهات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-codes.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🔐</span>
+                        <span>إدارة الأكواد</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-students.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👥</span>
+                        <span>إدارة الطلاب</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-subjects.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📖</span>
+                        <span>إدارة التخصصات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-settings.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">⚙️</span>
+                        <span>الإعدادات</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <!-- Admin Header -->
+            <header class="admin-header">
+                <h1>إدارة الفيديوهات</h1>
+                <div class="admin-header-actions">
+                    <button class="admin-btn admin-btn-primary" onclick="showAddVideoModal()">
+                        <span>➕</span>
+                        إضافة فيديو جديد
+                    </button>
+                    <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+                </div>
+            </header>
+
+            <!-- Video Statistics -->
+            <div class="admin-cards-grid">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الفيديوهات</h3>
+                        <span class="admin-card-icon">🎥</span>
+                    </div>
+                    <div class="admin-card-value">324</div>
+                    <p class="admin-card-description">فيديو تعليمي</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">الفيديوهات المحمية</h3>
+                        <span class="admin-card-icon">🔐</span>
+                    </div>
+                    <div class="admin-card-value">198</div>
+                    <p class="admin-card-description">فيديو يتطلب كود</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي المشاهدات</h3>
+                        <span class="admin-card-icon">👁️</span>
+                    </div>
+                    <div class="admin-card-value">45,892</div>
+                    <p class="admin-card-description">مشاهدة</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">المدة الإجمالية</h3>
+                        <span class="admin-card-icon">⏱️</span>
+                    </div>
+                    <div class="admin-card-value">1,256</div>
+                    <p class="admin-card-description">ساعة محتوى</p>
+                </div>
+            </div>
+
+            <!-- Video Management Table -->
+            <div class="admin-table-container">
+                <div class="admin-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="color: #ffffff; margin: 0;">قائمة الفيديوهات</h2>
+                    <div class="admin-table-filters">
+                        <select class="admin-form-select" style="width: auto; margin-left: 1rem;" onchange="filterVideos(this.value)">
+                            <option value="all">جميع الفيديوهات</option>
+                            <option value="protected">المحمية بكود</option>
+                            <option value="free">المجانية</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                        </select>
+                        <input type="text" class="admin-form-input" placeholder="البحث في الفيديوهات..." style="width: 250px;" onkeyup="searchVideos(this.value)">
+                    </div>
+                </div>
+                
+                <table class="admin-table" id="videosTable">
+                    <thead>
+                        <tr>
+                            <th>المعاينة</th>
+                            <th>العنوان</th>
+                            <th>التخصص</th>
+                            <th>المدرس</th>
+                            <th>المدة</th>
+                            <th>الكود المطلوب</th>
+                            <th>المشاهدات</th>
+                            <th>تاريخ الرفع</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">🎥</div>
+                            </td>
+                            <td>مقدمة في الموجات الكهرومغناطيسية</td>
+                            <td>الفيزياء</td>
+                            <td>أ. مصطفى إبراهيم</td>
+                            <td>45:30</td>
+                            <td>PHYSICS101</td>
+                            <td>1,245</td>
+                            <td>2025-01-15</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editVideo(1)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="previewVideo(1)">معاينة</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteVideo(1)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">🎥</div>
+                            </td>
+                            <td>التفاعلات الكيميائية المعقدة</td>
+                            <td>الكيمياء</td>
+                            <td>أ. مصطفى حمدي</td>
+                            <td>38:15</td>
+                            <td>CHEMISTRY202</td>
+                            <td>892</td>
+                            <td>2025-01-14</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editVideo(2)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="previewVideo(2)">معاينة</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteVideo(2)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">🎥</div>
+                            </td>
+                            <td>علم الوراثة المتقدم</td>
+                            <td>الأحياء</td>
+                            <td>أ. إيمان خفاجي</td>
+                            <td>52:45</td>
+                            <td>BIOLOGY303</td>
+                            <td>1,567</td>
+                            <td>2025-01-13</td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editVideo(3)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="previewVideo(3)">معاينة</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteVideo(3)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Video Modal -->
+    <div id="videoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">إضافة فيديو جديد</h2>
+                <button class="modal-close" onclick="closeVideoModal()">&times;</button>
+            </div>
+            
+            <form id="videoForm" class="admin-form-container">
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">عنوان الفيديو *</label>
+                        <input type="text" id="videoTitle" class="admin-form-input" placeholder="أدخل عنوان الفيديو" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">التخصص *</label>
+                        <select id="videoSubject" class="admin-form-select" required>
+                            <option value="">اختر التخصص</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                            <option value="geology">الجيولوجيا</option>
+                            <option value="english">اللغة الإنجليزية</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المدرس *</label>
+                        <select id="videoTeacher" class="admin-form-select" required>
+                            <option value="">اختر المدرس</option>
+                            <option value="1">أ. مصطفى إبراهيم - فيزياء</option>
+                            <option value="2">أ. إيمان خفاجي - أحياء</option>
+                            <option value="3">أ. مصطفى حمدي - كيمياء</option>
+                            <option value="4">أ. مصطفى إسماعيل - رياضيات</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">الكود المطلوب (اختياري)</label>
+                        <input type="text" id="videoCode" class="admin-form-input" placeholder="أدخل الكود أو اتركه فارغاً للمجاني">
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">وصف الفيديو</label>
+                    <textarea id="videoDescription" class="admin-form-textarea" placeholder="أدخل وصف تفصيلي للفيديو..."></textarea>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">نوع المصدر *</label>
+                        <select id="videoSourceType" class="admin-form-select" onchange="toggleVideoSource()" required>
+                            <option value="">اختر نوع المصدر</option>
+                            <option value="upload">رفع مباشر</option>
+                            <option value="youtube">رابط YouTube</option>
+                            <option value="vimeo">رابط Vimeo</option>
+                            <option value="external">رابط خارجي</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">مكان العرض *</label>
+                        <select id="videoPlacement" class="admin-form-select" required>
+                            <option value="">اختر مكان العرض</option>
+                            <option value="homepage">الصفحة الرئيسية - الكورسات المميزة</option>
+                            <option value="subject_page">صفحة التخصص</option>
+                            <option value="teacher_profile">ملف المدرس</option>
+                            <option value="course_specific">كورس محدد</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Upload Section -->
+                <div id="uploadSection" class="admin-form-group" style="display: none;">
+                    <label class="admin-form-label">رفع الفيديو</label>
+                    <div class="admin-file-upload">
+                        <input type="file" id="videoFile" class="admin-file-input" accept="video/*" onchange="handleVideoUpload(this)">
+                        <label for="videoFile" class="admin-file-label">
+                            <span>📁</span>
+                            <span>اختر ملف الفيديو أو اسحبه هنا</span>
+                        </label>
+                    </div>
+                    <div id="uploadProgress" style="display: none; margin-top: 1rem;">
+                        <div style="background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                            <div id="progressBar" style="height: 20px; background: linear-gradient(135deg, #ff4d4d, #e04444); width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <p id="uploadStatus" style="color: #cccccc; margin-top: 0.5rem;">جاري الرفع...</p>
+                    </div>
+                </div>
+
+                <!-- External Link Section -->
+                <div id="linkSection" class="admin-form-group" style="display: none;">
+                    <label class="admin-form-label">رابط الفيديو</label>
+                    <input type="url" id="videoUrl" class="admin-form-input" placeholder="أدخل رابط الفيديو">
+                    <small style="color: #cccccc; margin-top: 0.5rem; display: block;">
+                        مثال: https://www.youtube.com/watch?v=VIDEO_ID أو https://vimeo.com/VIDEO_ID
+                    </small>
+                </div>
+
+                <!-- Thumbnail Upload -->
+                <div class="admin-form-group">
+                    <label class="admin-form-label">صورة مصغرة للفيديو</label>
+                    <div class="admin-file-upload">
+                        <input type="file" id="videoThumbnail" class="admin-file-input" accept="image/*" onchange="handleThumbnailUpload(this)">
+                        <label for="videoThumbnail" class="admin-file-label">
+                            <span>🖼️</span>
+                            <span>اختر صورة مصغرة</span>
+                        </label>
+                    </div>
+                    <div id="thumbnailPreview" class="admin-file-preview" style="display: none;"></div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">الكلمات المفتاحية</label>
+                        <input type="text" id="videoTags" class="admin-form-input" placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">الحالة</label>
+                        <select id="videoStatus" class="admin-form-select">
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                            <option value="draft">مسودة</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="closeVideoModal()">إلغاء</button>
+                    <button type="submit" class="admin-btn admin-btn-primary">حفظ الفيديو</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+    <script src="admin-script.js"></script>
+    <script src="admin-videos.js"></script>
+</body>
+</html>

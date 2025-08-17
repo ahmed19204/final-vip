@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>إدارة المدرسين - VIP Center</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="admin-styles.css">
+	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+	<div class="admin-dashboard">
+		<!-- Admin Sidebar -->
+		<aside class="admin-sidebar">
+			<div class="admin-sidebar-header">
+				<img src="vip-logo.jpg" alt="VIP Center">
+				<h3>لوحة التحكم</h3>
+				<div class="admin-role">مدير عام</div>
+			</div>
+			<nav class="admin-nav">
+				<div class="admin-nav-item">
+					<a href="admin-dashboard.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🏠</span>
+						<span>الرئيسية</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-courses.html" class="admin-nav-link">
+						<span class="admin-nav-icon">📚</span>
+						<span>إدارة الكورسات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-teachers.html" class="admin-nav-link active">
+						<span class="admin-nav-icon">👨‍🏫</span>
+						<span>إدارة المدرسين</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-videos.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🎥</span>
+						<span>إدارة الفيديوهات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-codes.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🔐</span>
+						<span>إدارة الأكواد</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-students.html" class="admin-nav-link">
+						<span class="admin-nav-icon">👥</span>
+						<span>إدارة الطلاب</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-subjects.html" class="admin-nav-link">
+						<span class="admin-nav-icon">📖</span>
+						<span>إدارة التخصصات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-settings.html" class="admin-nav-link">
+						<span class="admin-nav-icon">⚙️</span>
+						<span>الإعدادات</span>
+					</a>
+				</div>
+			</nav>
+		</aside>
+
+		<!-- Admin Main Content -->
+		<main class="admin-main">
+			<header class="admin-header">
+				<h1>إدارة المدرسين</h1>
+				<div class="admin-header-actions">
+					<a href="admin-courses.html" class="admin-btn admin-btn-secondary">الانتقال إلى الكورسات</a>
+					<button class="admin-btn admin-btn-primary" onclick="showAddTeacherModal()">
+						<span>➕</span>
+						إضافة مدرس جديد
+					</button>
+					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+				</div>
+			</header>
+
+			<div class="admin-table-container">
+				<div class="admin-table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+					<h2 style="color:#fff;margin:0;">قائمة المدرسين</h2>
+					<div class="admin-table-filters">
+						<input type="text" class="admin-form-input" placeholder="البحث عن مدرس..." style="width: 280px;" onkeyup="searchTeachers(this.value)">
+					</div>
+				</div>
+
+				<table class="admin-table" id="teachersTable">
+					<thead>
+						<tr>
+							<th>الصورة</th>
+							<th>الاسم</th>
+							<th>التخصصات</th>
+							<th>طرق التواصل</th>
+							<th>عدد الكورسات</th>
+							<th>الإجراءات</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><div style="width:48px;height:48px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">👤</div></td>
+							<td>أ. مصطفى إبراهيم</td>
+							<td>فيزياء</td>
+							<td>+20 100 000 000 | physics@example.com</td>
+							<td>8</td>
+							<td>
+								<div class="admin-actions">
+									<button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editTeacher(1)">تعديل</button>
+									<a href="admin-courses.html" class="admin-btn admin-btn-primary admin-action-btn">كورسات</a>
+									<button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteTeacher(1)">حذف</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
+
+	<!-- Add/Edit Teacher Modal -->
+	<div id="teacherModal" class="modal" style="display:none;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 id="teacherModalTitle">إضافة مدرس جديد</h2>
+				<button class="modal-close" onclick="closeTeacherModal()">&times;</button>
+			</div>
+			<form id="teacherForm" class="admin-form-container">
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">اسم المدرس *</label>
+						<input type="text" id="teacherName" class="admin-form-input" required>
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">التخصصات *</label>
+						<select id="teacherSubjects" class="admin-form-select" multiple required>
+							<option value="physics">فيزياء</option>
+							<option value="chemistry">كيمياء</option>
+							<option value="biology">أحياء</option>
+							<option value="math">رياضيات</option>
+							<option value="geology">جيولوجيا</option>
+							<option value="english">لغة إنجليزية</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">الهاتف</label>
+						<input type="tel" id="teacherPhone" class="admin-form-input" placeholder="01000000000">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">البريد الإلكتروني</label>
+						<input type="email" id="teacherEmail" class="admin-form-input" placeholder="teacher@example.com">
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السيرة الذاتية</label>
+					<div id="teacherBioEditor" style="background:#fff;color:#000;border-radius:8px;"></div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">الصورة الشخصية</label>
+					<div class="admin-file-upload">
+						<input type="file" id="teacherImage" class="admin-file-input" accept="image/*">
+						<label for="teacherImage" class="admin-file-label">
+							<span>🖼️</span>
+							<span>اختر صورة للمدرس</span>
+						</label>
+					</div>
+					<div id="teacherImagePreview" class="admin-file-preview" style="display:none;"></div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeTeacherModal()">إلغاء</button>
+					<button type="submit" class="admin-btn admin-btn-primary">حفظ المدرس</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Image Cropper Modal -->
+	<div id="imageCropperModal" class="modal" style="display:none;">
+		<div class="modal-content" style="max-width:900px;">
+			<div class="modal-header">
+				<h2>قص الصورة</h2>
+				<button class="modal-close" onclick="closeImageCropper()">&times;</button>
+			</div>
+			<div style="padding:1rem 2rem;">
+				<img id="cropperImage" src="" alt="Crop" style="max-width:100%;display:block;">
+			</div>
+			<div class="modal-footer">
+				<button class="admin-btn admin-btn-secondary" onclick="closeImageCropper()">إلغاء</button>
+				<button class="admin-btn admin-btn-primary" onclick="applyImageCrop()">تطبيق</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="admin-script.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+	<script src="admin-teachers.js"></script>
+</body>
+</html>

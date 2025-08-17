@@ -1,0 +1,103 @@
+{
+  "siteName": "VIP Center",
+  "description": "منصة تعليمية متكاملة مع لوحة تحكم إدارية",
+  "language": "ar",
+  "direction": "rtl",
+  "theme": {
+    "primaryColor": "#ff4d4d",
+    "secondaryColor": "#808080",
+    "backgroundColor": "#000000",
+    "textColor": "#ffffff",
+    "accentColor": "#ff4d4d",
+    "fontFamily": "Tahoma, Arial, sans-serif",
+    "fontSizeBase": "16px",
+    "borderRadius": "8px",
+    "buttonPadding": "10px 20px",
+    "navBackground": "#000000",
+    "footerBackground": "#000000"
+  },
+  "logo": {
+    "src": "vip-logo.jpg",
+    "alt": "VIP Center",
+    "style": "width: 150px; height: auto;"
+  },
+  "navigation": {
+    "position": "top",
+    "items": [
+      {
+        "label": "سجل الآن",
+        "link": "register.html",
+        "style": "background-color: #ff4d4d; color: #ffffff; border-radius: 8px; padding: 10px 20px;"
+      },
+      {
+        "label": "تسجيل الدخول",
+        "link": "login.html",
+        "style": "color: #ffffff;"
+      },
+      {
+        "label": "الرئيسية",
+        "link": "index.html",
+        "style": "color: #ffffff;"
+      }
+    ]
+  },
+  "pages": {
+    "landing": {
+      "background": "url('classroom-bg.jpg') no-repeat center/cover;",
+      "components": [
+        {
+          "type": "title",
+          "text": "عيش تجربة أونلاين",
+          "style": "font-size: 48px; color: #ffffff; text-align: center;"
+        },
+        {
+          "type": "subtitle",
+          "text": "تجربة تعليمية فريدة ومتميزة مع أكاديمية VIP في المناهج التعليمية والكورسات والدروس الخصوصية.",
+          "style": "font-size: 18px; color: #cccccc; text-align: center;"
+        },
+        {
+          "type": "buttons",
+          "items": [
+            {
+              "label": "تصفح الموقع",
+              "link": "home.html",
+              "style": "background-color: #808080; color: #ffffff; border-radius: 8px; padding: 10px 20px;"
+            },
+            {
+              "label": "سجل الآن",
+              "link": "register.html",
+              "style": "background-color: #ff4d4d; color: #ffffff; border-radius: 8px; padding: 10px 20px;"
+            }
+          ],
+          "style": "display: flex; justify-content: center; gap: 20px;"
+        }
+      ]
+    }
+  },
+  "admin": {
+    "login": {
+      "username": "admin",
+      "password": "admin123"
+    },
+    "features": [
+      "إدارة المدرسين",
+      "إدارة الكورسات",
+      "إدارة الفيديوهات",
+      "إدارة الأكواد",
+      "إدارة الطلاب",
+      "إدارة التخصصات"
+    ]
+  },
+  "database": {
+    "type": "Supabase",
+    "url": "https://hlzmijhlijnzrzzoeopf.supabase.co",
+    "tables": [
+      "teachers",
+      "courses",
+      "videos",
+      "access_codes",
+      "students",
+      "subjects"
+    ]
+  }
+}

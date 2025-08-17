@@ -1,0 +1,29 @@
+{
+  "name": "vip-center",
+  "version": "1.0.0",
+  "description": "منصة تعليمية متكاملة مع لوحة تحكم إدارية",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000 -c-1 --cors",
+    "dev": "http-server -p 8000 -c-1 --cors",
+    "build": "echo 'No build step required for static site'",
+    "deploy": "echo 'Deploy to Vercel via GitHub integration'"
+  },
+  "keywords": [
+    "education",
+    "platform",
+    "admin",
+    "dashboard",
+    "arabic",
+    "rtl",
+    "supabase"
+  ],
+  "author": "VIP Center Team",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

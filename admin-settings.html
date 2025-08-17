@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>الإعدادات والنظام - VIP Center</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="admin-styles.css">
+	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+	<div class="admin-dashboard">
+		<aside class="admin-sidebar">
+			<div class="admin-sidebar-header">
+				<img src="vip-logo.jpg" alt="VIP Center">
+				<h3>لوحة التحكم</h3>
+				<div class="admin-role">مدير عام</div>
+			</div>
+			<nav class="admin-nav">
+				<div class="admin-nav-item"><a href="admin-dashboard.html" class="admin-nav-link"><span class="admin-nav-icon">🏠</span><span>الرئيسية</span></a></div>
+				<div class="admin-nav-item"><a href="admin-settings.html" class="admin-nav-link active"><span class="admin-nav-icon">⚙️</span><span>الإعدادات</span></a></div>
+				<div class="admin-nav-item"><a href="admin-courses.html" class="admin-nav-link"><span class="admin-nav-icon">📚</span><span>الكورسات</span></a></div>
+				<div class="admin-nav-item"><a href="admin-teachers.html" class="admin-nav-link"><span class="admin-nav-icon">👨‍🏫</span><span>المدرسين</span></a></div>
+				<div class="admin-nav-item"><a href="admin-videos.html" class="admin-nav-link"><span class="admin-nav-icon">🎥</span><span>الفيديوهات</span></a></div>
+				<div class="admin-nav-item"><a href="admin-codes.html" class="admin-nav-link"><span class="admin-nav-icon">🔐</span><span>الأكواد</span></a></div>
+			</nav>
+		</aside>
+		<main class="admin-main">
+			<header class="admin-header">
+				<h1>إعدادات النظام والتكامل</h1>
+				<div class="admin-header-actions">
+					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+				</div>
+			</header>
+
+			<div class="admin-form-container">
+				<h2 style="color:#fff;margin-bottom:1rem;">إعدادات قاعدة البيانات</h2>
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">موفر قاعدة البيانات</label>
+						<select id="dbProvider" class="admin-form-select">
+							<option value="local-mysql">محلي - MySQL</option>
+							<option value="local-mongodb">محلي - MongoDB</option>
+							<option value="cloud-rds">سحابي - AWS RDS</option>
+							<option value="cloud-firebase">سحابي - Firebase</option>
+						</select>
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">سلسلة الاتصال</label>
+						<input id="dbConnection" type="text" class="admin-form-input" placeholder="مثال: mysql://user:pass@host:3306/dbname">
+					</div>
+				</div>
+				<div class="admin-form-group">
+					<label class="admin-form-label">عنوان واجهة الـ API</label>
+					<input id="apiBaseUrl" type="text" class="admin-form-input" placeholder="https://api.example.com">
+				</div>
+				<div class="admin-form-group">
+					<button class="admin-btn admin-btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+					<button class="admin-btn admin-btn-secondary" onclick="loadSettings()">استرجاع</button>
+				</div>
+			</div>
+
+			<div class="admin-form-container" style="margin-top:2rem;">
+				<h2 style="color:#fff;margin-bottom:1rem;">توثيق واجهات الـ API (مبدئي)</h2>
+				<div class="admin-table-container" style="padding:0;">
+					<table class="admin-table">
+						<thead><tr><th>الطريقة</th><th>المسار</th><th>الوصف</th></tr></thead>
+						<tbody>
+							<tr><td>GET</td><td>/api/courses</td><td>جلب قائمة الكورسات</td></tr>
+							<tr><td>POST</td><td>/api/courses</td><td>إنشاء كورس جديد</td></tr>
+							<tr><td>PUT</td><td>/api/courses/:id</td><td>تعديل كورس</td></tr>
+							<tr><td>DELETE</td><td>/api/courses/:id</td><td>حذف كورس</td></tr>
+							<tr><td>GET</td><td>/api/teachers</td><td>جلب المدرسين</td></tr>
+							<tr><td>POST</td><td>/api/teachers</td><td>إنشاء مدرس</td></tr>
+							<tr><td>GET</td><td>/api/videos</td><td>جلب الفيديوهات</td></tr>
+							<tr><td>POST</td><td>/api/videos</td><td>رفع/إضافة فيديو</td></tr>
+							<tr><td>GET</td><td>/api/codes</td><td>جلب الأكواد</td></tr>
+							<tr><td>POST</td><td>/api/codes</td><td>إنشاء كود</td></tr>
+						</tbody>
+					</table>
+				</div>
+				<p style="color:#cccccc; margin-top:0.5rem;">يمكن توسيع التوثيق لاحقاً (OpenAPI/Swagger).</p>
+			</div>
+		</main>
+	</div>
+
+	<script src="admin-script.js"></script>
+	<script>
+		function saveSettings(){
+			const settings={
+				apiBaseUrl: document.getElementById('apiBaseUrl').value.trim(),
+				dbProvider: document.getElementById('dbProvider').value,
+				dbConnection: document.getElementById('dbConnection').value.trim()
+			};
+			const data=adminData.load()||{}; data.settings=settings; adminData.save(data); showNotification('تم حفظ الإعدادات','success');
+		}
+		function loadSettings(){
+			const data=adminData.load()||{}; const s=data.settings||{};
+			document.getElementById('apiBaseUrl').value=s.apiBaseUrl||'';
+			document.getElementById('dbProvider').value=s.dbProvider||'local-mysql';
+			document.getElementById('dbConnection').value=s.dbConnection||'';
+			showNotification('تم تحميل الإعدادات','info');
+		}
+		document.addEventListener('DOMContentLoaded',loadSettings);
+	</script>
+</body>
+</html>
