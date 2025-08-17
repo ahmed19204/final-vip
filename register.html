@@ -77,9 +77,30 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="phone" class="form-label">رقم الهاتف</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="رقم الهاتف" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate" class="form-label">تاريخ الميلاد</label>
+                    <input type="date" id="birthDate" name="birthDate" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender" class="form-label">الجنس</label>
+                    <select id="gender" name="gender" class="form-select" required>
+                        <option value="">اختر الجنس</option>
+                        <option value="male">ذكر</option>
+                        <option value="female">أنثى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
                     <label for="grade" class="form-label">السنة الدراسية</label>
                     <select id="grade" name="grade" class="form-select" required>
                         <option value="">اختر السنة الدراسية</option>
+                        <option value="grade10">الصف الأول الثانوي</option>
+                        <option value="grade11">الصف الثاني الثانوي</option>
                         <option value="grade12">الصف الثالث الثانوي</option>
                         <option value="other">أخرى</option>
                     </select>
@@ -91,6 +112,17 @@
                         <option value="">اختر المحافظة</option>
                         <option value="cairo">القاهرة</option>
                         <option value="alexandria">الإسكندرية</option>
+                        <option value="giza">الجيزة</option>
+                        <option value="sharqia">الشرقية</option>
+                        <option value="gharbia">الغربية</option>
+                        <option value="menoufia">المنوفية</option>
+                        <option value="qalyubia">القليوبية</option>
+                        <option value="port_said">بورسعيد</option>
+                        <option value="suez">السويس</option>
+                        <option value="ismailia">الإسماعيلية</option>
+                        <option value="damietta">دمياط</option>
+                        <option value="beheira">البحيرة</option>
+                        <option value="kafr_el_sheikh">كفر الشيخ</option>
                         <option value="other">أخرى</option>
                     </select>
                 </div>
@@ -100,6 +132,19 @@
                     <select id="country" name="country" class="form-select" required>
                         <option value="">اختر الدولة</option>
                         <option value="egypt">🇪🇬 مصر</option>
+                        <option value="saudi_arabia">🇸🇦 المملكة العربية السعودية</option>
+                        <option value="uae">🇦🇪 الإمارات العربية المتحدة</option>
+                        <option value="kuwait">🇰🇼 الكويت</option>
+                        <option value="qatar">🇶🇦 قطر</option>
+                        <option value="bahrain">🇧🇭 البحرين</option>
+                        <option value="oman">🇴🇲 عمان</option>
+                        <option value="jordan">🇯🇴 الأردن</option>
+                        <option value="lebanon">🇱🇧 لبنان</option>
+                        <option value="syria">🇸🇾 سوريا</option>
+                        <option value="iraq">🇮🇶 العراق</option>
+                        <option value="yemen">🇾🇪 اليمن</option>
+                        <option value="palestine">🇵🇸 فلسطين</option>
+                        <option value="other">أخرى</option>
                     </select>
                 </div>
                 
@@ -119,6 +164,8 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
             
             if (password !== confirmPassword) {
                 e.preventDefault();
@@ -129,6 +176,22 @@
             if (password.length < 6) {
                 e.preventDefault();
                 alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return false;
+            }
+            
+            // التحقق من رقم الهاتف
+            const phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
+            if (!phoneRegex.test(phone)) {
+                e.preventDefault();
+                alert('رقم الهاتف غير صحيح. يجب أن يبدأ بـ 01 ويحتوي على 11 رقم');
+                return false;
+            }
+            
+            // التحقق من البريد الإلكتروني
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('البريد الإلكتروني غير صحيح');
                 return false;
             }
         });

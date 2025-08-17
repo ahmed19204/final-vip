@@ -860,13 +860,49 @@ body::before {
     box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
 }
 
+/* Form Select Styles */
 .form-select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
+    color: #ffffff;
     font-size: 16px;
-    background-color: #fff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+}
+
+.form-select option {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    padding: 8px 12px;
+}
+
+.form-select option:hover {
+    background-color: #ff4d4d;
+}
+
+/* Date Input Styles */
+input[type="date"] {
+    color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Phone Input Styles */
+input[type="tel"] {
+    direction: ltr;
+    text-align: left;
 }
 
 .checkbox-group {
