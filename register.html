@@ -6,6 +6,7 @@
     <title>VIP Center - إنشاء حساب جديد</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -45,7 +46,7 @@
     <main class="form-container">
         <div class="form-card">
             <div class="form-logo">
-                <img src="vip-logo.jpg" alt="VIP Center">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
             </div>
             
             <form id="registerForm" class="register-form">
@@ -61,12 +62,18 @@
                 
                 <div class="form-group">
                     <label for="password" class="form-label">كلمة المرور</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="كلمة المرور" required>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="كلمة المرور" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password')">👁️</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="تأكيد كلمة المرور" required>
+                    <div class="password-input-container">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="تأكيد كلمة المرور" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword')">👁️</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -106,5 +113,35 @@
     </main>
 
     <script src="js/script.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        // التحقق من تأكيد كلمة المرور
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('كلمة المرور وتأكيدها غير متطابقين');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                e.preventDefault();
+                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return false;
+            }
+        });
+        
+        // إظهار/إخفاء كلمة المرور
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field.type === 'password') {
+                field.type = 'text';
+            } else {
+                field.type = 'password';
+            }
+        }
+    </script>
 </body>
 </html>
