@@ -5,86 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Center - فتح الفيديو</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .video-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        
+        .code-form {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .code-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 1rem;
+            border: 2px solid #ff4d4d;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .code-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #ff4d4d, #ff6b6b);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+        
+        .error-message {
+            color: #ff4d4d;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .video-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-right: 4px solid #ff4d4d;
+        }
+        
+        .video-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-description {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .course-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 77, 77, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+        }
+        
+        .course-title {
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-details {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
                 <a href="index.html">
-                    <img src="images/vip-logo.jpg" alt="VIP Center" class="logo-img">
+                    <img src="images/vip-logo.jpg" alt="VIP Center" class="logo">
                 </a>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="home.html" class="nav-link">الرئيسية</a>
-                </li>
-                <li class="nav-item">
-                    <a href="teachers.html" class="nav-link">المدرسين</a>
-                </li>
-                <li class="nav-item">
-                    <a href="video-access.html" class="nav-link">فتح الفيديو</a>
-                </li>
-                <li class="nav-item">
-                    <a href="login.html" class="nav-link">تسجيل الدخول</a>
-                </li>
-                <li class="nav-item">
-                    <a href="register.html" class="nav-link register-btn">سجل الآن</a>
-                </li>
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="home.html">الكورسات</a></li>
+                <li><a href="teachers.html">المدرسين</a></li>
+                <li><a href="login.html">تسجيل الدخول</a></li>
+                <li><a href="register.html">إنشاء حساب</a></li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="video-container">
-            <section class="section">
-                <h1 class="section-title">فتح الفيديو باستخدام الكود</h1>
+        <div class="container">
+            <div class="video-container">
+                <h1 class="page-title">🔓 فتح الفيديو</h1>
+                <p class="page-subtitle">أدخل كود الوصول لمشاهدة المحتوى التعليمي</p>
                 
-                <div class="video-form">
-                    <form id="videoCodeForm">
-                        <div class="form-group">
-                            <label for="videoCode" class="form-label">أدخل الكود</label>
-                            <input type="text" id="videoCode" name="videoCode" class="form-input" placeholder="الكود الخاص بالفيديو" required>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">فتح الفيديو</button>
-                        
-                        <div id="codeError" class="error-message" style="display: none;">
-                            الكود غير صحيح. يرجى المحاولة مرة أخرى.
-                        </div>
-                        
-                        <div id="codeSuccess" class="success-message" style="display: none;">
-                            تم التحقق من الكود بنجاح! يتم تحميل الفيديو...
-                        </div>
+                <!-- Code Input Form -->
+                <div class="code-form">
+                    <form id="codeForm">
+                        <input type="text" id="accessCode" class="code-input" placeholder="أدخل كود الوصول" required>
+                        <button type="submit" class="submit-btn">فتح الفيديو</button>
                     </form>
                 </div>
                 
                 <!-- Video Player -->
-                <div id="videoPlayer" class="video-player">
-                    <div class="video-placeholder">
-                        <h3>🎬 مشغل الفيديو</h3>
-                        <p>سيظهر الفيديو هنا بعد إدخال الكود الصحيح</p>
-                        <div class="video-controls">
-                            <button class="video-btn play-btn">▶️ تشغيل</button>
-                            <button class="video-btn pause-btn" style="display: none;">⏸️ إيقاف مؤقت</button>
-                            <button class="video-btn fullscreen-btn">🔲 ملء الشاشة</button>
-                        </div>
-                        <div class="video-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill"></div>
-                            </div>
-                            <span class="video-time">00:00 / 00:00</span>
-                        </div>
+                <div class="video-player" id="videoPlayer">
+                    <div>أدخل كود الوصول لمشاهدة الفيديو</div>
+                </div>
+                
+                <!-- Video Info (hidden initially) -->
+                <div class="video-info" id="videoInfo" style="display: none;">
+                    <div class="video-title" id="videoTitle"></div>
+                    <div class="video-description" id="videoDescription"></div>
+                    
+                    <div class="course-info">
+                        <div class="course-title" id="courseTitle"></div>
+                        <div class="course-details" id="courseDetails"></div>
                     </div>
                 </div>
-            </section>
+                
+                <!-- Messages -->
+                <div id="messageContainer"></div>
+            </div>
         </div>
     </main>
 
@@ -92,184 +177,246 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
+                <h3>VIP Center</h3>
+                <p>منصة تعليمية متطورة للطلاب والمدرسين</p>
+            </div>
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="home.html">الكورسات</a></li>
+                    <li><a href="teachers.html">المدرسين</a></li>
+                    <li><a href="login.html">تسجيل الدخول</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
                 <h3>تواصل معنا</h3>
-                <p>للاستفسارات والدعم الفني</p>
-            </div>
-            <div class="footer-section">
-                <h3>الدعم</h3>
-                <p>نحن هنا لمساعدتك</p>
-            </div>
-            <div class="footer-section">
-                <div class="social-icons">
-                    <a href="#" class="social-icon whatsapp">📱</a>
-                    <a href="#" class="social-icon facebook">📘</a>
-                    <a href="#" class="social-icon youtube">📺</a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <div class="app-stores">
-                    <img src="app-store.png" alt="App Store" class="store-badge">
-                    <img src="google-play.png" alt="Google Play" class="store-badge">
+                <div class="social-links">
+                    <a href="#" class="social-link">📧</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">💬</a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>Powered By ahmed hussien | 2025 © جميع الحقوق محفوظة</p>
+            <p>&copy; 2025 VIP Center. جميع الحقوق محفوظة</p>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="js/script.js"></script>
-    <script src="js/admin-codes.js"></script>
+    
     <script>
-        // Enhanced video access validation with admin integration
-        document.getElementById('videoCodeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const code = document.getElementById('videoCode').value.trim();
-            const errorDiv = document.getElementById('codeError');
-            const successDiv = document.getElementById('codeSuccess');
-            const videoPlayer = document.getElementById('videoPlayer');
-            
-            // Clear previous messages
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
-            
-            if (!code) {
-                errorDiv.textContent = 'يرجى إدخال كود الوصول.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            // Use the code validator from admin system
-            if (typeof codeValidator !== 'undefined') {
-                const result = codeValidator.useCode(code.toUpperCase());
-                
-                if (result.valid) {
-                    successDiv.textContent = result.message;
-                    successDiv.style.display = 'block';
-                    
-                    // Load content based on code
-                    if (result.content) {
-                        loadContent(result.content);
-                    } else {
-                        loadDefaultVideo();
-                    }
-                } else {
-                    errorDiv.textContent = result.message;
-                    errorDiv.style.display = 'block';
-                }
-            } else {
-                // Fallback validation for when admin system is not loaded
-                const validCodes = ['VIP2025', 'PHYSICS101', 'CHEMISTRY202', 'BIOLOGY303'];
-                
-                if (validCodes.includes(code.toUpperCase())) {
-                    successDiv.textContent = 'تم قبول الكود! يمكنك الآن مشاهدة الفيديو.';
-                    successDiv.style.display = 'block';
-                    loadDefaultVideo();
-                } else {
-                    errorDiv.textContent = 'كود غير صحيح. يرجى المحاولة مرة أخرى.';
-                    errorDiv.style.display = 'block';
-                }
+        // Video Access Management
+        let currentVideo = null;
+        let currentCourse = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeForm = document.getElementById('codeForm');
+            if (codeForm) {
+                codeForm.addEventListener('submit', handleCodeSubmission);
             }
         });
         
-        // Load content based on code validation result
-        function loadContent(content) {
-            const videoPlayer = document.getElementById('videoPlayer');
+        // Handle code submission
+        async function handleCodeSubmission(event) {
+            event.preventDefault();
             
-            if (content.type === 'video') {
-                // Single video
-                showVideoPlayer(content.title, content.url);
-            } else if (content.type === 'course' || content.type === 'subject') {
-                // Multiple videos - show playlist
-                showVideoPlaylist(content.title, content.videos);
+            const codeInput = document.getElementById('accessCode');
+            const code = codeInput.value.trim();
+            
+            if (!code) {
+                showMessage('يرجى إدخال كود الوصول', 'error');
+                return;
+            }
+            
+            try {
+                showLoading('جاري التحقق من الكود...');
+                
+                const result = await window.supabaseFunctions.validateAccessCode(code);
+                
+                if (result.success && result.data) {
+                    const accessCode = result.data;
+                    const course = accessCode.courses;
+                    
+                    if (!course) {
+                        showMessage('الكود غير مرتبط بكورس صحيح', 'error');
+                        return;
+                    }
+                    
+                    // Check if code is still valid
+                    if (!accessCode.is_active) {
+                        showMessage('هذا الكود غير نشط', 'error');
+                        return;
+                    }
+                    
+                    if (accessCode.current_uses >= accessCode.max_uses) {
+                        showMessage('تم استنفاذ عدد مرات استخدام هذا الكود', 'error');
+                        return;
+                    }
+                    
+                    // Check if code has expired
+                    if (accessCode.expires_at && new Date(accessCode.expires_at) < new Date()) {
+                        showMessage('هذا الكود منتهي الصلاحية', 'error');
+                        return;
+                    }
+                    
+                    // Load video for this course
+                    await loadCourseVideo(course.id);
+                    
+                    // Update code usage
+                    await updateCodeUsage(accessCode.id);
+                    
+                    showMessage('تم فتح الفيديو بنجاح!', 'success');
+                    displayVideoInfo(course);
+                    
+                } else {
+                    showMessage('كود الوصول غير صحيح', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error validating code:', error);
+                showMessage('خطأ في التحقق من الكود', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
-        // Show single video player
-        function showVideoPlayer(title, videoUrl) {
-            const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.innerHTML = `
-                <div class="video-content">
-                    <h3 class="video-title">${title}</h3>
-                    <video id="mainVideo" controls style="width: 100%; max-height: 500px; border-radius: 8px;">
-                        <source src="${videoUrl || 'sample-video.mp4'}" type="video/mp4">
-                        متصفحك لا يدعم تشغيل الفيديو.
-                    </video>
-                    <div class="video-info" style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <p style="color: #cccccc;">✅ تم فتح الفيديو بنجاح</p>
-                        <p style="color: #cccccc; font-size: 14px;">يمكنك الآن مشاهدة المحتوى التعليمي</p>
-                    </div>
-                </div>
-            `;
+        // Load course video
+        async function loadCourseVideo(courseId) {
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .eq('course_id', courseId)
+                    .eq('status', 'active')
+                    .order('order_in_course', { ascending: true })
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    currentVideo = data[0];
+                    displayVideo(currentVideo);
+                } else {
+                    showMessage('لا توجد فيديوهات متاحة لهذا الكورس', 'info');
+                }
+                
+            } catch (error) {
+                console.error('Error loading video:', error);
+                showMessage('خطأ في تحميل الفيديو', 'error');
+            }
         }
         
-        // Show video playlist
-        function showVideoPlaylist(title, videos) {
+        // Display video
+        function displayVideo(video) {
             const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.innerHTML = `
-                <div class="video-content">
-                    <h3 class="video-title">${title}</h3>
-                    <video id="mainVideo" controls style="width: 100%; max-height: 400px; border-radius: 8px;">
-                        <source src="${videos[0] || 'sample-video.mp4'}" type="video/mp4">
+            
+            if (video.video_url) {
+                // Check if it's a YouTube URL
+                if (video.video_url.includes('youtube.com') || video.video_url.includes('youtu.be')) {
+                    const videoId = extractYouTubeId(video.video_url);
+                    if (videoId) {
+                        videoPlayer.innerHTML = `
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                src="https://www.youtube.com/embed/${videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        `;
+                        return;
+                    }
+                }
+                
+                // For direct video files
+                videoPlayer.innerHTML = `
+                    <video width="100%" height="100%" controls>
+                        <source src="${video.video_url}" type="video/mp4">
+                        <source src="${video.video_url}" type="video/webm">
+                        <source src="${video.video_url}" type="video/ogg">
                         متصفحك لا يدعم تشغيل الفيديو.
                     </video>
-                    <div class="video-playlist" style="margin-top: 2rem;">
-                        <h4 style="color: #ffffff; margin-bottom: 1rem;">📚 قائمة الفيديوهات</h4>
-                        <div class="playlist-items"></div>
-                    </div>
-                </div>
+                `;
+            } else {
+                videoPlayer.innerHTML = '<div>لا يوجد فيديو متاح</div>';
+            }
+        }
+        
+        // Extract YouTube video ID
+        function extractYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+        
+        // Display video info
+        function displayVideoInfo(course) {
+            const videoInfo = document.getElementById('videoInfo');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoDescription = document.getElementById('videoDescription');
+            const courseTitle = document.getElementById('courseTitle');
+            const courseDetails = document.getElementById('courseDetails');
+            
+            if (currentVideo) {
+                videoTitle.textContent = currentVideo.title;
+                videoDescription.textContent = currentVideo.description || 'لا يوجد وصف';
+            }
+            
+            courseTitle.textContent = course.title;
+            courseDetails.innerHTML = `
+                <strong>المدة:</strong> ${course.duration_hours || 0} ساعة<br>
+                <strong>المستوى:</strong> ${course.level || 'غير محدد'}<br>
+                <strong>السعر:</strong> ${course.price || 0} جنيه
             `;
             
-            const playlistContainer = videoPlayer.querySelector('.playlist-items');
-            videos.forEach((video, index) => {
-                const item = document.createElement('div');
-                item.className = 'playlist-item';
-                item.style.cssText = `
-                    padding: 1rem;
-                    margin-bottom: 0.5rem;
-                    background: ${index === 0 ? 'rgba(255, 77, 77, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
-                    border-radius: 8px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    color: ${index === 0 ? '#ffffff' : '#cccccc'};
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                `;
-                
-                item.innerHTML = `
-                    <span style="color: #ff4d4d; font-weight: bold; min-width: 30px;">${index + 1}</span>
-                    <span style="flex: 1;">الدرس ${index + 1}</span>
-                    <span style="font-size: 0.9rem;">${index === 0 ? '🔴 قيد التشغيل' : '▶️'}</span>
-                `;
-                
-                item.addEventListener('click', function() {
-                    // Remove active class from all items
-                    playlistContainer.querySelectorAll('.playlist-item').forEach(i => {
-                        i.style.background = 'rgba(255, 255, 255, 0.1)';
-                        i.style.color = '#cccccc';
-                        i.querySelector('span:last-child').textContent = '▶️';
-                    });
-                    
-                    // Add active class to clicked item
-                    this.style.background = 'rgba(255, 77, 77, 0.2)';
-                    this.style.color = '#ffffff';
-                    this.querySelector('span:last-child').textContent = '🔴 قيد التشغيل';
-                    
-                    // Load selected video
-                    const mainVideo = document.getElementById('mainVideo');
-                    mainVideo.querySelector('source').src = video;
-                    mainVideo.load();
-                });
-                
-                playlistContainer.appendChild(item);
-            });
+            videoInfo.style.display = 'block';
         }
         
-        // Load default video
-        function loadDefaultVideo() {
-            showVideoPlayer('فيديو تعليمي', '');
+        // Update code usage
+        async function updateCodeUsage(codeId) {
+            try {
+                const { error } = await window.supabaseClient
+                    .from('access_codes')
+                    .update({ current_uses: window.supabaseClient.raw('current_uses + 1') })
+                    .eq('id', codeId);
+                
+                if (error) {
+                    console.error('Error updating code usage:', error);
+                }
+                
+            } catch (error) {
+                console.error('Exception updating code usage:', error);
+            }
+        }
+        
+        // Utility functions
+        function showLoading(message) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = `<div class="loading">${message}</div>`;
+        }
+        
+        function hideLoading() {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = '';
+        }
+        
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageClass = type === 'error' ? 'error-message' : 
+                               type === 'success' ? 'success-message' : 'info-message';
+            
+            messageContainer.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            // Auto hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageContainer.innerHTML = '';
+                }, 5000);
+            }
         }
     </script>
 </body>

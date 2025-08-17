@@ -1,451 +1,397 @@
-// Admin Videos Management JavaScript
+// Admin Videos Management
+let videosData = [];
+let coursesData = [];
+let teachersData = [];
+let currentEditId = null;
 
+// Initialize videos management
 document.addEventListener('DOMContentLoaded', function() {
-    initializeVideosPage();
+    loadInitialData();
+    setupEventListeners();
 });
 
-// Video Management System
-const videoManager = {
-    currentVideoId: null,
-    uploadProgress: 0,
-    
-    // Show add video modal
-    showAddModal: function() {
-        this.currentVideoId = null;
-        document.getElementById('modalTitle').textContent = 'إضافة فيديو جديد';
-        document.getElementById('videoForm').reset();
-        document.getElementById('videoModal').style.display = 'flex';
-        this.resetForm();
-    },
-    
-    // Show edit video modal
-    showEditModal: function(videoId) {
-        this.currentVideoId = videoId;
-        document.getElementById('modalTitle').textContent = 'تعديل الفيديو';
-        document.getElementById('videoModal').style.display = 'flex';
-        this.loadVideoData(videoId);
-    },
-    
-    // Close modal
-    closeModal: function() {
-        document.getElementById('videoModal').style.display = 'none';
-        this.resetForm();
-    },
-    
-    // Reset form
-    resetForm: function() {
-        document.getElementById('uploadSection').style.display = 'none';
-        document.getElementById('linkSection').style.display = 'none';
-        document.getElementById('uploadProgress').style.display = 'none';
-        document.getElementById('thumbnailPreview').style.display = 'none';
-        this.uploadProgress = 0;
-    },
-    
-    // Toggle video source type
-    toggleSourceType: function() {
-        const sourceType = document.getElementById('videoSourceType').value;
-        const uploadSection = document.getElementById('uploadSection');
-        const linkSection = document.getElementById('linkSection');
+// Setup event listeners
+function setupEventListeners() {
+    // Add video form submission
+    const addVideoForm = document.getElementById('addVideoForm');
+    if (addVideoForm) {
+        addVideoForm.addEventListener('submit', handleAddVideo);
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('videoSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleVideoSearch);
+    }
+}
+
+// Load initial data from Supabase
+async function loadInitialData() {
+    try {
+        showLoading('جاري تحميل البيانات...');
         
-        uploadSection.style.display = 'none';
-        linkSection.style.display = 'none';
+        // Load videos, courses, and teachers in parallel
+        const [videosResult, coursesResult, teachersResult] = await Promise.all([
+            window.supabaseFunctions.getAllVideos(),
+            window.supabaseFunctions.getAllCourses(),
+            window.supabaseFunctions.getAllTeachers()
+        ]);
         
-        if (sourceType === 'upload') {
-            uploadSection.style.display = 'block';
-        } else if (['youtube', 'vimeo', 'external'].includes(sourceType)) {
-            linkSection.style.display = 'block';
-        }
-    },
-    
-    // Handle video file upload
-    handleVideoUpload: function(input) {
-        const file = input.files[0];
-        if (!file) return;
-        
-        // Validate file type
-        const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov'];
-        if (!allowedTypes.includes(file.type)) {
-            showNotification('نوع الملف غير مدعوم. يرجى اختيار ملف فيديو صالح.', 'error');
-            input.value = '';
-            return;
+        if (videosResult.success) {
+            videosData = videosResult.data || [];
+            displayVideos(videosData);
         }
         
-        // Validate file size (max 500MB)
-        const maxSize = 500 * 1024 * 1024; // 500MB
-        if (file.size > maxSize) {
-            showNotification('حجم الملف كبير جداً. الحد الأقصى 500 ميجا بايت.', 'error');
-            input.value = '';
-            return;
+        if (coursesResult.success) {
+            coursesData = coursesResult.data || [];
+            populateCoursesDropdown();
         }
         
-        // Show upload progress
-        this.simulateUpload(file);
-    },
-    
-    // Simulate file upload with progress
-    simulateUpload: function(file) {
-        const progressSection = document.getElementById('uploadProgress');
-        const progressBar = document.getElementById('progressBar');
-        const statusText = document.getElementById('uploadStatus');
-        
-        progressSection.style.display = 'block';
-        this.uploadProgress = 0;
-        
-        // TODO: رفع الفيديو إلى قاعدة البيانات
-        console.log('رفع الفيديو:', file.name);
-        
-        setTimeout(() => {
-            this.uploadProgress = 100;
-            statusText.textContent = 'تم رفع الفيديو بنجاح!';
-            statusText.style.color = '#51cf66';
-                setTimeout(() => {
-                    progressSection.style.display = 'none';
-                }, 2000);
-            }
-            
-            progressBar.style.width = this.uploadProgress + '%';
-            statusText.textContent = `جاري الرفع... ${Math.round(this.uploadProgress)}%`;
-        }, 200);
-    },
-    
-    // Handle thumbnail upload
-    handleThumbnailUpload: function(input) {
-        const file = input.files[0];
-        if (!file) return;
-        
-        // Validate file type
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        if (!allowedTypes.includes(file.type)) {
-            showNotification('نوع الصورة غير مدعوم. يرجى اختيار صورة صالحة.', 'error');
-            input.value = '';
-            return;
+        if (teachersResult.success) {
+            teachersData = teachersResult.data || [];
+            populateTeachersDropdown();
         }
         
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        if (file.size > maxSize) {
-            showNotification('حجم الصورة كبير جداً. الحد الأقصى 5 ميجا بايت.', 'error');
-            input.value = '';
-            return;
-        }
-        
-        // Show preview
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('thumbnailPreview');
-            preview.innerHTML = `<img src="${e.target.result}" alt="معاينة الصورة المصغرة">`;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    },
-    
-    // Load video data for editing
-    loadVideoData: function(videoId) {
-        // In a real application, this would load from the server
-        const sampleData = {
-            title: 'مقدمة في الموجات الكهرومغناطيسية',
-            subject: 'physics',
-            teacher: '1',
-            code: 'PHYSICS101',
-            description: 'شرح مفصل لمفهوم الموجات الكهرومغناطيسية وخصائصها',
-            sourceType: 'youtube',
-            url: 'https://www.youtube.com/watch?v=example',
-            placement: 'homepage',
-            tags: 'فيزياء, موجات, كهرومغناطيسية',
-            status: 'active'
-        };
-        
-        // Populate form fields
-        Object.keys(sampleData).forEach(key => {
-            const element = document.getElementById('video' + key.charAt(0).toUpperCase() + key.slice(1));
-            if (element) {
-                element.value = sampleData[key];
-            }
+        showNotification('تم تحميل البيانات بنجاح', 'success');
+    } catch (error) {
+        console.error('Error loading initial data:', error);
+        showNotification('خطأ في تحميل البيانات', 'error');
+        // Fallback to empty arrays
+        videosData = [];
+        coursesData = [];
+        teachersData = [];
+        displayVideos([]);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Populate courses dropdown
+function populateCoursesDropdown() {
+    const courseSelects = document.querySelectorAll('select[name="course_id"]');
+    courseSelects.forEach(select => {
+        select.innerHTML = '<option value="">اختر الكورس</option>';
+        coursesData.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course.id;
+            option.textContent = course.title;
+            select.appendChild(option);
         });
-        
-        // Update source type display
-        this.toggleSourceType();
-    },
+    });
+}
+
+// Populate teachers dropdown
+function populateTeachersDropdown() {
+    const teacherSelects = document.querySelectorAll('select[name="teacher_id"]');
+    teacherSelects.forEach(select => {
+        select.innerHTML = '<option value="">اختر المدرس</option>';
+        teachersData.forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = teacher.id;
+            option.textContent = `${teacher.name} - ${teacher.subject || 'غير محدد'}`;
+            select.appendChild(option);
+        });
+    });
+}
+
+// Handle add video form submission
+async function handleAddVideo(event) {
+    event.preventDefault();
     
-    // Save video
-    saveVideo: function(formData) {
-        const videoData = {
-            title: formData.get('title'),
-            subject: formData.get('subject'),
-            teacher: formData.get('teacher'),
-            code: formData.get('code'),
-            description: formData.get('description'),
-            sourceType: formData.get('sourceType'),
-            url: formData.get('url'),
-            placement: formData.get('placement'),
-            tags: formData.get('tags'),
-            status: formData.get('status'),
-            views: 0,
-            duration: '00:00',
-            createdAt: new Date().toISOString()
-        };
+    const formData = new FormData(event.target);
+    const videoData = {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        course_id: parseInt(formData.get('course_id')),
+        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        video_url: formData.get('video_url'),
+        thumbnail_url: formData.get('thumbnail_url') || null,
+        duration_minutes: parseInt(formData.get('duration_minutes')) || 0,
+        order_in_course: parseInt(formData.get('order_in_course')) || 0,
+        status: 'active'
+    };
+
+    try {
+        showLoading('جاري إضافة الفيديو...');
         
-        if (this.currentVideoId) {
-            // Update existing video
-            adminData.update('videos', this.currentVideoId, videoData);
-            showNotification('تم تحديث الفيديو بنجاح!', 'success');
+        const result = await window.supabaseFunctions.addVideo(videoData);
+        
+        if (result.success) {
+            showNotification('تم إضافة الفيديو بنجاح', 'success');
+            event.target.reset();
+            closeModal('addVideoModal');
+            loadInitialData(); // Reload data
         } else {
-            // Add new video
-            adminData.add('videos', videoData);
-            showNotification('تم إضافة الفيديو بنجاح!', 'success');
+            showNotification(`خطأ في إضافة الفيديو: ${result.error}`, 'error');
         }
+    } catch (error) {
+        console.error('Exception adding video:', error);
+        showNotification('خطأ في إضافة الفيديو', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle edit video
+async function handleEditVideo(videoId) {
+    const video = videosData.find(v => v.id === videoId);
+    if (!video) return;
+
+    currentEditId = videoId;
+    
+    // Populate form fields
+    document.getElementById('editVideoTitle').value = video.title;
+    document.getElementById('editVideoDescription').value = video.description || '';
+    document.getElementById('editVideoCourseId').value = video.course_id || '';
+    document.getElementById('editVideoTeacherId').value = video.teacher_id || '';
+    document.getElementById('editVideoUrl').value = video.video_url;
+    document.getElementById('editVideoThumbnailUrl').value = video.thumbnail_url || '';
+    document.getElementById('editVideoDuration').value = video.duration_minutes || 0;
+    document.getElementById('editVideoOrder').value = video.order_in_course || 0;
+    document.getElementById('editVideoStatus').value = video.status || 'active';
+    
+    openModal('editVideoModal');
+}
+
+// Handle update video
+async function handleUpdateVideo(event) {
+    event.preventDefault();
+    
+    if (!currentEditId) return;
+    
+    const formData = new FormData(event.target);
+    const videoData = {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        course_id: parseInt(formData.get('course_id')),
+        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        video_url: formData.get('video_url'),
+        thumbnail_url: formData.get('thumbnail_url') || null,
+        duration_minutes: parseInt(formData.get('duration_minutes')) || 0,
+        order_in_course: parseInt(formData.get('order_in_course')) || 0,
+        status: formData.get('status')
+    };
+
+    try {
+        showLoading('جاري تحديث بيانات الفيديو...');
         
-        this.closeModal();
-        this.refreshVideoTable();
-    },
-    
-    // Delete video
-    deleteVideo: function(videoId) {
-        if (confirm('هل أنت متأكد من حذف هذا الفيديو؟')) {
-            adminData.delete('videos', videoId);
-            showNotification('تم حذف الفيديو بنجاح!', 'success');
-            this.refreshVideoTable();
-        }
-    },
-    
-    // Preview video
-    previewVideo: function(videoId) {
-        // In a real application, this would open a preview modal
-        showNotification('معاينة الفيديو - هذه الميزة ستكون متاحة قريباً', 'info');
-    },
-    
-    // Refresh video table
-    refreshVideoTable: function() {
-        // In a real application, this would reload the table data
-        console.log('Refreshing video table...');
-    },
-    
-    // Filter videos
-    filterVideos: function(filterType) {
-        const table = document.getElementById('videosTable');
-        const rows = table.querySelectorAll('tbody tr');
+        // Update in Supabase
+        const { data, error } = await window.supabaseClient
+            .from('videos')
+            .update(videoData)
+            .eq('id', currentEditId)
+            .select();
         
-        rows.forEach(row => {
-            if (filterType === 'all') {
-                row.style.display = '';
-            } else {
-                const subjectCell = row.cells[2].textContent.toLowerCase();
-                const codeCell = row.cells[5].textContent;
-                
-                let shouldShow = false;
-                
-                switch(filterType) {
-                    case 'protected':
-                        shouldShow = codeCell && codeCell !== '-';
-                        break;
-                    case 'free':
-                        shouldShow = !codeCell || codeCell === '-';
-                        break;
-                    case 'physics':
-                        shouldShow = subjectCell.includes('فيزياء');
-                        break;
-                    case 'chemistry':
-                        shouldShow = subjectCell.includes('كيمياء');
-                        break;
-                    case 'biology':
-                        shouldShow = subjectCell.includes('أحياء');
-                        break;
-                    case 'math':
-                        shouldShow = subjectCell.includes('رياضيات');
-                        break;
-                }
-                
-                row.style.display = shouldShow ? '' : 'none';
+        if (error) throw error;
+        
+        showNotification('تم تحديث بيانات الفيديو بنجاح', 'success');
+        closeModal('editVideoModal');
+        currentEditId = null;
+        loadInitialData(); // Reload data
+    } catch (error) {
+        console.error('Error updating video:', error);
+        showNotification(`خطأ في تحديث بيانات الفيديو: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle delete video
+async function handleDeleteVideo(videoId) {
+    if (!confirm('هل أنت متأكد من حذف هذا الفيديو؟')) return;
+    
+    try {
+        showLoading('جاري حذف الفيديو...');
+        
+        const { error } = await window.supabaseClient
+            .from('videos')
+            .delete()
+            .eq('id', videoId);
+        
+        if (error) throw error;
+        
+        showNotification('تم حذف الفيديو بنجاح', 'success');
+        loadInitialData(); // Reload data
+    } catch (error) {
+        console.error('Error deleting video:', error);
+        showNotification(`خطأ في حذف الفيديو: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Simulate video upload (for demo purposes)
+function simulateUpload() {
+    const progressBar = document.getElementById('uploadProgress');
+    const progressText = document.getElementById('uploadProgressText');
+    
+    if (progressBar && progressText) {
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                showNotification('تم رفع الفيديو بنجاح!', 'success');
             }
-        });
-    },
-    
-    // Search videos
-    searchVideos: function(searchTerm) {
-        const table = document.getElementById('videosTable');
-        const rows = table.querySelectorAll('tbody tr');
-        const term = searchTerm.toLowerCase();
-        
-        rows.forEach(row => {
-            const title = row.cells[1].textContent.toLowerCase();
-            const subject = row.cells[2].textContent.toLowerCase();
-            const teacher = row.cells[3].textContent.toLowerCase();
             
-            const shouldShow = title.includes(term) || 
-                             subject.includes(term) || 
-                             teacher.includes(term);
-            
-            row.style.display = shouldShow ? '' : 'none';
-        });
+            progressBar.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        }, 200);
     }
-};
+}
 
-// Initialize videos page
-function initializeVideosPage() {
-    // Set up form submission
-    const videoForm = document.getElementById('videoForm');
-    if (videoForm) {
-        videoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            videoManager.saveVideo(formData);
-        });
+// Display videos in the table
+function displayVideos(videos) {
+    const tbody = document.querySelector('#videosTable tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (videos.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center text-muted">
+                    لا يوجد فيديوهات حالياً
+                </td>
+            </tr>
+        `;
+        return;
     }
     
-    // Set up source type change handler
-    const sourceTypeSelect = document.getElementById('videoSourceType');
-    if (sourceTypeSelect) {
-        sourceTypeSelect.addEventListener('change', () => {
-            videoManager.toggleSourceType();
-        });
-    }
-    
-    // Set up file upload handlers
-    const videoFileInput = document.getElementById('videoFile');
-    if (videoFileInput) {
-        videoFileInput.addEventListener('change', function() {
-            videoManager.handleVideoUpload(this);
-        });
-    }
-    
-    const thumbnailInput = document.getElementById('videoThumbnail');
-    if (thumbnailInput) {
-        thumbnailInput.addEventListener('change', function() {
-            videoManager.handleThumbnailUpload(this);
-        });
-    }
-    
-    // Set up drag and drop for video upload
-    const uploadLabel = document.querySelector('.admin-file-label');
-    if (uploadLabel) {
-        uploadLabel.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#ff4d4d';
-            this.style.background = 'rgba(255, 77, 77, 0.1)';
-        });
+    videos.forEach(video => {
+        const course = coursesData.find(c => c.id === video.course_id);
+        const teacher = teachersData.find(t => t.id === video.teacher_id);
         
-        uploadLabel.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'rgba(255, 77, 77, 0.3)';
-            this.style.background = 'rgba(255, 77, 77, 0.05)';
-        });
-        
-        uploadLabel.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'rgba(255, 77, 77, 0.3)';
-            this.style.background = 'rgba(255, 77, 77, 0.05)';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const videoInput = document.getElementById('videoFile');
-                videoInput.files = files;
-                videoManager.handleVideoUpload(videoInput);
-            }
-        });
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <div class="video-info">
+                    <img src="${video.thumbnail_url || 'images/default-video.jpg'}" alt="${video.title}" class="video-thumbnail">
+                    <div>
+                        <div class="video-title">${video.title}</div>
+                        <div class="video-course">${course ? course.title : 'غير محدد'}</div>
+                    </div>
+                </div>
+            </td>
+            <td>${video.description ? video.description.substring(0, 50) + '...' : 'لا يوجد وصف'}</td>
+            <td>${teacher ? teacher.name : 'غير محدد'}</td>
+            <td>${video.duration_minutes} دقيقة</td>
+            <td>${video.order_in_course}</td>
+            <td>${video.views_count || 0}</td>
+            <td>
+                <span class="status-badge status-${video.status}">
+                    ${getStatusText(video.status)}
+                </span>
+            </td>
+            <td>${video.created_at ? new Date(video.created_at).toLocaleDateString('ar-EG') : 'غير محدد'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button onclick="handleEditVideo(${video.id})" class="btn-edit" title="تعديل">
+                        ✏️
+                    </button>
+                    <button onclick="handleDeleteVideo(${video.id})" class="btn-delete" title="حذف">
+                        🗑️
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Handle video search
+function handleVideoSearch(event) {
+    const searchTerm = event.target.value.toLowerCase();
+    
+    if (!searchTerm) {
+        displayVideos(videosData);
+        return;
+    }
+    
+    const filteredVideos = videosData.filter(video => 
+        video.title.toLowerCase().includes(searchTerm) ||
+        (video.description && video.description.toLowerCase().includes(searchTerm)) ||
+        (video.course_id && coursesData.find(c => c.id === video.course_id)?.title.toLowerCase().includes(searchTerm)) ||
+        (video.teacher_id && teachersData.find(t => t.id === video.teacher_id)?.name.toLowerCase().includes(searchTerm))
+    );
+    
+    displayVideos(filteredVideos);
+}
+
+// Get status text in Arabic
+function getStatusText(status) {
+    const statusMap = {
+        'active': 'نشط',
+        'inactive': 'غير نشط',
+        'processing': 'قيد المعالجة'
+    };
+    return statusMap[status] || status;
+}
+
+// Utility functions
+function showLoading(message) {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.textContent = message;
+        loadingDiv.style.display = 'block';
     }
 }
 
-// Global functions for HTML onclick handlers
-function showAddVideoModal() {
-    videoManager.showAddModal();
-}
-
-function closeVideoModal() {
-    videoManager.closeModal();
-}
-
-function editVideo(videoId) {
-    videoManager.showEditModal(videoId);
-}
-
-function deleteVideo(videoId) {
-    videoManager.deleteVideo(videoId);
-}
-
-function previewVideo(videoId) {
-    videoManager.previewVideo(videoId);
-}
-
-function toggleVideoSource() {
-    videoManager.toggleSourceType();
-}
-
-function handleVideoUpload(input) {
-    videoManager.handleVideoUpload(input);
-}
-
-function handleThumbnailUpload(input) {
-    videoManager.handleThumbnailUpload(input);
-}
-
-function filterVideos(filterType) {
-    videoManager.filterVideos(filterType);
-}
-
-function searchVideos(searchTerm) {
-    videoManager.searchVideos(searchTerm);
-}
-
-// Video validation utilities
-const videoUtils = {
-    // Extract video ID from YouTube URL
-    extractYouTubeId: function(url) {
-        const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
-    },
-    
-    // Extract video ID from Vimeo URL
-    extractVimeoId: function(url) {
-        const regex = /vimeo\.com\/(\d+)/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
-    },
-    
-    // Validate video URL
-    validateVideoUrl: function(url, sourceType) {
-        if (!url) return false;
-        
-        switch(sourceType) {
-            case 'youtube':
-                return this.extractYouTubeId(url) !== null;
-            case 'vimeo':
-                return this.extractVimeoId(url) !== null;
-            case 'external':
-                return validateUrl(url);
-            default:
-                return false;
-        }
-    },
-    
-    // Generate embed URL
-    generateEmbedUrl: function(url, sourceType) {
-        switch(sourceType) {
-            case 'youtube':
-                const youtubeId = this.extractYouTubeId(url);
-                return youtubeId ? `https://www.youtube.com/embed/${youtubeId}` : null;
-            case 'vimeo':
-                const vimeoId = this.extractVimeoId(url);
-                return vimeoId ? `https://player.vimeo.com/video/${vimeoId}` : null;
-            default:
-                return url;
-        }
-    },
-    
-    // Get video thumbnail
-    getVideoThumbnail: function(url, sourceType) {
-        switch(sourceType) {
-            case 'youtube':
-                const youtubeId = this.extractYouTubeId(url);
-                return youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null;
-            case 'vimeo':
-                // Vimeo thumbnails require API call, return placeholder
-                return 'https://via.placeholder.com/320x180?text=Vimeo+Video';
-            default:
-                return 'https://via.placeholder.com/320x180?text=Video';
-        }
+function hideLoading() {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
     }
-};
+}
 
-// Export video utilities
-window.videoUtils = videoUtils;
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modals when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+});
+
+// Export functions for global use
+window.handleEditVideo = handleEditVideo;
+window.handleUpdateVideo = handleUpdateVideo;
+window.handleDeleteVideo = handleDeleteVideo;
+window.handleVideoSearch = handleVideoSearch;
+window.simulateUpload = simulateUpload;

@@ -1,627 +1,340 @@
-// Admin Codes Management JavaScript
+// Admin Access Codes Management
+let accessCodesData = [];
+let coursesData = [];
+let currentEditId = null;
 
+// Initialize access codes management
 document.addEventListener('DOMContentLoaded', function() {
-    initializeCodesPage();
+    loadInitialData();
+    setupEventListeners();
 });
 
-// Code Management System
-const codeManager = {
-    currentCodeId: null,
-    
-    // Show add code modal
-    showAddModal: function() {
-        this.currentCodeId = null;
-        document.getElementById('codeModalTitle').textContent = 'إنشاء كود جديد';
-        document.getElementById('codeForm').reset();
-        document.getElementById('codeModal').style.display = 'flex';
-        this.resetForm();
-    },
-    
-    // Show edit code modal
-    showEditModal: function(codeId) {
-        this.currentCodeId = codeId;
-        document.getElementById('codeModalTitle').textContent = 'تعديل الكود';
-        document.getElementById('codeModal').style.display = 'flex';
-        this.loadCodeData(codeId);
-    },
-    
-    // Close code modal
-    closeModal: function() {
-        document.getElementById('codeModal').style.display = 'none';
-        this.resetForm();
-    },
-    
-    // Show bulk code modal
-    showBulkModal: function() {
-        document.getElementById('bulkCodeForm').reset();
-        document.getElementById('bulkCodeModal').style.display = 'flex';
-    },
-    
-    // Close bulk code modal
-    closeBulkModal: function() {
-        document.getElementById('bulkCodeModal').style.display = 'none';
-    },
-    
-    // Reset form
-    resetForm: function() {
-        document.getElementById('usageLimitGroup').style.display = 'none';
-        document.getElementById('codeLinkedContent').innerHTML = '<option value="">اختر المحتوى</option>';
-    },
-    
-    // Generate random code
-    generateRandomCode: function() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let code = '';
-        for (let i = 0; i < 8; i++) {
-            code += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        document.getElementById('codeValue').value = code;
-    },
-    
-    // Load content options based on type
-    loadContentOptions: function() {
-        const contentType = document.getElementById('codeContentType').value;
-        const contentSelect = document.getElementById('codeLinkedContent');
+// Setup event listeners
+function setupEventListeners() {
+    // Add code form submission
+    const addCodeForm = document.getElementById('addCodeForm');
+    if (addCodeForm) {
+        addCodeForm.addEventListener('submit', handleAddCode);
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('codeSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleCodeSearch);
+    }
+}
+
+// Load initial data from Supabase
+async function loadInitialData() {
+    try {
+        showLoading('جاري تحميل البيانات...');
         
-        contentSelect.innerHTML = '<option value="">اختر المحتوى</option>';
+        // Load access codes and courses in parallel
+        const [codesResult, coursesResult] = await Promise.all([
+            window.supabaseFunctions.getAllAccessCodes(),
+            window.supabaseFunctions.getAllCourses()
+        ]);
         
-        let options = [];
-        
-        switch(contentType) {
-            case 'video':
-                options = [
-                    { value: 'video_1', text: 'فيديو تعليمي جديد' },
-                    { value: 'video_2', text: 'فيديو تعليمي جديد' },
-                    { value: 'video_3', text: 'فيديو تعليمي جديد' },
-                    { value: 'video_4', text: 'فيديو تعليمي جديد' }
-                ];
-                break;
-            case 'course':
-                options = [
-                    { value: 'course_1', text: 'كورس جديد' },
-                    { value: 'course_2', text: 'كورس جديد' },
-                    { value: 'course_3', text: 'كورس جديد' },
-                    { value: 'course_4', text: 'كورس جديد' }
-                ];
-                break;
-            case 'subject':
-                options = [
-                    { value: 'subject_physics', text: 'جميع فيديوهات الفيزياء' },
-                    { value: 'subject_chemistry', text: 'جميع فيديوهات الكيمياء' },
-                    { value: 'subject_biology', text: 'جميع فيديوهات الأحياء' },
-                    { value: 'subject_math', text: 'جميع فيديوهات الرياضيات' }
-                ];
-                break;
-            case 'teacher':
-                options = [
-                    { value: 'teacher_1', text: 'جميع فيديوهات مدرس جديد' },
-                    { value: 'teacher_2', text: 'جميع فيديوهات مدرس جديد' },
-                    { value: 'teacher_3', text: 'جميع فيديوهات مدرس جديد' },
-                    { value: 'teacher_4', text: 'جميع فيديوهات مدرس جديد' }
-                ];
-                break;
+        if (codesResult.success) {
+            accessCodesData = codesResult.data || [];
+            displayAccessCodes(accessCodesData);
         }
         
-        options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option.value;
-            optionElement.textContent = option.text;
-            contentSelect.appendChild(optionElement);
+        if (coursesResult.success) {
+            coursesData = coursesResult.data || [];
+            populateCoursesDropdown();
+        }
+        
+        showNotification('تم تحميل البيانات بنجاح', 'success');
+    } catch (error) {
+        console.error('Error loading initial data:', error);
+        showNotification('خطأ في تحميل البيانات', 'error');
+        // Fallback to empty arrays
+        accessCodesData = [];
+        coursesData = [];
+        displayAccessCodes([]);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Populate courses dropdown
+function populateCoursesDropdown() {
+    const courseSelects = document.querySelectorAll('select[name="course_id"]');
+    courseSelects.forEach(select => {
+        select.innerHTML = '<option value="">اختر الكورس</option>';
+        coursesData.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course.id;
+            option.textContent = `${course.title} - ${course.price} جنيه`;
+            select.appendChild(option);
         });
-    },
+    });
+}
+
+// Handle add code form submission
+async function handleAddCode(event) {
+    event.preventDefault();
     
-    // Load bulk content options
-    loadBulkContentOptions: function() {
-        const contentType = document.getElementById('bulkCodeContentType').value;
-        const contentSelect = document.getElementById('bulkCodeLinkedContent');
+    const formData = new FormData(event.target);
+    const codeData = {
+        code: formData.get('code'),
+        course_id: parseInt(formData.get('course_id')),
+        description: formData.get('description'),
+        max_uses: parseInt(formData.get('max_uses')) || 1,
+        expires_at: formData.get('expires_at') ? new Date(formData.get('expires_at')).toISOString() : null,
+        is_active: true
+    };
+
+    try {
+        showLoading('جاري إنشاء كود الوصول...');
         
-        contentSelect.innerHTML = '<option value="">اختر المحتوى</option>';
+        const result = await window.supabaseFunctions.addAccessCode(codeData);
         
-        // Use same options as single code
-        this.loadContentOptions();
-        const singleOptions = document.getElementById('codeLinkedContent').innerHTML;
-        contentSelect.innerHTML = singleOptions;
-    },
-    
-    // Toggle usage limit field
-    toggleUsageLimit: function() {
-        const usageType = document.getElementById('codeUsageType').value;
-        const limitGroup = document.getElementById('usageLimitGroup');
-        
-        if (usageType === 'limited') {
-            limitGroup.style.display = 'block';
-            document.getElementById('codeUsageLimit').required = true;
+        if (result.success) {
+            showNotification('تم إنشاء كود الوصول بنجاح', 'success');
+            event.target.reset();
+            closeModal('addCodeModal');
+            loadInitialData(); // Reload data
         } else {
-            limitGroup.style.display = 'none';
-            document.getElementById('codeUsageLimit').required = false;
+            showNotification(`خطأ في إنشاء كود الوصول: ${result.error}`, 'error');
         }
-    },
-    
-    // Toggle bulk usage limit field
-    toggleBulkUsageLimit: function() {
-        const usageType = document.getElementById('bulkCodeUsageType').value;
-        const limitGroup = document.getElementById('bulkUsageLimitGroup');
-        
-        if (usageType === 'limited') {
-            limitGroup.style.display = 'block';
-            document.getElementById('bulkCodeUsageLimit').required = true;
-        } else {
-            limitGroup.style.display = 'none';
-            document.getElementById('bulkCodeUsageLimit').required = false;
-        }
-    },
-    
-    // Load code data for editing
-    loadCodeData: function(codeId) {
-        // In a real application, this would load from the server
-        const sampleData = {
-            value: codeId,
-            contentType: 'video',
-            linkedContent: 'video_1',
-            usageType: 'limited',
-            usageLimit: '100',
-            expiryDate: '2025-03-15T23:59',
-            description: 'كود خاص بفيديو الموجات الكهرومغناطيسية',
-            status: 'active',
-            activationDate: ''
-        };
-        
-        // Populate form fields
-        document.getElementById('codeValue').value = sampleData.value;
-        document.getElementById('codeContentType').value = sampleData.contentType;
-        this.loadContentOptions();
-        document.getElementById('codeLinkedContent').value = sampleData.linkedContent;
-        document.getElementById('codeUsageType').value = sampleData.usageType;
-        document.getElementById('codeUsageLimit').value = sampleData.usageLimit;
-        document.getElementById('codeExpiryDate').value = sampleData.expiryDate;
-        document.getElementById('codeDescription').value = sampleData.description;
-        document.getElementById('codeStatus').value = sampleData.status;
-        document.getElementById('codeActivationDate').value = sampleData.activationDate;
-        
-        this.toggleUsageLimit();
-    },
-    
-    // Save code
-    saveCode: function(formData) {
-        const codeData = {
-            value: formData.get('value') || this.generateRandomCodeString(),
-            contentType: formData.get('contentType'),
-            linkedContent: formData.get('linkedContent'),
-            usageType: formData.get('usageType'),
-            usageLimit: formData.get('usageLimit') ? parseInt(formData.get('usageLimit')) : null,
-            usageCount: 0,
-            expiryDate: formData.get('expiryDate'),
-            description: formData.get('description'),
-            status: formData.get('status'),
-            activationDate: formData.get('activationDate'),
-            createdAt: new Date().toISOString()
-        };
-        
-        // Validate code
-        const validation = this.validateCode(codeData);
-        if (!validation.isValid) {
-            showNotification(validation.message, 'error');
-            return;
-        }
-        
-        if (this.currentCodeId) {
-            // Update existing code
-            adminData.update('codes', this.currentCodeId, codeData);
-            showNotification('تم تحديث الكود بنجاح!', 'success');
-        } else {
-            // Add new code
-            adminData.add('codes', codeData);
-            showNotification('تم إنشاء الكود بنجاح!', 'success');
-        }
-        
-        this.closeModal();
-        this.refreshCodeTable();
-    },
-    
-    // Generate bulk codes
-    generateBulkCodes: function(formData) {
-        const bulkData = {
-            count: parseInt(formData.get('count')),
-            prefix: formData.get('prefix') || '',
-            contentType: formData.get('contentType'),
-            linkedContent: formData.get('linkedContent'),
-            usageType: formData.get('usageType'),
-            usageLimit: formData.get('usageLimit') ? parseInt(formData.get('usageLimit')) : null,
-            expiryDate: formData.get('expiryDate')
-        };
-        
-        if (bulkData.count > 1000) {
-            showNotification('لا يمكن إنشاء أكثر من 1000 كود في المرة الواحدة', 'error');
-            return;
-        }
-        
-        const generatedCodes = [];
-        const existingCodes = adminData.get('codes').map(code => code.value);
-        
-        for (let i = 0; i < bulkData.count; i++) {
-            let codeValue;
-            do {
-                codeValue = bulkData.prefix + this.generateRandomCodeString(6);
-            } while (existingCodes.includes(codeValue) || generatedCodes.includes(codeValue));
-            
-            const codeData = {
-                value: codeValue,
-                contentType: bulkData.contentType,
-                linkedContent: bulkData.linkedContent,
-                usageType: bulkData.usageType,
-                usageLimit: bulkData.usageLimit,
-                usageCount: 0,
-                expiryDate: bulkData.expiryDate,
-                description: `كود مُنشأ بشكل جماعي - ${i + 1}/${bulkData.count}`,
-                status: 'active',
-                activationDate: '',
-                createdAt: new Date().toISOString()
-            };
-            
-            adminData.add('codes', codeData);
-            generatedCodes.push(codeValue);
-        }
-        
-        this.closeBulkModal();
-        this.refreshCodeTable();
-        showNotification(`تم إنشاء ${bulkData.count} كود بنجاح!`, 'success');
-        
-        // Offer to download codes
-        if (confirm('هل تريد تحميل قائمة الأكواد المُنشأة؟')) {
-            this.downloadCodes(generatedCodes);
-        }
-    },
-    
-    // Generate random code string
-    generateRandomCodeString: function(length = 8) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
-    },
-    
-    // Validate code data
-    validateCode: function(codeData) {
-        if (!codeData.value) {
-            return { isValid: false, message: 'يجب إدخال قيمة الكود' };
-        }
-        
-        if (codeData.value.length < 4) {
-            return { isValid: false, message: 'الكود يجب أن يكون 4 أحرف على الأقل' };
-        }
-        
-        if (!codeData.contentType || !codeData.linkedContent) {
-            return { isValid: false, message: 'يجب اختيار نوع المحتوى والمحتوى المرتبط' };
-        }
-        
-        if (codeData.usageType === 'limited' && (!codeData.usageLimit || codeData.usageLimit < 1)) {
-            return { isValid: false, message: 'يجب تحديد حد أقصى صالح للاستخدام' };
-        }
-        
-        if (codeData.expiryDate && new Date(codeData.expiryDate) <= new Date()) {
-            return { isValid: false, message: 'تاريخ الانتهاء يجب أن يكون في المستقبل' };
-        }
-        
-        // Check if code already exists
-        const existingCodes = adminData.get('codes');
-        const codeExists = existingCodes.some(code => 
-            code.value === codeData.value && 
-            (!this.currentCodeId || code.id !== this.currentCodeId)
-        );
-        
-        if (codeExists) {
-            return { isValid: false, message: 'هذا الكود موجود بالفعل' };
-        }
-        
-        return { isValid: true, message: 'البيانات صحيحة' };
-    },
-    
-    // Copy code to clipboard
-    copyCode: function(codeValue) {
-        navigator.clipboard.writeText(codeValue).then(() => {
-            showNotification(`تم نسخ الكود: ${codeValue}`, 'success');
-        }).catch(() => {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = codeValue;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showNotification(`تم نسخ الكود: ${codeValue}`, 'success');
-        });
-    },
-    
-    // Deactivate code
-    deactivateCode: function(codeValue) {
-        if (confirm(`هل أنت متأكد من إلغاء تفعيل الكود: ${codeValue}؟`)) {
-            // In a real application, find by code value and update
-            showNotification(`تم إلغاء تفعيل الكود: ${codeValue}`, 'success');
-            this.refreshCodeTable();
-        }
-    },
-    
-    // Reset code usage
-    resetCode: function(codeValue) {
-        if (confirm(`هل أنت متأكد من إعادة تفعيل الكود: ${codeValue}؟`)) {
-            // In a real application, find by code value and reset usage
-            showNotification(`تم إعادة تفعيل الكود: ${codeValue}`, 'success');
-            this.refreshCodeTable();
-        }
-    },
-    
-    // View code usage details
-    viewCodeUsage: function(codeValue) {
-        // In a real application, this would show detailed usage statistics
-        showNotification(`عرض تفاصيل استخدام الكود: ${codeValue} - هذه الميزة ستكون متاحة قريباً`, 'info');
-    },
-    
-    // Download codes list
-    downloadCodes: function(codesList) {
-        const codesText = codesList.join('\n');
-        const blob = new Blob([codesText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `vip-codes-${new Date().toISOString().split('T')[0]}.txt`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    },
-    
-    // Filter codes
-    filterCodes: function(filterType) {
-        const table = document.getElementById('codesTable');
-        const rows = table.querySelectorAll('tbody tr');
-        
-        rows.forEach(row => {
-            if (filterType === 'all') {
-                row.style.display = '';
-            } else {
-                const statusCell = row.cells[6].textContent.toLowerCase();
-                const usageTypeCell = row.cells[2].textContent.toLowerCase();
-                const usageCount = parseInt(row.cells[3].textContent);
-                const maxUsage = row.cells[4].textContent;
-                
-                let shouldShow = false;
-                
-                switch(filterType) {
-                    case 'active':
-                        shouldShow = statusCell.includes('نشط');
-                        break;
-                    case 'used':
-                        shouldShow = statusCell.includes('مستخدم') || 
-                                   (maxUsage !== 'غير محدود' && usageCount >= parseInt(maxUsage));
-                        break;
-                    case 'expired':
-                        shouldShow = statusCell.includes('منتهي');
-                        break;
-                    case 'unlimited':
-                        shouldShow = usageTypeCell.includes('غير محدود');
-                        break;
-                    case 'single-use':
-                        shouldShow = usageTypeCell.includes('استخدام واحد');
-                        break;
-                }
-                
-                row.style.display = shouldShow ? '' : 'none';
-            }
-        });
-    },
-    
-    // Search codes
-    searchCodes: function(searchTerm) {
-        const table = document.getElementById('codesTable');
-        const rows = table.querySelectorAll('tbody tr');
-        const term = searchTerm.toLowerCase();
-        
-        rows.forEach(row => {
-            const code = row.cells[0].textContent.toLowerCase();
-            const content = row.cells[1].textContent.toLowerCase();
-            
-            const shouldShow = code.includes(term) || content.includes(term);
-            row.style.display = shouldShow ? '' : 'none';
-        });
-    },
-    
-    // Refresh code table
-    refreshCodeTable: function() {
-        // In a real application, this would reload the table data
-        console.log('Refreshing code table...');
-    }
-};
-
-// Initialize codes page
-function initializeCodesPage() {
-    // Set up form submission
-    const codeForm = document.getElementById('codeForm');
-    if (codeForm) {
-        codeForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            codeManager.saveCode(formData);
-        });
-    }
-    
-    const bulkCodeForm = document.getElementById('bulkCodeForm');
-    if (bulkCodeForm) {
-        bulkCodeForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            codeManager.generateBulkCodes(formData);
-        });
-    }
-    
-    // Set up change handlers
-    const contentTypeSelect = document.getElementById('codeContentType');
-    if (contentTypeSelect) {
-        contentTypeSelect.addEventListener('change', () => {
-            codeManager.loadContentOptions();
-        });
-    }
-    
-    const usageTypeSelect = document.getElementById('codeUsageType');
-    if (usageTypeSelect) {
-        usageTypeSelect.addEventListener('change', () => {
-            codeManager.toggleUsageLimit();
-        });
-    }
-    
-    const bulkContentTypeSelect = document.getElementById('bulkCodeContentType');
-    if (bulkContentTypeSelect) {
-        bulkContentTypeSelect.addEventListener('change', () => {
-            codeManager.loadBulkContentOptions();
-        });
-    }
-    
-    const bulkUsageTypeSelect = document.getElementById('bulkCodeUsageType');
-    if (bulkUsageTypeSelect) {
-        bulkUsageTypeSelect.addEventListener('change', () => {
-            codeManager.toggleBulkUsageLimit();
-        });
+    } catch (error) {
+        console.error('Exception adding access code:', error);
+        showNotification('خطأ في إنشاء كود الوصول', 'error');
+    } finally {
+        hideLoading();
     }
 }
 
-// Global functions for HTML onclick handlers
-function showAddCodeModal() {
-    codeManager.showAddModal();
+// Handle edit code
+async function handleEditCode(codeId) {
+    const code = accessCodesData.find(c => c.id === codeId);
+    if (!code) return;
+
+    currentEditId = codeId;
+    
+    // Populate form fields
+    document.getElementById('editCodeCode').value = code.code;
+    document.getElementById('editCodeCourseId').value = code.course_id || '';
+    document.getElementById('editCodeDescription').value = code.description || '';
+    document.getElementById('editCodeMaxUses').value = code.max_uses || 1;
+    document.getElementById('editCodeCurrentUses').value = code.current_uses || 0;
+    document.getElementById('editCodeExpiresAt').value = code.expires_at ? new Date(code.expires_at).toISOString().split('T')[0] : '';
+    document.getElementById('editCodeIsActive').checked = code.is_active;
+    
+    openModal('editCodeModal');
 }
 
-function closeCodeModal() {
-    codeManager.closeModal();
+// Handle update code
+async function handleUpdateCode(event) {
+    event.preventDefault();
+    
+    if (!currentEditId) return;
+    
+    const formData = new FormData(event.target);
+    const codeData = {
+        code: formData.get('code'),
+        course_id: parseInt(formData.get('course_id')),
+        description: formData.get('description'),
+        max_uses: parseInt(formData.get('max_uses')) || 1,
+        expires_at: formData.get('expires_at') ? new Date(formData.get('expires_at')).toISOString() : null,
+        is_active: formData.get('is_active') === 'on'
+    };
+
+    try {
+        showLoading('جاري تحديث كود الوصول...');
+        
+        // Update in Supabase
+        const { data, error } = await window.supabaseClient
+            .from('access_codes')
+            .update(codeData)
+            .eq('id', currentEditId)
+            .select();
+        
+        if (error) throw error;
+        
+        showNotification('تم تحديث كود الوصول بنجاح', 'success');
+        closeModal('editCodeModal');
+        currentEditId = null;
+        loadInitialData(); // Reload data
+    } catch (error) {
+        console.error('Error updating access code:', error);
+        showNotification(`خطأ في تحديث كود الوصول: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
 }
 
-function generateBulkCodes() {
-    codeManager.showBulkModal();
+// Handle delete code
+async function handleDeleteCode(codeId) {
+    if (!confirm('هل أنت متأكد من حذف هذا كود الوصول؟')) return;
+    
+    try {
+        showLoading('جاري حذف كود الوصول...');
+        
+        const { error } = await window.supabaseClient
+            .from('access_codes')
+            .delete()
+            .eq('id', codeId);
+        
+        if (error) throw error;
+        
+        showNotification('تم حذف كود الوصول بنجاح', 'success');
+        loadInitialData(); // Reload data
+    } catch (error) {
+        console.error('Error deleting access code:', error);
+        showNotification(`خطأ في حذف كود الوصول: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
 }
 
-function closeBulkCodeModal() {
-    codeManager.closeBulkModal();
-}
-
+// Generate random code
 function generateRandomCode() {
-    codeManager.generateRandomCode();
-}
-
-function loadContentOptions() {
-    codeManager.loadContentOptions();
-}
-
-function loadBulkContentOptions() {
-    codeManager.loadBulkContentOptions();
-}
-
-function toggleUsageLimit() {
-    codeManager.toggleUsageLimit();
-}
-
-function toggleBulkUsageLimit() {
-    codeManager.toggleBulkUsageLimit();
-}
-
-function editCode(codeValue) {
-    codeManager.showEditModal(codeValue);
-}
-
-function copyCode(codeValue) {
-    codeManager.copyCode(codeValue);
-}
-
-function deactivateCode(codeValue) {
-    codeManager.deactivateCode(codeValue);
-}
-
-function resetCode(codeValue) {
-    codeManager.resetCode(codeValue);
-}
-
-function viewCodeUsage(codeValue) {
-    codeManager.viewCodeUsage(codeValue);
-}
-
-function filterCodes(filterType) {
-    codeManager.filterCodes(filterType);
-}
-
-function searchCodes(searchTerm) {
-    codeManager.searchCodes(searchTerm);
-}
-
-// Code validation and integration with video access
-const codeValidator = {
-    // Validate code for video access
-    validateForAccess: function(codeValue) {
-        const codes = adminData.get('codes');
-        const code = codes.find(c => c.value === codeValue);
-        
-        if (!code) {
-            return { valid: false, message: 'الكود غير موجود' };
-        }
-        
-        if (code.status !== 'active') {
-            return { valid: false, message: 'الكود غير نشط' };
-        }
-        
-        // Check expiry date
-        if (code.expiryDate && new Date(code.expiryDate) <= new Date()) {
-            return { valid: false, message: 'انتهت صلاحية الكود' };
-        }
-        
-        // Check usage limit
-        if (code.usageType === 'single' && code.usageCount >= 1) {
-            return { valid: false, message: 'تم استخدام هذا الكود من قبل' };
-        }
-        
-        if (code.usageType === 'limited' && code.usageCount >= code.usageLimit) {
-            return { valid: false, message: 'تم الوصول للحد الأقصى لاستخدام هذا الكود' };
-        }
-        
-        return { 
-            valid: true, 
-            message: 'الكود صالح',
-            code: code
-        };
-    },
-    
-    // Use code (increment usage count)
-    useCode: function(codeValue) {
-        const validation = this.validateForAccess(codeValue);
-        if (!validation.valid) {
-            return validation;
-        }
-        
-        // Increment usage count
-        const updatedCode = {
-            ...validation.code,
-            usageCount: validation.code.usageCount + 1,
-            lastUsed: new Date().toISOString()
-        };
-        
-        adminData.update('codes', validation.code.id, updatedCode);
-        
-        return {
-            valid: true,
-            message: 'تم استخدام الكود بنجاح',
-            content: this.getLinkedContent(validation.code)
-        };
-    },
-    
-    // Get linked content for code
-    getLinkedContent: function(code) {
-        // In a real application, this would fetch the actual content
-        const contentMap = {
-            'video_1': { type: 'video', title: 'مقدمة في الموجات الكهرومغناطيسية', url: 'video1.mp4' },
-            'video_2': { type: 'video', title: 'التفاعلات الكيميائية المعقدة', url: 'video2.mp4' },
-            'course_1': { type: 'course', title: 'كورس الفيزياء المتقدمة', videos: ['video1.mp4', 'video2.mp4'] },
-            'subject_physics': { type: 'subject', title: 'جميع فيديوهات الفيزياء', videos: ['video1.mp4', 'video3.mp4'] }
-        };
-        
-        return contentMap[code.linkedContent] || null;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-};
+    
+    const codeInput = document.getElementById('code');
+    if (codeInput) {
+        codeInput.value = result;
+    }
+}
 
-// Export code validator for use in video access page
-window.codeValidator = codeValidator;
+// Display access codes in the table
+function displayAccessCodes(codes) {
+    const tbody = document.querySelector('#codesTable tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (codes.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    لا يوجد أكواد وصول حالياً
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    codes.forEach(code => {
+        const course = coursesData.find(c => c.id === code.course_id);
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <div class="code-info">
+                    <div class="code-text">${code.code}</div>
+                    <div class="code-description">${code.description || 'لا يوجد وصف'}</div>
+                </div>
+            </td>
+            <td>${course ? course.title : 'غير محدد'}</td>
+            <td>${code.current_uses || 0} / ${code.max_uses}</td>
+            <td>
+                <span class="status-badge status-${code.is_active ? 'active' : 'inactive'}">
+                    ${code.is_active ? 'نشط' : 'غير نشط'}
+                </span>
+            </td>
+            <td>${code.expires_at ? new Date(code.expires_at).toLocaleDateString('ar-EG') : 'لا ينتهي'}</td>
+            <td>${code.created_at ? new Date(code.created_at).toLocaleDateString('ar-EG') : 'غير محدد'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button onclick="handleEditCode(${code.id})" class="btn-edit" title="تعديل">
+                        ✏️
+                    </button>
+                    <button onclick="handleDeleteCode(${code.id})" class="btn-delete" title="حذف">
+                        🗑️
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Handle code search
+function handleCodeSearch(event) {
+    const searchTerm = event.target.value.toLowerCase();
+    
+    if (!searchTerm) {
+        displayAccessCodes(accessCodesData);
+        return;
+    }
+    
+    const filteredCodes = accessCodesData.filter(code => 
+        code.code.toLowerCase().includes(searchTerm) ||
+        (code.description && code.description.toLowerCase().includes(searchTerm)) ||
+        (code.course_id && coursesData.find(c => c.id === code.course_id)?.title.toLowerCase().includes(searchTerm))
+    );
+    
+    displayAccessCodes(filteredCodes);
+}
+
+// Utility functions
+function showLoading(message) {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.textContent = message;
+        loadingDiv.style.display = 'block';
+    }
+}
+
+function hideLoading() {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+    }
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modals when clicking outside
+window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+});
+
+// Export functions for global use
+window.handleEditCode = handleEditCode;
+window.handleUpdateCode = handleUpdateCode;
+window.handleDeleteCode = handleDeleteCode;
+window.handleCodeSearch = handleCodeSearch;
+window.generateRandomCode = generateRandomCode;
