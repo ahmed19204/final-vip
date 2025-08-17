@@ -227,6 +227,32 @@ async function validateAccessCode(code) {
     }
 }
 
+async function updateCodeUsage(codeId) {
+    try {
+        // First get current usage
+        const { data: currentCode, error: fetchError } = await supabaseClient
+            .from('access_codes')
+            .select('current_uses')
+            .eq('id', codeId)
+            .single();
+        
+        if (fetchError) throw fetchError;
+        
+        // Update with incremented value
+        const { error: updateError } = await supabaseClient
+            .from('access_codes')
+            .update({ current_uses: (currentCode.current_uses || 0) + 1 })
+            .eq('id', codeId);
+        
+        if (updateError) throw updateError;
+        
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating code usage:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Export functions for use in other files
 window.supabaseFunctions = {
     testSupabaseConnection,
@@ -242,7 +268,8 @@ window.supabaseFunctions = {
     getAllVideos,
     addAccessCode,
     getAllAccessCodes,
-    validateAccessCode
+    validateAccessCode,
+    updateCodeUsage
 };
 
 // Test connection on load

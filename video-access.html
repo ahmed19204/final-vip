@@ -379,15 +379,10 @@
         // Update code usage
         async function updateCodeUsage(codeId) {
             try {
-                const { error } = await window.supabaseClient
-                    .from('access_codes')
-                    .update({ current_uses: window.supabaseClient.raw('current_uses + 1') })
-                    .eq('id', codeId);
-                
-                if (error) {
-                    console.error('Error updating code usage:', error);
+                const result = await window.supabaseFunctions.updateCodeUsage(codeId);
+                if (!result.success) {
+                    console.error('Error updating code usage:', result.error);
                 }
-                
             } catch (error) {
                 console.error('Exception updating code usage:', error);
             }
