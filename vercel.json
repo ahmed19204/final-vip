@@ -3,11 +3,35 @@
   "name": "vip-center",
   "builds": [
     {
-      "src": "**/*",
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "css/**/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/**/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "images/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin-login.html"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin-$1.html"
+    },
     {
       "src": "/(.*)",
       "dest": "/$1"
@@ -15,27 +39,25 @@
   ],
   "headers": [
     {
-      "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)",
+      "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "**/*.html",
-      "headers": [
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
         }
       ]
     }
   ],
-  "functions": {},
   "env": {
-    "SUPABASE_URL": "https://hlzmijhlijnzrzzoeopf.supabase.co",
-    "SUPABASE_ANON_KEY": "sb_publishable_HX2dsVz99s38yrTMZrbvJQ_-eEWdb4E"
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key"
   }
 }

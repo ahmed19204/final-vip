@@ -7,23 +7,39 @@
     "start": "http-server -p 8000 -c-1 --cors",
     "dev": "http-server -p 8000 -c-1 --cors",
     "build": "echo 'No build step required for static site'",
-    "deploy": "echo 'Deploy to Vercel via GitHub integration'"
+    "deploy": "vercel --prod",
+    "deploy:dev": "vercel",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'",
+    "format": "echo 'No formatting configured'",
+    "clean": "rm -rf node_modules package-lock.json",
+    "reinstall": "npm run clean && npm install"
   },
   "keywords": [
     "education",
     "platform",
-    "admin",
-    "dashboard",
+    "admin-panel",
     "arabic",
     "rtl",
-    "supabase"
+    "supabase",
+    "videos",
+    "courses"
   ],
-  "author": "VIP Center Team",
+  "author": "Ahmed Hussein",
   "license": "MIT",
   "devDependencies": {
     "http-server": "^14.1.1"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmed19204/final-vip.git"
+  },
+  "homepage": "https://final-vip.vercel.app",
+  "bugs": {
+    "url": "https://github.com/ahmed19204/final-vip/issues"
   }
 }
