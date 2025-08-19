@@ -4,28 +4,56 @@ let currentEditId = null;
 
 // Initialize teachers management
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔄 Admin Teachers: DOM loaded, initializing...');
+    
+    // Check if Supabase is loaded
+    if (typeof supabase === 'undefined') {
+        console.error('❌ Supabase library not loaded!');
+        showNotification('خطأ: مكتبة Supabase غير محملة', 'error');
+        return;
+    }
+    
+    // Check if supabaseFunctions is available
+    if (!window.supabaseFunctions) {
+        console.error('❌ Supabase functions not available!');
+        showNotification('خطأ: دوال Supabase غير متاحة', 'error');
+        return;
+    }
+    
+    console.log('✅ Supabase check passed, loading teachers...');
     loadTeachersData();
     setupEventListeners();
 });
 
 // Setup event listeners
 function setupEventListeners() {
+    console.log('🔧 Setting up event listeners...');
+    
     // Add teacher form submission
     const addTeacherForm = document.getElementById('addTeacherForm');
     if (addTeacherForm) {
         addTeacherForm.addEventListener('submit', handleAddTeacher);
+        console.log('✅ Add teacher form listener added');
+    } else {
+        console.error('❌ Add teacher form not found!');
     }
 
     // Edit teacher form submission
     const editTeacherForm = document.getElementById('editTeacherForm');
     if (editTeacherForm) {
         editTeacherForm.addEventListener('submit', handleUpdateTeacher);
+        console.log('✅ Edit teacher form listener added');
+    } else {
+        console.error('❌ Edit teacher form not found!');
     }
 
     // Search functionality
     const searchInput = document.getElementById('teacherSearch');
     if (searchInput) {
         searchInput.addEventListener('input', handleTeacherSearch);
+        console.log('✅ Search input listener added');
+    } else {
+        console.error('❌ Search input not found!');
     }
 
     // Image upload preview
@@ -50,30 +78,45 @@ function setupImageUpload() {
                 reader.readAsDataURL(file);
             }
         });
+        console.log('✅ Image upload listener added');
+    } else {
+        console.error('❌ Image input not found!');
     }
 }
 
 // Load teachers data from Supabase
 async function loadTeachersData() {
     try {
+        console.log('🔄 Loading teachers data...');
         showLoading('جاري تحميل بيانات المدرسين...');
         
+        // Test connection first
+        const connectionTest = await window.supabaseFunctions.testSupabaseConnection();
+        console.log('🔗 Connection test result:', connectionTest);
+        
+        if (!connectionTest) {
+            throw new Error('فشل في الاتصال بقاعدة البيانات');
+        }
+        
+        console.log('📡 Calling getAllTeachers...');
         const result = await window.supabaseFunctions.getAllTeachers();
+        console.log('📊 getAllTeachers result:', result);
         
         if (result.success) {
             teachersData = result.data || [];
+            console.log(`✅ Loaded ${teachersData.length} teachers`);
             displayTeachers(teachersData);
             showNotification('تم تحميل بيانات المدرسين بنجاح', 'success');
         } else {
-            console.error('Error loading teachers:', result.error);
-            showNotification('خطأ في تحميل بيانات المدرسين', 'error');
+            console.error('❌ Error loading teachers:', result.error);
+            showNotification(`خطأ في تحميل بيانات المدرسين: ${result.error}`, 'error');
             // Fallback to empty array
             teachersData = [];
             displayTeachers([]);
         }
     } catch (error) {
-        console.error('Exception loading teachers:', error);
-        showNotification('خطأ في تحميل بيانات المدرسين', 'error');
+        console.error('💥 Exception loading teachers:', error);
+        showNotification(`خطأ في تحميل بيانات المدرسين: ${error.message}`, 'error');
         teachersData = [];
         displayTeachers([]);
     } finally {
@@ -99,10 +142,13 @@ async function handleAddTeacher(event) {
         status: 'active'
     };
 
+    console.log('📝 Adding teacher:', teacherData);
+
     try {
         showLoading('جاري إضافة المدرس...');
         
         const result = await window.supabaseFunctions.addTeacher(teacherData);
+        console.log('📊 Add teacher result:', result);
         
         if (result.success) {
             showNotification('تم إضافة المدرس بنجاح', 'success');
@@ -123,8 +169,8 @@ async function handleAddTeacher(event) {
             showNotification(`خطأ في إضافة المدرس: ${result.error}`, 'error');
         }
     } catch (error) {
-        console.error('Exception adding teacher:', error);
-        showNotification('خطأ في إضافة المدرس', 'error');
+        console.error('💥 Exception adding teacher:', error);
+        showNotification(`خطأ في إضافة المدرس: ${error.message}`, 'error');
     } finally {
         hideLoading();
     }
@@ -132,8 +178,12 @@ async function handleAddTeacher(event) {
 
 // Handle edit teacher
 function handleEditTeacher(teacherId) {
+    console.log('✏️ Editing teacher:', teacherId);
     const teacher = teachersData.find(t => t.id === teacherId);
-    if (!teacher) return;
+    if (!teacher) {
+        console.error('❌ Teacher not found:', teacherId);
+        return;
+    }
 
     currentEditId = teacherId;
     
@@ -156,7 +206,10 @@ function handleEditTeacher(teacherId) {
 async function handleUpdateTeacher(event) {
     event.preventDefault();
     
-    if (!currentEditId) return;
+    if (!currentEditId) {
+        console.error('❌ No teacher selected for editing');
+        return;
+    }
     
     const formData = new FormData(event.target);
     const teacherData = {
@@ -172,10 +225,13 @@ async function handleUpdateTeacher(event) {
         status: formData.get('status')
     };
 
+    console.log('📝 Updating teacher:', currentEditId, teacherData);
+
     try {
         showLoading('جاري تحديث بيانات المدرس...');
         
         const result = await window.supabaseFunctions.updateTeacher(currentEditId, teacherData);
+        console.log('📊 Update teacher result:', result);
         
         if (result.success) {
             showNotification('تم تحديث بيانات المدرس بنجاح', 'success');
@@ -188,7 +244,7 @@ async function handleUpdateTeacher(event) {
             showNotification(`خطأ في تحديث بيانات المدرس: ${result.error}`, 'error');
         }
     } catch (error) {
-        console.error('Error updating teacher:', error);
+        console.error('💥 Error updating teacher:', error);
         showNotification(`خطأ في تحديث بيانات المدرس: ${error.message}`, 'error');
     } finally {
         hideLoading();
@@ -199,10 +255,13 @@ async function handleUpdateTeacher(event) {
 async function handleDeleteTeacher(teacherId) {
     if (!confirm('هل أنت متأكد من حذف هذا المدرس؟')) return;
     
+    console.log('🗑️ Deleting teacher:', teacherId);
+
     try {
         showLoading('جاري حذف المدرس...');
         
         const result = await window.supabaseFunctions.deleteTeacher(teacherId);
+        console.log('📊 Delete teacher result:', result);
         
         if (result.success) {
             showNotification('تم حذف المدرس بنجاح', 'success');
@@ -213,7 +272,7 @@ async function handleDeleteTeacher(teacherId) {
             showNotification(`خطأ في حذف المدرس: ${result.error}`, 'error');
         }
     } catch (error) {
-        console.error('Error deleting teacher:', error);
+        console.error('💥 Error deleting teacher:', error);
         showNotification(`خطأ في حذف المدرس: ${error.message}`, 'error');
     } finally {
         hideLoading();
@@ -222,8 +281,12 @@ async function handleDeleteTeacher(teacherId) {
 
 // Display teachers in the table
 function displayTeachers(teachers) {
+    console.log('📋 Displaying teachers:', teachers.length);
     const tbody = document.querySelector('#teachersTable tbody');
-    if (!tbody) return;
+    if (!tbody) {
+        console.error('❌ Teachers table body not found!');
+        return;
+    }
     
     tbody.innerHTML = '';
     
@@ -275,6 +338,8 @@ function displayTeachers(teachers) {
         `;
         tbody.appendChild(row);
     });
+    
+    console.log('✅ Teachers displayed successfully');
 }
 
 // Handle teacher search
