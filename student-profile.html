@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - الملف الشخصي</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff4d4d;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            border: 4px solid #ff4d4d;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-email {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #cccccc;
+        }
+        
+        .profile-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-section {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ff4d4d;
+            padding-bottom: 0.5rem;
+        }
+        
+        .logout-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .logout-btn:hover {
+            background: #e63939;
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .message-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+        
+        .message-error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+        
+        .message-info {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="home.html" class="nav-link">الكورسات</a>
+                </li>
+                <li class="nav-item">
+                    <a href="teachers.html" class="nav-link">المدرسين</a>
+                </li>
+                <li class="nav-item">
+                    <a href="video-access.html" class="nav-link">فتح الفيديو</a>
+                </li>
+                <li class="nav-item">
+                    <a href="student-profile.html" class="nav-link active">الملف الشخصي</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="profile-container">
+        <div id="messageContainer"></div>
+        
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                👤
+            </div>
+            <h1 class="profile-name" id="profileName">اسم الطالب</h1>
+            <p class="profile-email" id="profileEmail">email@example.com</p>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="coursesCount">0</div>
+                <div class="stat-label">الكورسات المسجلة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedLessons">0</div>
+                <div class="stat-label">الدروس المكتملة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalHours">0</div>
+                <div class="stat-label">إجمالي الساعات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="certificates">0</div>
+                <div class="stat-label">الشهادات</div>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <div class="profile-section">
+                <h2 class="section-title">المعلومات الشخصية</h2>
+                <div id="personalInfo">
+                    <p><strong>الاسم:</strong> <span id="studentName">-</span></p>
+                    <p><strong>البريد الإلكتروني:</strong> <span id="studentEmail">-</span></p>
+                    <p><strong>رقم الهاتف:</strong> <span id="studentPhone">-</span></p>
+                    <p><strong>تاريخ الميلاد:</strong> <span id="studentBirthDate">-</span></p>
+                    <p><strong>المحافظة:</strong> <span id="studentGovernorate">-</span></p>
+                    <p><strong>الصف الدراسي:</strong> <span id="studentGrade">-</span></p>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">الكورسات المسجلة</h2>
+                <div id="enrolledCourses">
+                    <p>لا توجد كورسات مسجلة حالياً</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://jiwxilwzqmnwtusysdok.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd3hpbHd6cW1ud3R1c3lzZG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0Njk3NTUsImV4cCI6MjA3MTA0NTc1NX0.lvOW9haq2OsSu3tX38QQlvx5bavx-K_Qsv4zl_I6vdU';
+
+        // Create Supabase client
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+
+        // التحقق من تسجيل الدخول
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+            if (!user) {
+                // المستخدم غير مسجل دخول
+                window.location.href = 'login-fixed.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(user);
+                loadUserProfile();
+            } catch (error) {
+                console.error('خطأ في تحميل بيانات المستخدم:', error);
+                showMessage('خطأ في تحميل البيانات', 'error');
+            }
+        });
+
+        // تحميل الملف الشخصي
+        async function loadUserProfile() {
+            if (!currentUser) return;
+
+            try {
+                // تحديث المعلومات الأساسية
+                document.getElementById('profileName').textContent = currentUser.name || 'اسم الطالب';
+                document.getElementById('profileEmail').textContent = currentUser.email || 'email@example.com';
+                
+                // تحديث الصورة الرمزية
+                const avatar = document.getElementById('profileAvatar');
+                if (currentUser.name) {
+                    avatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                }
+
+                // تحديث المعلومات الشخصية
+                document.getElementById('studentName').textContent = currentUser.name || '-';
+                document.getElementById('studentEmail').textContent = currentUser.email || '-';
+                document.getElementById('studentPhone').textContent = currentUser.phone || '-';
+                document.getElementById('studentBirthDate').textContent = currentUser.birth_date || '-';
+                document.getElementById('studentGovernorate').textContent = currentUser.governorate || '-';
+                document.getElementById('studentGrade').textContent = currentUser.grade || '-';
+
+                // تحميل الكورسات المسجلة
+                await loadEnrolledCourses();
+
+                // تحميل الإحصائيات
+                await loadStatistics();
+
+            } catch (error) {
+                console.error('خطأ في تحميل الملف الشخصي:', error);
+                showMessage('خطأ في تحميل البيانات', 'error');
+            }
+        }
+
+        // تحميل الكورسات المسجلة
+        async function loadEnrolledCourses() {
+            try {
+                const { data: enrollments, error } = await supabaseClient
+                    .from('student_course_enrollments')
+                    .select(`
+                        *,
+                        courses (
+                            title,
+                            description,
+                            price,
+                            duration_hours
+                        )
+                    `)
+                    .eq('student_id', currentUser.id);
+
+                if (error) throw error;
+
+                const coursesContainer = document.getElementById('enrolledCourses');
+                
+                if (enrollments && enrollments.length > 0) {
+                    let coursesHTML = '';
+                    enrollments.forEach(enrollment => {
+                        const course = enrollment.courses;
+                        coursesHTML += `
+                            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #ff4d4d; margin: 0 0 0.5rem 0;">${course.title}</h4>
+                                <p style="color: #cccccc; margin: 0 0 0.5rem 0;">${course.description || 'لا يوجد وصف'}</p>
+                                <div style="display: flex; gap: 1rem; color: #999;">
+                                    <span>السعر: ${course.price || 0} جنيه</span>
+                                    <span>المدة: ${course.duration_hours || 0} ساعة</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    coursesContainer.innerHTML = coursesHTML;
+                } else {
+                    coursesContainer.innerHTML = '<p style="color: #999;">لا توجد كورسات مسجلة حالياً</p>';
+                }
+
+            } catch (error) {
+                console.error('خطأ في تحميل الكورسات:', error);
+                document.getElementById('enrolledCourses').innerHTML = '<p style="color: #f44336;">خطأ في تحميل الكورسات</p>';
+            }
+        }
+
+        // تحميل الإحصائيات
+        async function loadStatistics() {
+            try {
+                // عدد الكورسات المسجلة
+                const { count: coursesCount } = await supabaseClient
+                    .from('student_course_enrollments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('student_id', currentUser.id);
+
+                document.getElementById('coursesCount').textContent = coursesCount || 0;
+
+                // إحصائيات أخرى (يمكن تطويرها لاحقاً)
+                document.getElementById('completedLessons').textContent = '0';
+                document.getElementById('totalHours').textContent = '0';
+                document.getElementById('certificates').textContent = '0';
+
+            } catch (error) {
+                console.error('خطأ في تحميل الإحصائيات:', error);
+            }
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                // حذف بيانات المستخدم
+                localStorage.removeItem('user');
+                sessionStorage.removeItem('user');
+                
+                // الانتقال إلى الصفحة الرئيسية
+                window.location.href = 'index.html';
+            }
+        }
+
+        // إظهار الرسائل
+        function showMessage(message, type = 'info') {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.textContent = message;
+            
+            messageContainer.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
