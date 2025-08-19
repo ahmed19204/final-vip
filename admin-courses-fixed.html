@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - إدارة الكورسات</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+                    <h1>إدارة الكورسات</h1>
+                </div>
+                <div class="admin-role">مدير عام</div>
+            </div>
+        </header>
+
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <img src="vip-logo.jpg" alt="VIP Center">
+                <h3>لوحة التحكم</h3>
+                <div class="admin-role">مدير عام</div>
+            </div>
+            
+            <nav class="admin-nav">
+                <div class="admin-nav-item">
+                    <a href="admin-dashboard.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🏠</span>
+                        <span>الرئيسية</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-courses.html" class="admin-nav-link active">
+                        <span class="admin-nav-icon">📚</span>
+                        <span>إدارة الكورسات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-teachers.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👨‍🏫</span>
+                        <span>إدارة المدرسين</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-videos.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🎥</span>
+                        <span>إدارة الفيديوهات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-codes.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">🔐</span>
+                        <span>إدارة الأكواد</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-students.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">👥</span>
+                        <span>إدارة الطلاب</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-subjects.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">📖</span>
+                        <span>إدارة التخصصات</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="admin-settings.html" class="admin-nav-link">
+                        <span class="admin-nav-icon">⚙️</span>
+                        <span>الإعدادات</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <!-- Admin Header -->
+            <header class="admin-header">
+                <h1>إدارة الكورسات</h1>
+                <div class="admin-header-actions">
+                    <button class="admin-btn admin-btn-primary" onclick="showAddCourseModal()">
+                        <span>➕</span>
+                        إضافة كورس جديد
+                    </button>
+                    <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+                </div>
+            </header>
+
+            <!-- Course Statistics -->
+            <div class="admin-cards-grid">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الكورسات</h3>
+                        <span class="admin-card-icon">📚</span>
+                    </div>
+                    <div class="admin-card-value">48</div>
+                    <p class="admin-card-description">كورس متاح</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">الكورسات المميزة</h3>
+                        <span class="admin-card-icon">⭐</span>
+                    </div>
+                    <div class="admin-card-value">12</div>
+                    <p class="admin-card-description">كورس مميز</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">إجمالي الطلاب المسجلين</h3>
+                        <span class="admin-card-icon">👥</span>
+                    </div>
+                    <div class="admin-card-value">3,247</div>
+                    <p class="admin-card-description">طالب مسجل</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">متوسط التقييم</h3>
+                        <span class="admin-card-icon">⭐</span>
+                    </div>
+                    <div class="admin-card-value">4.8</div>
+                    <p class="admin-card-description">من 5 نجوم</p>
+                </div>
+            </div>
+
+            <!-- Course Management Table -->
+            <div class="admin-table-container">
+                <div class="admin-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="color: #ffffff; margin: 0;">قائمة الكورسات</h2>
+                    <div class="admin-table-filters">
+                        <select class="admin-form-select" style="width: auto; margin-left: 1rem;" onchange="filterCourses(this.value)">
+                            <option value="all">جميع الكورسات</option>
+                            <option value="featured">المميزة</option>
+                            <option value="active">النشطة</option>
+                            <option value="inactive">غير النشطة</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                        </select>
+                        <input type="text" class="admin-form-input" placeholder="البحث في الكورسات..." style="width: 250px;" onkeyup="searchCourses(this.value)">
+                    </div>
+                </div>
+                
+                <table class="admin-table" id="coursesTable">
+                    <thead>
+                        <tr>
+                            <th>الصورة</th>
+                            <th>اسم الكورس</th>
+                            <th>التخصص</th>
+                            <th>المدرس</th>
+                            <th>السعر</th>
+                            <th>المسجلين</th>
+                            <th>التقييم</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الفيزياء المتقدمة</td>
+                            <td>الفيزياء</td>
+                            <td>أ. مصطفى إبراهيم</td>
+                            <td>299 جنيه</td>
+                            <td>245</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.8</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>2025-01-10</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(1)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(1)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(1)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الكيمياء العضوية</td>
+                            <td>الكيمياء</td>
+                            <td>أ. مصطفى حمدي</td>
+                            <td>249 جنيه</td>
+                            <td>189</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.6</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
+                            <td>2025-01-08</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(2)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(2)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(2)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="width: 60px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ff4d4d;">📚</div>
+                            </td>
+                            <td>كورس الأحياء الجزيئية</td>
+                            <td>الأحياء</td>
+                            <td>أ. إيمان خفاجي</td>
+                            <td>279 جنيه</td>
+                            <td>312</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span>4.9</span>
+                                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                                </div>
+                            </td>
+                            <td><span class="admin-btn admin-btn-success admin-action-btn">مميز</span></td>
+                            <td>2025-01-05</td>
+                            <td>
+                                <div class="admin-actions">
+                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(3)">تعديل</button>
+                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(3)">عرض</button>
+                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(3)">حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Course Modal -->
+    <div id="courseModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="courseModalTitle">إضافة كورس جديد</h2>
+                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
+            </div>
+            
+            <form id="courseForm" class="admin-form-container">
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">اسم الكورس *</label>
+                        <input type="text" id="courseName" class="admin-form-input" placeholder="أدخل اسم الكورس" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">التخصص *</label>
+                        <select id="courseSubject" class="admin-form-select" required>
+                            <option value="">اختر التخصص</option>
+                            <option value="physics">الفيزياء</option>
+                            <option value="chemistry">الكيمياء</option>
+                            <option value="biology">الأحياء</option>
+                            <option value="math">الرياضيات</option>
+                            <option value="geology">الجيولوجيا</option>
+                            <option value="english">اللغة الإنجليزية</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المدرس المسؤول *</label>
+                        <select id="courseTeacher" class="admin-form-select" required>
+                            <option value="">اختر المدرس</option>
+                            <option value="1">أ. مصطفى إبراهيم - فيزياء</option>
+                            <option value="2">أ. إيمان خفاجي - أحياء</option>
+                            <option value="3">أ. مصطفى حمدي - كيمياء</option>
+                            <option value="4">أ. مصطفى إسماعيل - رياضيات</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">السعر (بالجنيه) *</label>
+                        <input type="number" id="coursePrice" class="admin-form-input" placeholder="0" min="0" required>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">وصف الكورس *</label>
+                    <textarea id="courseDescription" class="admin-form-textarea" placeholder="أدخل وصف تفصيلي للكورس..." required></textarea>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المتطلبات المسبقة</label>
+                        <textarea id="coursePrerequisites" class="admin-form-textarea" placeholder="أدخل المتطلبات المسبقة (إن وجدت)..." style="min-height: 80px;"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">المواد التعليمية المرفقة</label>
+                        <textarea id="courseMaterials" class="admin-form-textarea" placeholder="أدخل قائمة بالمواد التعليمية..." style="min-height: 80px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Course Image Upload -->
+                <div class="admin-form-group">
+                    <label class="admin-form-label">صورة الكورس</label>
+                    <div class="admin-file-upload">
+                        <input type="file" id="courseImage" class="admin-file-input" accept="image/*" onchange="handleCourseImageUpload(this)">
+                        <label for="courseImage" class="admin-file-label">
+                            <span>🖼️</span>
+                            <span>اختر صورة للكورس</span>
+                        </label>
+                    </div>
+                    <div id="courseImagePreview" class="admin-file-preview" style="display: none;"></div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">مدة الكورس (بالساعات)</label>
+                        <input type="number" id="courseDuration" class="admin-form-input" placeholder="0" min="1">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">عدد الدروس</label>
+                        <input type="number" id="courseLessons" class="admin-form-input" placeholder="0" min="1">
+                    </div>
+                </div>
+
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">مستوى الكورس</label>
+                        <select id="courseLevel" class="admin-form-select">
+                            <option value="beginner">مبتدئ</option>
+                            <option value="intermediate">متوسط</option>
+                            <option value="advanced">متقدم</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">الحالة</label>
+                        <select id="courseStatus" class="admin-form-select">
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                            <option value="featured">مميز</option>
+                            <option value="draft">مسودة</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">الكلمات المفتاحية</label>
+                    <input type="text" id="courseTags" class="admin-form-input" placeholder="أدخل الكلمات المفتاحية مفصولة بفواصل">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="closeCourseModal()">إلغاء</button>
+                    <button type="submit" class="admin-btn admin-btn-primary">حفظ الكورس</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-script.js"></script>
+    
+    <!-- Inline Supabase Configuration -->
+    <script>
+        // Supabase Configuration - Inline to avoid loading issues
+        const SUPABASE_URL = 'https://jiwxilwzqmnwtusysdok.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd3hpbHd6cW1ud3R1c3lzZG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0Njk3NTUsImV4cCI6MjA3MTA0NTc1NX0.lvOW9haq2OsSu3tX38QQlfx5bavx-K_Qsv4zl_I6vdU';
+
+        // Create Supabase client
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Make it globally available
+        window.supabaseClient = supabaseClient;
+
+        // Test connection function
+        async function testSupabaseConnection() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('courses')
+                    .select('count')
+                    .limit(1);
+
+                if (error) {
+                    console.log('Supabase connection test:', error.message);
+                    return false;
+                }
+
+                console.log('✅ Supabase connection successful!');
+                return true;
+            } catch (err) {
+                console.error('❌ Supabase connection failed:', err);
+                return false;
+            }
+        }
+
+        // Database interaction functions
+        async function addCourse(courseData) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('courses')
+                    .insert([courseData])
+                    .select();
+
+                if (error) throw error;
+                return { success: true, data: data[0] };
+            } catch (error) {
+                console.error('Error adding course:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function getAllCourses() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('courses')
+                    .select('*, subjects(name), teachers(name)')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function getAllSubjects() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('subjects')
+                    .select('*')
+                    .order('name');
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error fetching subjects:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function getAllTeachers() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('teachers')
+                    .select('*')
+                    .order('name');
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error fetching teachers:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Export functions for use in other files
+        window.supabaseFunctions = {
+            testSupabaseConnection,
+            addCourse,
+            getAllCourses,
+            getAllSubjects,
+            getAllTeachers
+        };
+
+        // Test connection on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 Admin Courses Fixed: DOM loaded, testing connection...');
+            testSupabaseConnection().then(success => {
+                if (success) {
+                    console.log('✅ Connection test passed, loading courses...');
+                    loadCoursesData();
+                    setupEventListeners();
+                } else {
+                    console.error('❌ Connection test failed!');
+                    showNotification('خطأ في الاتصال بقاعدة البيانات', 'error');
+                }
+            });
+        });
+
+        // Admin Courses Management
+        let coursesData = [];
+        let subjectsData = [];
+        let teachersData = [];
+
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('🔧 Setting up event listeners...');
+            
+            // Add course form submission
+            const addCourseForm = document.getElementById('addCourseForm');
+            if (addCourseForm) {
+                addCourseForm.addEventListener('submit', handleAddCourse);
+                console.log('✅ Add course form listener added');
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('courseSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', handleCourseSearch);
+                console.log('✅ Search input listener added');
+            }
+        }
+
+        // Load courses data from Supabase
+        async function loadCoursesData() {
+            try {
+                console.log('🔄 Loading courses data...');
+                showLoading('جاري تحميل بيانات الكورسات...');
+                
+                // Load subjects and teachers first
+                const subjectsResult = await window.supabaseFunctions.getAllSubjects();
+                const teachersResult = await window.supabaseFunctions.getAllTeachers();
+                
+                if (subjectsResult.success) {
+                    subjectsData = subjectsResult.data || [];
+                    console.log(`✅ Loaded ${subjectsData.length} subjects`);
+                }
+                
+                if (teachersResult.success) {
+                    teachersData = teachersResult.data || [];
+                    console.log(`✅ Loaded ${teachersResult.data.length} teachers`);
+                }
+                
+                // Load courses
+                const result = await window.supabaseFunctions.getAllCourses();
+                console.log('📊 getAllCourses result:', result);
+                
+                if (result.success) {
+                    coursesData = result.data || [];
+                    console.log(`✅ Loaded ${coursesData.length} courses`);
+                    displayCourses(coursesData);
+                    showNotification('تم تحميل بيانات الكورسات بنجاح', 'success');
+                } else {
+                    console.error('❌ Error loading courses:', result.error);
+                    showNotification(`خطأ في تحميل بيانات الكورسات: ${result.error}`, 'error');
+                    coursesData = [];
+                    displayCourses([]);
+                }
+            } catch (error) {
+                console.error('💥 Exception loading courses:', error);
+                showNotification(`خطأ في تحميل بيانات الكورسات: ${error.message}`, 'error');
+                coursesData = [];
+                displayCourses([]);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Handle add course form submission
+        async function handleAddCourse(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const courseData = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                subject_id: formData.get('subject_id'),
+                teacher_id: formData.get('teacher_id'),
+                price: parseFloat(formData.get('price')) || 0.00,
+                duration_hours: parseInt(formData.get('duration_hours')) || 0,
+                level: formData.get('level'),
+                status: 'active'
+            };
+
+            console.log('📝 Adding course:', courseData);
+
+            try {
+                showLoading('جاري إضافة الكورس...');
+                
+                const result = await window.supabaseFunctions.addCourse(courseData);
+                console.log('📊 Add course result:', result);
+                
+                if (result.success) {
+                    showNotification('تم إضافة الكورس بنجاح', 'success');
+                    event.target.reset();
+                    closeModal('addCourseModal');
+                    await loadCoursesData();
+                } else {
+                    showNotification(`خطأ في إضافة الكورس: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('💥 Exception adding course:', error);
+                showNotification(`خطأ في إضافة الكورس: ${error.message}`, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display courses in the table
+        function displayCourses(courses) {
+            console.log('📋 Displaying courses:', courses.length);
+            const tbody = document.querySelector('#coursesTable tbody');
+            if (!tbody) {
+                console.error('❌ Courses table body not found!');
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            if (courses.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center" style="color: #ccc; padding: 2rem;">
+                            لا يوجد كورسات حالياً
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            courses.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="course-info">
+                            <div class="course-title">${course.title}</div>
+                            <div class="course-description">${course.description || 'لا يوجد وصف'}</div>
+                        </div>
+                    </td>
+                    <td>${course.subjects?.name || 'غير محدد'}</td>
+                    <td>${course.teachers?.name || 'غير محدد'}</td>
+                    <td>${course.price || 0} جنيه</td>
+                    <td>${course.duration_hours || 0} ساعة</td>
+                    <td>
+                        <span class="status-badge status-${course.status || 'active'}">
+                            ${getStatusText(course.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="handleEditCourse('${course.id}')" class="btn-edit" title="تعديل">
+                                ✏️
+                            </button>
+                            <button onclick="handleDeleteCourse('${course.id}')" class="btn-delete" title="حذف">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            console.log('✅ Courses displayed successfully');
+        }
+
+        // Handle course search
+        function handleCourseSearch(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            
+            if (!searchTerm) {
+                displayCourses(coursesData);
+                return;
+            }
+            
+            const filteredCourses = coursesData.filter(course => 
+                course.title.toLowerCase().includes(searchTerm) ||
+                (course.description && course.description.toLowerCase().includes(searchTerm))
+            );
+            
+            displayCourses(filteredCourses);
+        }
+
+        // Get status text in Arabic
+        function getStatusText(status) {
+            const statusMap = {
+                'active': 'نشط',
+                'inactive': 'غير نشط',
+                'draft': 'مسودة'
+            };
+            return statusMap[status] || 'نشط';
+        }
+
+        // Utility functions
+        function showLoading(message) {
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) {
+                loadingDiv.textContent = message;
+                loadingDiv.style.display = 'block';
+            }
+        }
+
+        function hideLoading() {
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Export functions for global use
+        window.handleAddCourse = handleAddCourse;
+        window.handleCourseSearch = handleCourseSearch;
+    </script>
+</body>
+</html>
