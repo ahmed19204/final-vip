@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>VIP Center - إدارة المدرسين</title>
+	<link rel="stylesheet" href="css/admin-styles.css">
+	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+	<div class="admin-container">
+		<!-- Admin Sidebar -->
+		<aside class="admin-sidebar">
+			<div class="admin-sidebar-header">
+				<img src="images/vip-logo.jpg" alt="VIP Center">
+				<h3>لوحة التحكم</h3>
+				<div class="admin-role">مدير عام</div>
+			</div>
+			<nav class="admin-nav">
+				<div class="admin-nav-item">
+					<a href="admin-dashboard.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🏠</span>
+						<span>الرئيسية</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-courses.html" class="admin-nav-link">
+						<span class="admin-nav-icon">📚</span>
+						<span>إدارة الكورسات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-teachers.html" class="admin-nav-link active">
+						<span class="admin-nav-icon">👨‍🏫</span>
+						<span>إدارة المدرسين</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-videos.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🎥</span>
+						<span>إدارة الفيديوهات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-codes.html" class="admin-nav-link">
+						<span class="admin-nav-icon">🔐</span>
+						<span>إدارة الأكواد</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-students.html" class="admin-nav-link">
+						<span class="admin-nav-icon">👥</span>
+						<span>إدارة الطلاب</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-subjects.html" class="admin-nav-link">
+						<span class="admin-nav-icon">📖</span>
+						<span>إدارة التخصصات</span>
+					</a>
+				</div>
+				<div class="admin-nav-item">
+					<a href="admin-settings.html" class="admin-nav-link">
+						<span class="admin-nav-icon">⚙️</span>
+						<span>الإعدادات</span>
+					</a>
+				</div>
+			</nav>
+		</aside>
+
+		<!-- Admin Main Content -->
+		<main class="admin-main">
+			<header class="admin-header">
+				<h1>إدارة المدرسين</h1>
+				<div class="admin-header-actions">
+					<a href="admin-courses.html" class="admin-btn admin-btn-secondary">الانتقال إلى الكورسات</a>
+					<button class="admin-btn admin-btn-primary" onclick="openModal('addTeacherModal')">
+						<span>➕</span>
+						إضافة مدرس جديد
+					</button>
+					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
+				</div>
+			</header>
+
+			<div class="admin-table-container">
+				<div class="admin-table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+					<h2 style="color:#fff;margin:0;">قائمة المدرسين</h2>
+					<div class="admin-table-filters">
+						<input type="text" id="teacherSearch" class="admin-form-input" placeholder="البحث عن مدرس..." style="width: 280px;">
+					</div>
+				</div>
+
+				<!-- Loading indicator -->
+				<div id="loading" class="loading" style="display: none;">جاري التحميل...</div>
+
+				<table class="admin-table" id="teachersTable">
+					<thead>
+						<tr>
+							<th>المدرس</th>
+							<th>البريد الإلكتروني</th>
+							<th>الهاتف</th>
+							<th>الخبرة</th>
+							<th>التعليم</th>
+							<th>الحالة</th>
+							<th>عدد الطلاب</th>
+							<th>الإجراءات</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Data will be loaded dynamically -->
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</div>
+
+	<!-- Add Teacher Modal -->
+	<div id="addTeacherModal" class="modal" style="display:none;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>إضافة مدرس جديد</h2>
+				<button class="modal-close" onclick="closeModal('addTeacherModal')">&times;</button>
+			</div>
+			<form id="addTeacherForm" class="admin-form-container">
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">اسم المدرس *</label>
+						<input type="text" name="name" class="admin-form-input" required>
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">البريد الإلكتروني *</label>
+						<input type="email" name="email" class="admin-form-input" required>
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">الهاتف</label>
+						<input type="tel" name="phone" class="admin-form-input" placeholder="01000000000">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">التخصص</label>
+						<input type="text" name="subject" class="admin-form-input" placeholder="مثال: الرياضيات">
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">سنوات الخبرة</label>
+						<input type="number" name="experience_years" class="admin-form-input" min="0" value="0">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">المؤهل العلمي</label>
+						<input type="text" name="education" class="admin-form-input" placeholder="مثال: ماجستير">
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">التخصصات (افصل بينها بفواصل)</label>
+					<input type="text" name="specializations" class="admin-form-input" placeholder="مثال: جبر، هندسة، تفاضل">
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السعر بالساعة</label>
+					<input type="number" name="hourly_rate" class="admin-form-input" min="0" step="0.01" value="0">
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السيرة الذاتية</label>
+					<textarea name="bio" class="admin-form-input" rows="4" placeholder="اكتب السيرة الذاتية للمدرس..."></textarea>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('addTeacherModal')">إلغاء</button>
+					<button type="submit" class="admin-btn admin-btn-primary">حفظ المدرس</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Edit Teacher Modal -->
+	<div id="editTeacherModal" class="modal" style="display:none;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>تعديل بيانات المدرس</h2>
+				<button class="modal-close" onclick="closeModal('editTeacherModal')">&times;</button>
+			</div>
+			<form id="editTeacherForm" class="admin-form-container">
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">اسم المدرس *</label>
+						<input type="text" id="editTeacherName" name="name" class="admin-form-input" required>
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">البريد الإلكتروني *</label>
+						<input type="email" id="editTeacherEmail" name="email" class="admin-form-input" required>
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">الهاتف</label>
+						<input type="tel" id="editTeacherPhone" name="phone" class="admin-form-input" placeholder="01000000000">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">التخصص</label>
+						<input type="text" id="editTeacherSubject" name="subject" class="admin-form-input" placeholder="مثال: الرياضيات">
+					</div>
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">سنوات الخبرة</label>
+						<input type="number" id="editTeacherExperience" name="experience_years" class="admin-form-input" min="0">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">المؤهل العلمي</label>
+						<input type="text" id="editTeacherEducation" name="education" class="admin-form-input" placeholder="مثال: ماجستير">
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">التخصصات (افصل بينها بفواصل)</label>
+					<input type="text" id="editTeacherSpecializations" name="specializations" class="admin-form-input" placeholder="مثال: جبر، هندسة، تفاضل">
+				</div>
+
+				<div class="admin-form-row">
+					<div class="admin-form-group">
+						<label class="admin-form-label">السعر بالساعة</label>
+						<input type="number" id="editTeacherHourlyRate" name="hourly_rate" class="admin-form-input" min="0" step="0.01">
+					</div>
+					<div class="admin-form-group">
+						<label class="admin-form-label">الحالة</label>
+						<select id="editTeacherStatus" name="status" class="admin-form-select">
+							<option value="active">نشط</option>
+							<option value="inactive">غير نشط</option>
+							<option value="suspended">معلق</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="admin-form-group">
+					<label class="admin-form-label">السيرة الذاتية</label>
+					<textarea id="editTeacherBio" name="bio" class="admin-form-input" rows="4" placeholder="اكتب السيرة الذاتية للمدرس..."></textarea>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('editTeacherModal')">إلغاء</button>
+					<button type="submit" class="admin-btn admin-btn-primary">تحديث البيانات</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="js/admin-script.js"></script>
+	
+	<!-- Inline Supabase Configuration -->
+	<script>
+		// Supabase Configuration - Inline to avoid loading issues
+		const SUPABASE_URL = 'https://jiwxilwzqmnwtusysdok.supabase.co';
+		const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd3hpbHd6cW1ud3R1c3lzZG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0Njk3NTUsImV4cCI6MjA3MTA0NTc1NX0.lvOW9haq2OsSu3tX38QQlfx5bavx-K_Qsv4zl_I6vdU';
+
+		// Create Supabase client
+		const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+		// Make it globally available
+		window.supabaseClient = supabaseClient;
+
+		// Test connection function
+		async function testSupabaseConnection() {
+			try {
+				const { data, error } = await supabaseClient
+					.from('teachers')
+					.select('count')
+					.limit(1);
+
+				if (error) {
+					console.log('Supabase connection test:', error.message);
+					return false;
+				}
+
+				console.log('✅ Supabase connection successful!');
+				return true;
+			} catch (err) {
+				console.error('❌ Supabase connection failed:', err);
+				return false;
+			}
+		}
+
+		// Database interaction functions
+		async function addTeacher(teacherData) {
+			try {
+				const { data, error } = await supabaseClient
+					.from('teachers')
+					.insert([teacherData])
+					.select();
+
+				if (error) throw error;
+				return { success: true, data: data[0] };
+			} catch (error) {
+				console.error('Error adding teacher:', error);
+				return { success: false, error: error.message };
+			}
+		}
+
+		async function getAllTeachers() {
+			try {
+				const { data, error } = await supabaseClient
+					.from('teachers')
+					.select('*')
+					.order('created_at', { ascending: false });
+
+				if (error) throw error;
+				return { success: true, data };
+			} catch (error) {
+				console.error('Error fetching teachers:', error);
+				return { success: false, error: error.message };
+			}
+		}
+
+		async function updateTeacher(id, updates) {
+			try {
+				const { data, error } = await supabaseClient
+					.from('teachers')
+					.update(updates)
+					.eq('id', id)
+					.select();
+
+				if (error) throw error;
+				return { success: true, data: data[0] };
+			} catch (error) {
+				console.error('Error updating teacher:', error);
+				return { success: false, error: error.message };
+			}
+		}
+
+		async function deleteTeacher(id) {
+			try {
+				const { error } = await supabaseClient
+					.from('teachers')
+					.delete()
+					.eq('id', id);
+
+				if (error) throw error;
+				return { success: true };
+			} catch (error) {
+				console.error('Error deleting teacher:', error);
+				return { success: false, error: error.message };
+			}
+		}
+
+		// Export functions for use in other files
+		window.supabaseFunctions = {
+			testSupabaseConnection,
+			addTeacher,
+			getAllTeachers,
+			updateTeacher,
+			deleteTeacher
+		};
+
+		// Test connection on load
+		document.addEventListener('DOMContentLoaded', function() {
+			console.log('🔄 Admin Teachers Fixed: DOM loaded, testing connection...');
+			testSupabaseConnection().then(success => {
+				if (success) {
+					console.log('✅ Connection test passed, loading teachers...');
+					loadTeachersData();
+					setupEventListeners();
+				} else {
+					console.error('❌ Connection test failed!');
+					showNotification('خطأ في الاتصال بقاعدة البيانات', 'error');
+				}
+			});
+		});
+
+		// Admin Teachers Management
+		let teachersData = [];
+		let currentEditId = null;
+
+		// Setup event listeners
+		function setupEventListeners() {
+			console.log('🔧 Setting up event listeners...');
+			
+			// Add teacher form submission
+			const addTeacherForm = document.getElementById('addTeacherForm');
+			if (addTeacherForm) {
+				addTeacherForm.addEventListener('submit', handleAddTeacher);
+				console.log('✅ Add teacher form listener added');
+			} else {
+				console.error('❌ Add teacher form not found!');
+			}
+
+			// Edit teacher form submission
+			const editTeacherForm = document.getElementById('editTeacherForm');
+			if (editTeacherForm) {
+				editTeacherForm.addEventListener('submit', handleUpdateTeacher);
+				console.log('✅ Edit teacher form listener added');
+			} else {
+				console.error('❌ Edit teacher form not found!');
+			}
+
+			// Search functionality
+			const searchInput = document.getElementById('teacherSearch');
+			if (searchInput) {
+				searchInput.addEventListener('input', handleTeacherSearch);
+				console.log('✅ Search input listener added');
+			} else {
+				console.error('❌ Search input not found!');
+			}
+		}
+
+		// Load teachers data from Supabase
+		async function loadTeachersData() {
+			try {
+				console.log('🔄 Loading teachers data...');
+				showLoading('جاري تحميل بيانات المدرسين...');
+				
+				// Test connection first
+				const connectionTest = await window.supabaseFunctions.testSupabaseConnection();
+				console.log('🔗 Connection test result:', connectionTest);
+				
+				if (!connectionTest) {
+					throw new Error('فشل في الاتصال بقاعدة البيانات');
+				}
+				
+				console.log('📡 Calling getAllTeachers...');
+				const result = await window.supabaseFunctions.getAllTeachers();
+				console.log('📊 getAllTeachers result:', result);
+				
+				if (result.success) {
+					teachersData = result.data || [];
+					console.log(`✅ Loaded ${teachersData.length} teachers`);
+					displayTeachers(teachersData);
+					showNotification('تم تحميل بيانات المدرسين بنجاح', 'success');
+				} else {
+					console.error('❌ Error loading teachers:', result.error);
+					showNotification(`خطأ في تحميل بيانات المدرسين: ${result.error}`, 'error');
+					// Fallback to empty array
+					teachersData = [];
+					displayTeachers([]);
+				}
+			} catch (error) {
+				console.error('💥 Exception loading teachers:', error);
+				showNotification(`خطأ في تحميل بيانات المدرسين: ${error.message}`, 'error');
+				teachersData = [];
+				displayTeachers([]);
+			} finally {
+				hideLoading();
+			}
+		}
+
+		// Handle add teacher form submission
+		async function handleAddTeacher(event) {
+			event.preventDefault();
+			
+			const formData = new FormData(event.target);
+			const teacherData = {
+				name: formData.get('name'),
+				email: formData.get('email'),
+				phone: formData.get('phone'),
+				subject: formData.get('subject'),
+				bio: formData.get('bio'),
+				experience_years: parseInt(formData.get('experience_years')) || 0,
+				education: formData.get('education'),
+				specializations: formData.get('specializations').split(',').map(s => s.trim()).filter(s => s),
+				hourly_rate: parseFloat(formData.get('hourly_rate')) || 0.00,
+				status: 'active'
+			};
+
+			console.log('📝 Adding teacher:', teacherData);
+
+			try {
+				showLoading('جاري إضافة المدرس...');
+				
+				const result = await window.supabaseFunctions.addTeacher(teacherData);
+				console.log('📊 Add teacher result:', result);
+				
+				if (result.success) {
+					showNotification('تم إضافة المدرس بنجاح', 'success');
+					event.target.reset();
+					
+					closeModal('addTeacherModal');
+					
+					// Reload data immediately
+					await loadTeachersData();
+				} else {
+					showNotification(`خطأ في إضافة المدرس: ${result.error}`, 'error');
+				}
+			} catch (error) {
+				console.error('💥 Exception adding teacher:', error);
+				showNotification(`خطأ في إضافة المدرس: ${error.message}`, 'error');
+			} finally {
+				hideLoading();
+			}
+		}
+
+		// Handle edit teacher
+		function handleEditTeacher(teacherId) {
+			console.log('✏️ Editing teacher:', teacherId);
+			const teacher = teachersData.find(t => t.id === teacherId);
+					if (!teacher) {
+			console.error('❌ Teacher not found:', teacherId);
+			return;
+		}
+
+			currentEditId = teacherId;
+			
+			// Populate form fields
+			document.getElementById('editTeacherName').value = teacher.name;
+			document.getElementById('editTeacherEmail').value = teacher.email;
+			document.getElementById('editTeacherPhone').value = teacher.phone || '';
+			document.getElementById('editTeacherSubject').value = teacher.subject || '';
+			document.getElementById('editTeacherBio').value = teacher.bio || '';
+			document.getElementById('editTeacherExperience').value = teacher.experience_years || 0;
+			document.getElementById('editTeacherEducation').value = teacher.education || '';
+			document.getElementById('editTeacherSpecializations').value = (teacher.specializations || []).join(', ');
+			document.getElementById('editTeacherHourlyRate').value = teacher.hourly_rate || 0;
+			document.getElementById('editTeacherStatus').value = teacher.status || 'active';
+			
+			openModal('editTeacherModal');
+		}
+
+		// Handle update teacher
+		async function handleUpdateTeacher(event) {
+			event.preventDefault();
+			
+			if (!currentEditId) {
+				console.error('❌ No teacher selected for editing');
+				return;
+			}
+			
+			const formData = new FormData(event.target);
+			const teacherData = {
+				name: formData.get('name'),
+				email: formData.get('email'),
+				phone: formData.get('phone'),
+				subject: formData.get('subject'),
+				bio: formData.get('bio'),
+				experience_years: parseInt(formData.get('experience_years')) || 0,
+				education: formData.get('education'),
+				specializations: formData.get('specializations').split(',').map(s => s.trim()).filter(s => s),
+				hourly_rate: parseFloat(formData.get('hourly_rate')) || 0.00,
+				status: formData.get('status')
+			};
+
+			console.log('📝 Updating teacher:', currentEditId, teacherData);
+
+			try {
+				showLoading('جاري تحديث بيانات المدرس...');
+				
+				const result = await window.supabaseFunctions.updateTeacher(currentEditId, teacherData);
+				console.log('📊 Update teacher result:', result);
+				
+				if (result.success) {
+					showNotification('تم تحديث بيانات المدرس بنجاح', 'success');
+					closeModal('editTeacherModal');
+					currentEditId = null;
+					
+					// Reload data immediately
+					await loadTeachersData();
+				} else {
+					showNotification(`خطأ في تحديث بيانات المدرس: ${result.error}`, 'error');
+				}
+			} catch (error) {
+				console.error('💥 Error updating teacher:', error);
+				showNotification(`خطأ في تحديث بيانات المدرس: ${error.message}`, 'error');
+			} finally {
+				hideLoading();
+			}
+		}
+
+		// Handle delete teacher
+		async function handleDeleteTeacher(teacherId) {
+			if (!confirm('هل أنت متأكد من حذف هذا المدرس؟')) return;
+			
+			console.log('🗑️ Deleting teacher:', teacherId);
+
+			try {
+				showLoading('جاري حذف المدرس...');
+				
+				const result = await window.supabaseFunctions.deleteTeacher(teacherId);
+				console.log('📊 Delete teacher result:', result);
+				
+				if (result.success) {
+					showNotification('تم حذف المدرس بنجاح', 'success');
+					
+					// Reload data immediately
+					await loadTeachersData();
+				} else {
+					showNotification(`خطأ في حذف المدرس: ${result.error}`, 'error');
+				}
+			} catch (error) {
+				console.error('💥 Error deleting teacher:', error);
+				showNotification(`خطأ في حذف المدرس: ${error.message}`, 'error');
+			} finally {
+				hideLoading();
+			}
+		}
+
+		// Display teachers in the table
+		function displayTeachers(teachers) {
+			console.log('📋 Displaying teachers:', teachers.length);
+			const tbody = document.querySelector('#teachersTable tbody');
+			if (!tbody) {
+				console.error('❌ Teachers table body not found!');
+				return;
+			}
+			
+			tbody.innerHTML = '';
+			
+			if (teachers.length === 0) {
+				tbody.innerHTML = `
+					<tr>
+						<td colspan="8" class="text-center" style="color: #ccc; padding: 2rem;">
+							لا يوجد مدرسين حالياً
+						</td>
+					</tr>
+				`;
+				return;
+			}
+			
+			teachers.forEach(teacher => {
+				const row = document.createElement('tr');
+				row.innerHTML = `
+					<td>
+						<div class="teacher-info">
+							<div class="teacher-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; color: #ff4d4d; font-size: 1.5rem;">
+								${teacher.name.charAt(0)}
+							</div>
+							<div>
+								<div class="teacher-name">${teacher.name}</div>
+								<div class="teacher-subject">${teacher.subject || 'غير محدد'}</div>
+							</div>
+						</div>
+					</td>
+					<td>${teacher.email}</td>
+					<td>${teacher.phone || 'غير محدد'}</td>
+					<td>${teacher.experience_years || 0} سنة</td>
+					<td>${teacher.education || 'غير محدد'}</td>
+					<td>
+						<span class="status-badge status-${teacher.status || 'active'}">
+							${getStatusText(teacher.status)}
+						</span>
+					</td>
+					<td>${teacher.total_students || 0}</td>
+					<td>
+						<div class="action-buttons">
+							<button onclick="handleEditTeacher('${teacher.id}')" class="btn-edit" title="تعديل">
+								✏️
+							</button>
+							<button onclick="handleDeleteTeacher('${teacher.id}')" class="btn-delete" title="حذف">
+								🗑️
+							</button>
+						</div>
+					</td>
+				`;
+				tbody.appendChild(row);
+			});
+			
+			console.log('✅ Teachers displayed successfully');
+		}
+
+		// Handle teacher search
+		function handleTeacherSearch(event) {
+			const searchTerm = event.target.value.toLowerCase();
+			
+			if (!searchTerm) {
+				displayTeachers(teachersData);
+				return;
+			}
+			
+			const filteredTeachers = teachersData.filter(teacher => 
+				teacher.name.toLowerCase().includes(searchTerm) ||
+				teacher.email.toLowerCase().includes(searchTerm) ||
+				(teacher.subject && teacher.subject.toLowerCase().includes(searchTerm)) ||
+				(teacher.phone && teacher.phone.includes(searchTerm))
+			);
+			
+			displayTeachers(filteredTeachers);
+		}
+
+		// Get status text in Arabic
+		function getStatusText(status) {
+			const statusMap = {
+				'active': 'نشط',
+				'inactive': 'غير نشط',
+				'suspended': 'معلق'
+			};
+			return statusMap[status] || 'نشط';
+		}
+
+		// Utility functions
+		function showLoading(message) {
+			const loadingDiv = document.getElementById('loading');
+			if (loadingDiv) {
+				loadingDiv.textContent = message;
+				loadingDiv.style.display = 'block';
+			}
+		}
+
+		function hideLoading() {
+			const loadingDiv = document.getElementById('loading');
+			if (loadingDiv) {
+				loadingDiv.style.display = 'none';
+			}
+		}
+
+		function showNotification(message, type = 'info') {
+			// Create notification element
+			const notification = document.createElement('div');
+			notification.className = `notification notification-${type}`;
+			notification.innerHTML = `
+				<span>${message}</span>
+				<button onclick="this.parentElement.remove()">×</button>
+			`;
+			
+			// Add to page
+			document.body.appendChild(notification);
+			
+			// Auto remove after 5 seconds
+			setTimeout(() => {
+				if (notification.parentElement) {
+					notification.remove();
+				}
+			}, 5000);
+		}
+
+		function openModal(modalId) {
+			const modal = document.getElementById(modalId);
+			if (modal) {
+				modal.style.display = 'block';
+				document.body.style.overflow = 'hidden';
+			}
+		}
+
+		function closeModal(modalId) {
+			const modal = document.getElementById(modalId);
+			if (modal) {
+				modal.style.display = 'none';
+				document.body.style.overflow = 'auto';
+			}
+		}
+
+		// Close modals when clicking outside
+		window.addEventListener('click', function(event) {
+			if (event.target.classList.contains('modal')) {
+				event.target.style.display = 'none';
+				document.body.style.overflow = 'auto';
+			}
+		});
+
+		// Export functions for global use
+		window.handleEditTeacher = handleEditTeacher;
+		window.handleUpdateTeacher = handleUpdateTeacher;
+		window.handleDeleteTeacher = handleDeleteTeacher;
+		window.handleTeacherSearch = handleTeacherSearch;
+	</script>
+</body>
+</html>
