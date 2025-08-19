@@ -7,27 +7,12 @@
     <link rel="stylesheet" href="css/admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="admin-body">
     <div class="admin-container">
-        <header class="admin-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
-                    <h1>لوحة التحكم الإدارية</h1>
-                </div>
-                <div class="admin-user-info">
-                    <span>مرحباً، أحمد حسين</span>
-                    <span>|</span>
-                    <span id="currentDateTime"></span>
-                </div>
-                <a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
-            </div>
-        </header>
-
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <img src="vip-logo.jpg" alt="VIP Center">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
                 <h3>لوحة التحكم</h3>
                 <div class="admin-role">مدير عام</div>
             </div>
@@ -91,7 +76,7 @@
                 <h1>مرحباً بك في لوحة التحكم</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user-info">
-                        <span>مرحباً، أحمد حسين</span>
+                        <span>مرحباً، مدير عام</span>
                         <span>|</span>
                         <span id="currentDateTime"></span>
                     </div>
@@ -99,142 +84,151 @@
                 </div>
             </header>
 
-            <!-- Dashboard Statistics -->
+            <!-- Dashboard Content -->
             <div class="admin-cards-grid">
                 <div class="admin-card">
                     <div class="admin-card-header">
-                        <h3 class="admin-card-title">إجمالي الطلاب</h3>
-                        <span class="admin-card-icon">👥</span>
-                    </div>
-                    <div class="admin-card-value" id="totalStudents">1,245</div>
-                    <p class="admin-card-description">طالب مسجل في المنصة</p>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">إجمالي الكورسات</h3>
-                        <span class="admin-card-icon">📚</span>
-                    </div>
-                    <div class="admin-card-value" id="totalCourses">48</div>
-                    <p class="admin-card-description">كورس متاح</p>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">إجمالي المدرسين</h3>
+                        <span class="admin-card-title">إجمالي المدرسين</span>
                         <span class="admin-card-icon">👨‍🏫</span>
                     </div>
-                    <div class="admin-card-value" id="totalTeachers">12</div>
-                    <p class="admin-card-description">مدرس في المنصة</p>
+                    <div class="admin-card-value" id="totalTeachers">0</div>
+                    <div class="admin-card-description">عدد المدرسين المسجلين</div>
                 </div>
 
                 <div class="admin-card">
                     <div class="admin-card-header">
-                        <h3 class="admin-card-title">إجمالي الفيديوهات</h3>
+                        <span class="admin-card-title">إجمالي الكورسات</span>
+                        <span class="admin-card-icon">📚</span>
+                    </div>
+                    <div class="admin-card-value" id="totalCourses">0</div>
+                    <div class="admin-card-description">عدد الكورسات المتاحة</div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">إجمالي الطلاب</span>
+                        <span class="admin-card-icon">👥</span>
+                    </div>
+                    <div class="admin-card-value" id="totalStudents">0</div>
+                    <div class="admin-card-description">عدد الطلاب المسجلين</div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">إجمالي الفيديوهات</span>
                         <span class="admin-card-icon">🎥</span>
                     </div>
-                    <div class="admin-card-value" id="totalVideos">324</div>
-                    <p class="admin-card-description">فيديو تعليمي</p>
+                    <div class="admin-card-value" id="totalVideos">0</div>
+                    <div class="admin-card-description">عدد الفيديوهات المتاحة</div>
                 </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">الأكواد النشطة</h3>
-                        <span class="admin-card-icon">🔐</span>
-                    </div>
-                    <div class="admin-card-value" id="activeCodes">156</div>
-                    <p class="admin-card-description">كود فعال</p>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <h3 class="admin-card-title">المشاهدات اليوم</h3>
-                        <span class="admin-card-icon">📊</span>
-                    </div>
-                    <div class="admin-card-value" id="todayViews">2,847</div>
-                    <p class="admin-card-description">مشاهدة اليوم</p>
-                </div>
-            </div>
-
-            <!-- Recent Activities -->
-            <div class="admin-table-container">
-                <h2 style="color: #ffffff; margin-bottom: 1rem;">الأنشطة الأخيرة</h2>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>الوقت</th>
-                            <th>النشاط</th>
-                            <th>المستخدم</th>
-                            <th>التفاصيل</th>
-                            <th>الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recentActivities">
-                        <tr>
-                            <td>2025-01-17 14:30</td>
-                            <td>تسجيل طالب جديد</td>
-                            <td>محمد أحمد</td>
-                            <td>تسجيل في كورس الفيزياء</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-17 14:25</td>
-                            <td>رفع فيديو جديد</td>
-                            <td>أ. مصطفى إبراهيم</td>
-                            <td>درس الموجات الكهرومغناطيسية</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-17 14:20</td>
-                            <td>إنشاء كود جديد</td>
-                            <td>المدير العام</td>
-                            <td>كود للوحدة الثالثة - كيمياء</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">نشط</span></td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-17 14:15</td>
-                            <td>تحديث معلومات مدرس</td>
-                            <td>أ. إيمان خفاجي</td>
-                            <td>تحديث الصورة الشخصية والسيرة</td>
-                            <td><span class="admin-btn admin-btn-success admin-action-btn">مكتمل</span></td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-17 14:10</td>
-                            <td>محاولة دخول خاطئة</td>
-                            <td>غير معروف</td>
-                            <td>محاولة دخول بكود غير صحيح</td>
-                            <td><span class="admin-btn admin-btn-danger admin-action-btn">فشل</span></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
 
             <!-- Quick Actions -->
-            <div class="admin-form-container" style="margin-top: 2rem;">
-                <h2 style="color: #ffffff; margin-bottom: 1rem;">إجراءات سريعة</h2>
-                <div class="admin-form-row">
-                    <a href="admin-courses.html" class="admin-btn admin-btn-primary">
-                        <span>📚</span>
-                        إضافة كورس جديد
+            <div class="admin-section">
+                <h2>إجراءات سريعة</h2>
+                <div class="admin-actions-grid">
+                    <a href="admin-teachers.html" class="admin-action-card">
+                        <span class="admin-action-icon">➕</span>
+                        <span class="admin-action-title">إضافة مدرس جديد</span>
+                        <span class="admin-action-desc">إضافة مدرس جديد للنظام</span>
                     </a>
-                    <a href="admin-teachers.html" class="admin-btn admin-btn-primary">
-                        <span>👨‍🏫</span>
-                        إضافة مدرس جديد
+                    
+                    <a href="admin-courses.html" class="admin-action-card">
+                        <span class="admin-action-icon">📚</span>
+                        <span class="admin-action-title">إضافة كورس جديد</span>
+                        <span class="admin-action-desc">إنشاء كورس تعليمي جديد</span>
                     </a>
-                    <a href="admin-videos.html" class="admin-btn admin-btn-primary">
-                        <span>🎥</span>
-                        رفع فيديو جديد
+                    
+                    <a href="admin-videos.html" class="admin-action-card">
+                        <span class="admin-action-icon">🎥</span>
+                        <span class="admin-action-title">رفع فيديو جديد</span>
+                        <span class="admin-action-desc">إضافة محتوى فيديو تعليمي</span>
                     </a>
-                    <a href="admin-codes.html" class="admin-btn admin-btn-primary">
-                        <span>🔐</span>
-                        إنشاء كود جديد
+                    
+                    <a href="admin-codes.html" class="admin-action-card">
+                        <span class="admin-action-icon">🔐</span>
+                        <span class="admin-action-title">إنشاء كود وصول</span>
+                        <span class="admin-action-desc">إنشاء كود وصول لكورس معين</span>
                     </a>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="admin-section">
+                <h2>النشاطات الأخيرة</h2>
+                <div class="admin-activity-list" id="recentActivity">
+                    <div class="admin-activity-item">
+                        <span class="admin-activity-icon">📝</span>
+                        <span class="admin-activity-text">تم تسجيل الدخول بنجاح</span>
+                        <span class="admin-activity-time">الآن</span>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="js/admin-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
+    <script src="js/admin-script.js"></script>
+    <script>
+        // Check authentication
+        if (!sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeString = now.toLocaleDateString('ar-EG', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('currentDateTime').textContent = dateTimeString;
+        }
+
+        // Update every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load teachers count
+                const teachersResult = await window.supabaseFunctions.getAllTeachers();
+                if (teachersResult.success) {
+                    document.getElementById('totalTeachers').textContent = teachersResult.data.length;
+                }
+
+                // Load courses count
+                const coursesResult = await window.supabaseFunctions.getAllCourses();
+                if (coursesResult.success) {
+                    document.getElementById('totalCourses').textContent = coursesResult.data.length;
+                }
+
+                // Load students count
+                const studentsResult = await window.supabaseFunctions.getAllStudents();
+                if (studentsResult.success) {
+                    document.getElementById('totalStudents').textContent = studentsResult.data.length;
+                }
+
+                // Load videos count
+                const videosResult = await window.supabaseFunctions.getAllVideos();
+                if (videosResult.success) {
+                    document.getElementById('totalVideos').textContent = videosResult.data.length;
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+    </script>
 </body>
 </html>

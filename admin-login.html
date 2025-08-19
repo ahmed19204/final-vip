@@ -10,15 +10,16 @@
 </head>
 <body>
     <div class="admin-login-container">
-        <div class="login-box">
-            <div class="login-header">
-                <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
-                <h1>دخول الإدارة</h1>
+        <div class="admin-login-card">
+            <div class="admin-logo">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
+                <h2>VIP Center</h2>
+                <p>لوحة التحكم الإدارية</p>
             </div>
             
             <form id="adminLoginForm" class="admin-login-form">
                 <div class="form-group">
-                    <label for="adminUsername" class="form-label">اسم المستخدم الإداري</label>
+                    <label for="adminUsername" class="form-label">اسم المستخدم</label>
                     <input type="text" id="adminUsername" name="adminUsername" class="form-input" placeholder="أدخل اسم المستخدم" required>
                 </div>
                 
@@ -27,30 +28,60 @@
                     <input type="password" id="adminPassword" name="adminPassword" class="form-input" placeholder="أدخل كلمة المرور" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="adminRole" class="form-label">الصلاحية</label>
-                    <select id="adminRole" name="adminRole" class="form-select" required>
-                        <option value="">اختر الصلاحية</option>
-                        <option value="super_admin">مدير عام</option>
-                        <option value="content_admin">مدير محتوى</option>
-                        <option value="teacher_admin">مدير مدرسين</option>
-                    </select>
-                </div>
-                
                 <button type="submit" class="admin-login-btn">دخول لوحة التحكم</button>
                 
-                <div id="adminLoginError" class="error-message" style="display: none;">
+                <div id="adminLoginError" class="error-message" style="display: none; color: #ff4d4d; text-align: center; margin-top: 1rem;">
                     بيانات الدخول غير صحيحة
                 </div>
             </form>
             
             <div class="admin-info">
-                <p>للوصول إلى لوحة التحكم، يجب أن تكون لديك صلاحيات إدارية</p>
+                <p><strong>بيانات الدخول:</strong></p>
+                <p>اسم المستخدم: <code>admin</code></p>
+                <p>كلمة المرور: <code>admin123</code></p>
                 <a href="index.html" class="back-to-site">العودة للموقع الرئيسي</a>
             </div>
         </div>
     </div>
 
-    <script src="js/admin-script.js"></script>
+    <script>
+        // Admin Login Logic
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('adminLoginError');
+            
+            // Simple authentication (in production, use proper JWT)
+            if (username === 'admin' && password === 'admin123') {
+                // Set authentication flag
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                
+                // Show success message
+                errorDiv.style.display = 'block';
+                errorDiv.style.color = '#4CAF50';
+                errorDiv.textContent = 'تم تسجيل الدخول بنجاح! جاري التوجيه...';
+                
+                // Redirect to dashboard after 1 second
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
+            } else {
+                // Show error message
+                errorDiv.style.display = 'block';
+                errorDiv.style.color = '#ff4d4d';
+                errorDiv.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+                
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+        
+        // Check if already authenticated
+        if (sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'admin-dashboard.html';
+        }
+    </script>
 </body>
 </html>
