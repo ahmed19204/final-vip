@@ -85,7 +85,7 @@
             <header class="admin-header">
                 <h1>إدارة الكورسات</h1>
                 <div class="admin-header-actions">
-                    <button class="admin-btn admin-btn-primary" onclick="showAddCourseModal()">
+                    <button class="admin-btn admin-btn-primary" onclick="openModal('addCourseModal')">
                         <span>➕</span>
                         إضافة كورس جديد
                     </button>
@@ -183,9 +183,9 @@
                             <td>2025-01-10</td>
                             <td>
                                 <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(1)">تعديل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(1)">عرض</button>
-                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(1)">حذف</button>
+                                                            <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="handleEditCourse('1')">تعديل</button>
+                        <button class="admin-btn admin-btn-primary admin-action-btn" onclick="handleViewCourse('1')">عرض</button>
+                        <button class="admin-btn admin-btn-danger admin-action-btn" onclick="handleDeleteCourse('1')">حذف</button>
                                 </div>
                             </td>
                         </tr>
@@ -208,9 +208,9 @@
                             <td>2025-01-08</td>
                             <td>
                                 <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(2)">تعديل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(2)">عرض</button>
-                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(2)">حذف</button>
+                                                            <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="handleEditCourse('2')">تعديل</button>
+                        <button class="admin-btn admin-btn-primary admin-action-btn" onclick="handleViewCourse('2')">عرض</button>
+                        <button class="admin-btn admin-btn-danger admin-action-btn" onclick="handleDeleteCourse('2')">حذف</button>
                                 </div>
                             </td>
                         </tr>
@@ -233,9 +233,9 @@
                             <td>2025-01-05</td>
                             <td>
                                 <div class="admin-actions">
-                                    <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="editCourse(3)">تعديل</button>
-                                    <button class="admin-btn admin-btn-primary admin-action-btn" onclick="viewCourse(3)">عرض</button>
-                                    <button class="admin-btn admin-btn-danger admin-action-btn" onclick="deleteCourse(3)">حذف</button>
+                                                            <button class="admin-btn admin-btn-secondary admin-action-btn" onclick="handleEditCourse('3')">تعديل</button>
+                        <button class="admin-btn admin-btn-primary admin-action-btn" onclick="handleViewCourse('3')">عرض</button>
+                        <button class="admin-btn admin-btn-danger admin-action-btn" onclick="handleDeleteCourse('3')">حذف</button>
                                 </div>
                             </td>
                         </tr>
@@ -250,7 +250,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="courseModalTitle">إضافة كورس جديد</h2>
-                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
+                <button class="modal-close" onclick="closeModal('addCourseModal')">&times;</button>
             </div>
             
             <form id="courseForm" class="admin-form-container">
@@ -356,7 +356,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="admin-btn admin-btn-secondary" onclick="closeCourseModal()">إلغاء</button>
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal('addCourseModal')">إلغاء</button>
                     <button type="submit" class="admin-btn admin-btn-primary">حفظ الكورس</button>
                 </div>
             </form>
@@ -797,9 +797,47 @@
             }
         });
 
+        // Handle edit course
+        function handleEditCourse(courseId) {
+            console.log('✏️ Editing course:', courseId);
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) {
+                console.error('❌ Course not found:', courseId);
+                return;
+            }
+            
+            // TODO: Implement edit course modal
+            showNotification('ميزة التعديل قيد التطوير', 'info');
+        }
+
+        // Handle view course
+        function handleViewCourse(courseId) {
+            console.log('👁️ Viewing course:', courseId);
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) {
+                console.error('❌ Course not found:', courseId);
+                return;
+            }
+            
+            // TODO: Implement view course modal
+            showNotification('ميزة العرض قيد التطوير', 'info');
+        }
+
+        // Handle delete course
+        function handleDeleteCourse(courseId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الكورس؟')) return;
+            
+            console.log('🗑️ Deleting course:', courseId);
+            // TODO: Implement delete course
+            showNotification('ميزة الحذف قيد التطوير', 'info');
+        }
+
         // Export functions for global use
         window.handleAddCourse = handleAddCourse;
         window.handleCourseSearch = handleCourseSearch;
+        window.handleEditCourse = handleEditCourse;
+        window.handleViewCourse = handleViewCourse;
+        window.handleDeleteCourse = handleDeleteCourse;
     </script>
 </body>
 </html>
