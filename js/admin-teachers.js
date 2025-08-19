@@ -16,10 +16,40 @@ function setupEventListeners() {
         addTeacherForm.addEventListener('submit', handleAddTeacher);
     }
 
+    // Edit teacher form submission
+    const editTeacherForm = document.getElementById('editTeacherForm');
+    if (editTeacherForm) {
+        editTeacherForm.addEventListener('submit', handleUpdateTeacher);
+    }
+
     // Search functionality
     const searchInput = document.getElementById('teacherSearch');
     if (searchInput) {
         searchInput.addEventListener('input', handleTeacherSearch);
+    }
+
+    // Image upload preview
+    setupImageUpload();
+}
+
+// Setup image upload functionality
+function setupImageUpload() {
+    const imageInput = document.getElementById('teacherImage');
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('teacherImagePreview');
+                    if (preview) {
+                        preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">`;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     }
 }
 
@@ -77,8 +107,18 @@ async function handleAddTeacher(event) {
         if (result.success) {
             showNotification('تم إضافة المدرس بنجاح', 'success');
             event.target.reset();
+            
+            // Clear image preview
+            const preview = document.getElementById('teacherImagePreview');
+            if (preview) {
+                preview.innerHTML = '';
+                preview.style.display = 'none';
+            }
+            
             closeModal('addTeacherModal');
-            loadTeachersData(); // Reload data
+            
+            // Reload data immediately
+            await loadTeachersData();
         } else {
             showNotification(`خطأ في إضافة المدرس: ${result.error}`, 'error');
         }
@@ -91,7 +131,7 @@ async function handleAddTeacher(event) {
 }
 
 // Handle edit teacher
-async function handleEditTeacher(teacherId) {
+function handleEditTeacher(teacherId) {
     const teacher = teachersData.find(t => t.id === teacherId);
     if (!teacher) return;
 
@@ -135,19 +175,18 @@ async function handleUpdateTeacher(event) {
     try {
         showLoading('جاري تحديث بيانات المدرس...');
         
-        // Update in Supabase
-        const { data, error } = await window.supabaseClient
-            .from('teachers')
-            .update(teacherData)
-            .eq('id', currentEditId)
-            .select();
+        const result = await window.supabaseFunctions.updateTeacher(currentEditId, teacherData);
         
-        if (error) throw error;
-        
-        showNotification('تم تحديث بيانات المدرس بنجاح', 'success');
-        closeModal('editTeacherModal');
-        currentEditId = null;
-        loadTeachersData(); // Reload data
+        if (result.success) {
+            showNotification('تم تحديث بيانات المدرس بنجاح', 'success');
+            closeModal('editTeacherModal');
+            currentEditId = null;
+            
+            // Reload data immediately
+            await loadTeachersData();
+        } else {
+            showNotification(`خطأ في تحديث بيانات المدرس: ${result.error}`, 'error');
+        }
     } catch (error) {
         console.error('Error updating teacher:', error);
         showNotification(`خطأ في تحديث بيانات المدرس: ${error.message}`, 'error');
@@ -163,15 +202,16 @@ async function handleDeleteTeacher(teacherId) {
     try {
         showLoading('جاري حذف المدرس...');
         
-        const { error } = await window.supabaseClient
-            .from('teachers')
-            .delete()
-            .eq('id', teacherId);
+        const result = await window.supabaseFunctions.deleteTeacher(teacherId);
         
-        if (error) throw error;
-        
-        showNotification('تم حذف المدرس بنجاح', 'success');
-        loadTeachersData(); // Reload data
+        if (result.success) {
+            showNotification('تم حذف المدرس بنجاح', 'success');
+            
+            // Reload data immediately
+            await loadTeachersData();
+        } else {
+            showNotification(`خطأ في حذف المدرس: ${result.error}`, 'error');
+        }
     } catch (error) {
         console.error('Error deleting teacher:', error);
         showNotification(`خطأ في حذف المدرس: ${error.message}`, 'error');
@@ -190,7 +230,7 @@ function displayTeachers(teachers) {
     if (teachers.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center text-muted">
+                <td colspan="8" class="text-center" style="color: #ccc; padding: 2rem;">
                     لا يوجد مدرسين حالياً
                 </td>
             </tr>
@@ -203,7 +243,9 @@ function displayTeachers(teachers) {
         row.innerHTML = `
             <td>
                 <div class="teacher-info">
-                    <img src="${teacher.image_url || 'images/default-teacher.jpg'}" alt="${teacher.name}" class="teacher-avatar">
+                    <div class="teacher-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; color: #ff4d4d; font-size: 1.5rem;">
+                        ${teacher.name.charAt(0)}
+                    </div>
                     <div>
                         <div class="teacher-name">${teacher.name}</div>
                         <div class="teacher-subject">${teacher.subject || 'غير محدد'}</div>
@@ -215,17 +257,17 @@ function displayTeachers(teachers) {
             <td>${teacher.experience_years || 0} سنة</td>
             <td>${teacher.education || 'غير محدد'}</td>
             <td>
-                <span class="status-badge status-${teacher.status}">
+                <span class="status-badge status-${teacher.status || 'active'}">
                     ${getStatusText(teacher.status)}
                 </span>
             </td>
             <td>${teacher.total_students || 0}</td>
             <td>
                 <div class="action-buttons">
-                    <button onclick="handleEditTeacher(${teacher.id})" class="btn-edit" title="تعديل">
+                    <button onclick="handleEditTeacher('${teacher.id}')" class="btn-edit" title="تعديل">
                         ✏️
                     </button>
-                    <button onclick="handleDeleteTeacher(${teacher.id})" class="btn-delete" title="حذف">
+                    <button onclick="handleDeleteTeacher('${teacher.id}')" class="btn-delete" title="حذف">
                         🗑️
                     </button>
                 </div>
@@ -261,7 +303,7 @@ function getStatusText(status) {
         'inactive': 'غير نشط',
         'suspended': 'معلق'
     };
-    return statusMap[status] || status;
+    return statusMap[status] || 'نشط';
 }
 
 // Utility functions
@@ -304,6 +346,7 @@ function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     }
 }
 
@@ -311,6 +354,7 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 }
 
@@ -318,6 +362,7 @@ function closeModal(modalId) {
 window.addEventListener('click', function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 });
 
