@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Supabase</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #1a1a1a; 
+            color: white; 
+            padding: 20px; 
+            direction: rtl; 
+        }
+        .test-result { 
+            background: #333; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border-left: 4px solid #ff4d4d; 
+        }
+        .success { border-left-color: #4CAF50; }
+        .error { border-left-color: #f44336; }
+        button { 
+            background: #ff4d4d; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 5px; 
+        }
+        button:hover { background: #ff3333; }
+        pre { 
+            background: #222; 
+            padding: 10px; 
+            border-radius: 5px; 
+            overflow-x: auto; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 اختبار اتصال Supabase</h1>
+    
+    <div class="test-result" id="status">
+        <h3>حالة الاتصال:</h3>
+        <p>اضغط على "اختبار الاتصال" لبدء الاختبار</p>
+    </div>
+    
+    <div>
+        <button onclick="testConnection()">🔗 اختبار الاتصال</button>
+        <button onclick="testTables()">📊 اختبار الجداول</button>
+        <button onclick="clearResults()">🗑️ مسح النتائج</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://jiwxilwzqmnwtusysdok.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imppd3hpbHd6cW1ud3R1c3lzZG9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0Njk3NTUsImV4cCI6MjA3MTA0NTc1NX0.lvOW9haq2OsSu3tX38QQlfx5bavx-K_Qsv4zl_I6vdU';
+
+        let supabaseClient;
+
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `
+                <h4>${title}</h4>
+                <pre>${JSON.stringify(content, null, 2)}</pre>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `test-result ${type}`;
+            statusDiv.innerHTML = `<h3>حالة الاتصال:</h3><p>${message}</p>`;
+        }
+
+        async function testConnection() {
+            try {
+                updateStatus('جاري اختبار الاتصال...', 'info');
+                
+                // Check if Supabase library is loaded
+                if (typeof supabase === 'undefined') {
+                    throw new Error('مكتبة Supabase غير محملة!');
+                }
+                
+                addResult('✅ مكتبة Supabase محملة', { 
+                    version: '2.x', 
+                    loaded: true 
+                }, 'success');
+                
+                // Create client
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                addResult('✅ تم إنشاء Supabase Client', { 
+                    url: SUPABASE_URL, 
+                    keyLength: SUPABASE_ANON_KEY.length 
+                }, 'success');
+                
+                // Test connection
+                const { data, error } = await supabaseClient
+                    .from('teachers')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                updateStatus('✅ الاتصال ناجح!', 'success');
+                addResult('✅ اختبار الاتصال ناجح', { 
+                    data, 
+                    error: null 
+                }, 'success');
+                
+            } catch (error) {
+                updateStatus(`❌ فشل الاتصال: ${error.message}`, 'error');
+                addResult('❌ خطأ في الاتصال', { 
+                    message: error.message, 
+                    stack: error.stack 
+                }, 'error');
+            }
+        }
+
+        async function testTables() {
+            if (!supabaseClient) {
+                addResult('❌ يجب اختبار الاتصال أولاً', {}, 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('جاري اختبار الجداول...', 'info');
+                
+                // Test teachers table
+                const { data: teachers, error: teachersError } = await supabaseClient
+                    .from('teachers')
+                    .select('*')
+                    .limit(5);
+                
+                if (teachersError) {
+                    addResult('❌ خطأ في جدول المدرسين', { error: teachersError }, 'error');
+                } else {
+                    addResult('✅ جدول المدرسين يعمل', { 
+                        count: teachers.length, 
+                        sample: teachers[0] || 'لا توجد بيانات' 
+                    }, 'success');
+                }
+                
+                // Test subjects table
+                const { data: subjects, error: subjectsError } = await supabaseClient
+                    .from('subjects')
+                    .select('*')
+                    .limit(5);
+                
+                if (subjectsError) {
+                    addResult('❌ خطأ في جدول التخصصات', { error: subjectsError }, 'error');
+                } else {
+                    addResult('✅ جدول التخصصات يعمل', { 
+                        count: subjects.length, 
+                        sample: subjects[0] || 'لا توجد بيانات' 
+                    }, 'success');
+                }
+                
+                updateStatus('✅ تم اختبار الجداول!', 'success');
+                
+            } catch (error) {
+                updateStatus(`❌ خطأ في اختبار الجداول: ${error.message}`, 'error');
+                addResult('❌ خطأ في اختبار الجداول', { 
+                    message: error.message 
+                }, 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            updateStatus('اضغط على "اختبار الاتصال" لبدء الاختبار', 'info');
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', function() {
+            updateStatus('الصفحة محملة، اضغط "اختبار الاتصال"', 'info');
+        });
+    </script>
+</body>
+</html>
