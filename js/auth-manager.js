@@ -41,26 +41,96 @@ class AuthManager {
         if (!navMenu) return;
         
         if (this.isLoggedIn && this.currentUser) {
-            // إزالة أزرار تسجيل الدخول والتسجيل
-            const loginLink = navMenu.querySelector('a[href="login.html"]');
-            const registerLink = navMenu.querySelector('a[href="register.html"]');
+            // إضافة class للـ body لإخفاء أزرار التسجيل
+            document.body.classList.add('user-logged-in');
             
-            if (loginLink) loginLink.parentElement.style.display = 'none';
-            if (registerLink) registerLink.parentElement.style.display = 'none';
+            // إخفاء جميع أزرار التسجيل
+            this.hideAuthButtons(navMenu);
             
             // إضافة معلومات المستخدم وزر الخروج
             this.addUserNavigation(navMenu);
         } else {
-            // إظهار أزرار تسجيل الدخول والتسجيل
-            const loginLink = navMenu.querySelector('a[href="login.html"]');
-            const registerLink = navMenu.querySelector('a[href="register.html"]');
+            // إزالة class من الـ body
+            document.body.classList.remove('user-logged-in');
             
-            if (loginLink) loginLink.parentElement.style.display = 'flex';
-            if (registerLink) registerLink.parentElement.style.display = 'flex';
+            // إظهار أزرار تسجيل الدخول والتسجيل
+            this.showAuthButtons(navMenu);
             
             // إزالة معلومات المستخدم
             this.removeUserNavigation(navMenu);
         }
+    }
+    
+    hideAuthButtons(navMenu) {
+        // إخفاء جميع روابط التسجيل المختلفة
+        const authSelectors = [
+            'a[href="login.html"]',
+            'a[href="login-simple.html"]', 
+            'a[href="register.html"]',
+            'a[href*="login"]',
+            'a[href*="register"]',
+            '.nav-link[href*="login"]',
+            '.nav-link[href*="register"]',
+            '.register-btn'
+        ];
+        
+        authSelectors.forEach(selector => {
+            const elements = navMenu.querySelectorAll(selector);
+            elements.forEach(element => {
+                if (element && element.parentElement) {
+                    element.parentElement.style.display = 'none';
+                    element.style.display = 'none';
+                }
+            });
+        });
+        
+        // إخفاء أي نص يحتوي على "تسجيل" أو "سجل"
+        const allLinks = navMenu.querySelectorAll('a');
+        allLinks.forEach(link => {
+            const text = link.textContent.trim();
+            if (text.includes('تسجيل') || text.includes('سجل') || text === 'دخول') {
+                if (link.parentElement) {
+                    link.parentElement.style.display = 'none';
+                }
+                link.style.display = 'none';
+            }
+        });
+    }
+    
+    showAuthButtons(navMenu) {
+        // إظهار جميع روابط التسجيل
+        const authSelectors = [
+            'a[href="login.html"]',
+            'a[href="login-simple.html"]',
+            'a[href="register.html"]',
+            'a[href*="login"]',
+            'a[href*="register"]',
+            '.nav-link[href*="login"]',
+            '.nav-link[href*="register"]',
+            '.register-btn'
+        ];
+        
+        authSelectors.forEach(selector => {
+            const elements = navMenu.querySelectorAll(selector);
+            elements.forEach(element => {
+                if (element && element.parentElement) {
+                    element.parentElement.style.display = 'flex';
+                    element.style.display = 'block';
+                }
+            });
+        });
+        
+        // إظهار النصوص المخفية
+        const allLinks = navMenu.querySelectorAll('a');
+        allLinks.forEach(link => {
+            const text = link.textContent.trim();
+            if (text.includes('تسجيل') || text.includes('سجل') || text === 'دخول') {
+                if (link.parentElement) {
+                    link.parentElement.style.display = 'flex';
+                }
+                link.style.display = 'block';
+            }
+        });
     }
     
     addUserNavigation(navMenu) {

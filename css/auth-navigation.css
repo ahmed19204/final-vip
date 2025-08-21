@@ -1,5 +1,35 @@
 /* تحسينات Navigation للمستخدمين المسجلين */
 
+/* إخفاء أزرار التسجيل للمستخدمين المسجلين */
+.user-logged-in .auth-btn,
+.user-logged-in .register-btn,
+.user-logged-in a[href*="login"],
+.user-logged-in a[href*="register"] {
+    display: none !important;
+}
+
+/* إخفاء أزرار التسجيل في الصفحة الرئيسية */
+.user-logged-in .hero-buttons .btn[href*="register"],
+.user-logged-in .hero-buttons .btn[href*="login"],
+.user-logged-in .hero-buttons .btn-primary[href*="register"],
+.user-logged-in .hero-buttons .btn-secondary[href*="login"] {
+    display: none !important;
+}
+
+/* إخفاء أزرار التسجيل في جميع الصفحات */
+.user-logged-in .btn[href="register.html"],
+.user-logged-in .btn[href="login.html"],
+.user-logged-in .btn[href="login-simple.html"] {
+    display: none !important;
+}
+
+/* إخفاء نصوص التسجيل */
+.user-logged-in a:contains("سجل"),
+.user-logged-in a:contains("تسجيل"),
+.user-logged-in a:contains("دخول") {
+    display: none !important;
+}
+
 /* User Dropdown Styles - Enhanced */
 .user-dropdown {
     position: relative;
