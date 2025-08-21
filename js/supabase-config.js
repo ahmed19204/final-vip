@@ -60,22 +60,40 @@ async function signInWithGoogle() {
 
 async function handleOAuthCallback() {
     try {
+        console.log('🔄 Starting OAuth callback process...');
+        
         const { data: { user }, error } = await supabaseClient.auth.getUser();
         
-        if (error) throw error;
-        if (!user) return { success: false, error: 'No user found' };
+        if (error) {
+            console.error('❌ Supabase auth error:', error);
+            throw error;
+        }
+        if (!user) {
+            console.error('❌ No user found in auth session');
+            return { success: false, error: 'No user found' };
+        }
+
+        console.log('✅ User authenticated:', user.email);
 
         // Check if user exists in our users table
-        const { data: existingUser, error: fetchError } = await supabaseClient
+        const { data: existingUsers, error: fetchError } = await supabaseClient
             .from('users')
             .select('*')
-            .eq('email', user.email)
-            .single();
+            .eq('email', user.email);
+
+        if (fetchError) {
+            console.error('❌ Error fetching user from database:', fetchError);
+            throw fetchError;
+        }
+        
+        const existingUser = existingUsers && existingUsers.length > 0 ? existingUsers[0] : null;
+        console.log('👤 Existing user found:', !!existingUser);
 
         let userData;
 
-        if (fetchError && fetchError.code === 'PGRST116') {
+        if (!existingUser) {
             // User doesn't exist, create new user
+            console.log('🆕 Creating new user...');
             const newUser = {
                 email: user.email,
                 name: user.user_metadata.full_name || user.user_metadata.name || 'مستخدم جديد',
@@ -85,33 +103,48 @@ async function handleOAuthCallback() {
                 last_login: new Date().toISOString()
             };
 
-            const { data: createdUser, error: createError } = await supabaseClient
+            const { data: createdUsers, error: createError } = await supabaseClient
                 .from('users')
                 .insert([newUser])
-                .select()
-                .single();
+                .select();
 
-            if (createError) throw createError;
+            if (createError) {
+                console.error('❌ Error creating user:', createError);
+                throw createError;
+            }
+                
+            const createdUser = createdUsers && createdUsers.length > 0 ? createdUsers[0] : null;
+            
+            if (!createdUser) {
+                throw new Error('Failed to create user - no data returned');
+            }
+            
             userData = createdUser;
-        } else if (existingUser) {
+            console.log('✅ New user created:', userData.id);
+        } else {
             // User exists, update last login
-            const { data: updatedUser, error: updateError } = await supabaseClient
+            console.log('🔄 Updating existing user login time...');
+            const { data: updatedUsers, error: updateError } = await supabaseClient
                 .from('users')
                 .update({ last_login: new Date().toISOString() })
                 .eq('id', existingUser.id)
-                .select()
-                .single();
+                .select();
 
-            if (updateError) throw updateError;
+            if (updateError) {
+                console.error('❌ Error updating user:', updateError);
+                throw updateError;
+            }
+                
+            const updatedUser = updatedUsers && updatedUsers.length > 0 ? updatedUsers[0] : existingUser;
             userData = updatedUser;
-        } else {
-            throw fetchError;
+            console.log('✅ User login time updated:', userData.id);
         }
 
+        console.log('🎉 OAuth callback completed successfully');
         return { success: true, user: userData, supabaseUser: user };
     } catch (error) {
-        console.error('OAuth callback error:', error);
-        return { success: false, error: error.message };
+        console.error('💥 OAuth callback error:', error);
+        return { success: false, error: error.message || 'Unknown error occurred' };
     }
 }
 
