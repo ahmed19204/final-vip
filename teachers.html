@@ -47,42 +47,14 @@
             <h1 class="section-title">المدرسين</h1>
             <p class="section-subtitle">تعرف على نخبة من أفضل المدرسين في مجالات متنوعة على منصة VIP، واستفد من خبراتهم ومعارفهم في المناهج التعليمية والكورسات والدروس الخصوصية.</p>
             
-            <div class="teachers-grid">
-                <div class="teacher-card">
-                    <div class="teacher-image">👨‍🏫</div>
-                    <h3 class="teacher-name">مدرس جديد</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
-                
-                <div class="teacher-card">
-                    <div class="teacher-image">👩‍🏫</div>
-                    <h3 class="teacher-name">مدرسة جديدة</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
-                
-                <div class="teacher-card">
-                    <div class="teacher-image">👨‍🏫</div>
-                    <h3 class="teacher-name">مدرس جديد</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
-                
-                <div class="teacher-card">
-                    <div class="teacher-image">👩‍🏫</div>
-                    <h3 class="teacher-name">مدرسة جديدة</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
-                
-                <div class="teacher-card">
-                    <div class="teacher-image">👨‍🏫</div>
-                    <h3 class="teacher-name">مدرس جديد</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
-                
-                <div class="teacher-card">
-                    <div class="teacher-image">👩‍🏫</div>
-                    <h3 class="teacher-name">مدرسة جديدة</h3>
-                    <p class="teacher-subject">سيتم إضافة المدرسين قريباً</p>
-                </div>
+            <!-- Loading indicator -->
+            <div id="teachers-loading" class="loading-container" style="display: none; text-align: center; padding: 3rem; color: #ff4d4d;">
+                <div class="loading-spinner" style="margin-bottom: 1rem;">🔄</div>
+                <p>جاري تحميل بيانات المدرسين...</p>
+            </div>
+            
+            <div id="teachers-grid" class="teachers-grid">
+                <!-- Teachers will be loaded dynamically from database -->
             </div>
         </section>
     </main>
@@ -117,6 +89,147 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="js/script.js"></script>
+    
+    <script>
+        // Load teachers from database when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTeachersFromDatabase();
+        });
+
+        async function loadTeachersFromDatabase() {
+            const loadingDiv = document.getElementById('teachers-loading');
+            const teachersGrid = document.getElementById('teachers-grid');
+            
+            try {
+                // Show loading
+                loadingDiv.style.display = 'block';
+                teachersGrid.innerHTML = '';
+                
+                // Check if Supabase functions are available
+                if (!window.supabaseFunctions) {
+                    console.warn('Supabase functions not available, showing default teachers');
+                    showDefaultTeachers();
+                    return;
+                }
+                
+                // Fetch teachers from database
+                const result = await window.supabaseFunctions.getAllTeachers();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    displayTeachers(result.data);
+                } else {
+                    console.log('No teachers found in database, showing default teachers');
+                    showDefaultTeachers();
+                }
+            } catch (error) {
+                console.error('Error loading teachers:', error);
+                showDefaultTeachers();
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        function displayTeachers(teachers) {
+            const teachersGrid = document.getElementById('teachers-grid');
+            teachersGrid.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const teacherCard = document.createElement('div');
+                teacherCard.className = 'teacher-card';
+                
+                // Get teacher avatar (first letter of name or emoji)
+                const avatar = teacher.name ? teacher.name.charAt(0) : '👨‍🏫';
+                
+                teacherCard.innerHTML = `
+                    <div class="teacher-image" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: linear-gradient(135deg, #ff4d4d, #ff6b6b); border-radius: 50%; color: white; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem;">
+                        ${avatar}
+                    </div>
+                    <h3 class="teacher-name">${teacher.name}</h3>
+                    <p class="teacher-subject">${teacher.subject || 'تخصص عام'}</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        ${teacher.experience_years ? `<p>⭐ ${teacher.experience_years} سنة خبرة</p>` : ''}
+                        ${teacher.education ? `<p>🎓 ${teacher.education}</p>` : ''}
+                        ${teacher.specializations && teacher.specializations.length > 0 ? 
+                            `<p>📚 ${teacher.specializations.join(', ')}</p>` : ''}
+                    </div>
+                    ${teacher.bio ? `
+                        <div class="teacher-bio" style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem; color: #555; line-height: 1.5;">
+                            ${teacher.bio.substring(0, 100)}${teacher.bio.length > 100 ? '...' : ''}
+                        </div>
+                    ` : ''}
+                `;
+                
+                teachersGrid.appendChild(teacherCard);
+            });
+        }
+
+        function showDefaultTeachers() {
+            const teachersGrid = document.getElementById('teachers-grid');
+            teachersGrid.innerHTML = `
+                <div class="teacher-card">
+                    <div class="teacher-image">👨‍🏫</div>
+                    <h3 class="teacher-name">أ. مصطفى إبراهيم</h3>
+                    <p class="teacher-subject">الفيزياء</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 10 سنوات خبرة</p>
+                        <p>🎓 ماجستير فيزياء</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-card">
+                    <div class="teacher-image">👩‍🏫</div>
+                    <h3 class="teacher-name">أ. إيمان خفاجي</h3>
+                    <p class="teacher-subject">الأحياء</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 8 سنوات خبرة</p>
+                        <p>🎓 دكتوراة أحياء</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-card">
+                    <div class="teacher-image">👨‍🏫</div>
+                    <h3 class="teacher-name">أ. مصطفى حمدي</h3>
+                    <p class="teacher-subject">الكيمياء</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 12 سنة خبرة</p>
+                        <p>🎓 ماجستير كيمياء</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-card">
+                    <div class="teacher-image">👨‍🏫</div>
+                    <h3 class="teacher-name">أ. مصطفى إسماعيل</h3>
+                    <p class="teacher-subject">الرياضيات</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 15 سنة خبرة</p>
+                        <p>🎓 بكالوريوس رياضيات</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-card">
+                    <div class="teacher-image">👩‍🏫</div>
+                    <h3 class="teacher-name">أ. فاطمة محمد</h3>
+                    <p class="teacher-subject">اللغة الإنجليزية</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 7 سنوات خبرة</p>
+                        <p>🎓 ليسانس آداب إنجليزي</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-card">
+                    <div class="teacher-image">👨‍🏫</div>
+                    <h3 class="teacher-name">أ. أحمد علي</h3>
+                    <p class="teacher-subject">الجيولوجيا</p>
+                    <div class="teacher-details" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <p>⭐ 9 سنوات خبرة</p>
+                        <p>🎓 ماجستير جيولوجيا</p>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>

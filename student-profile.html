@@ -167,7 +167,10 @@
                     <a href="video-access.html" class="nav-link">فتح الفيديو</a>
                 </li>
                 <li class="nav-item">
-                    <a href="student-profile.html" class="nav-link active">الملف الشخصي</a>
+                    <a href="student-profile.html" class="nav-link active">حسابي</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link register-btn" onclick="logout()">تسجيل الخروج</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -250,15 +253,18 @@
 
         // التحقق من تسجيل الدخول
         document.addEventListener('DOMContentLoaded', function() {
-            const user = localStorage.getItem('user') || sessionStorage.getItem('user');
-            if (!user) {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn') || sessionStorage.getItem('isLoggedIn');
+            const userData = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+            
+            if (!isLoggedIn || !userData) {
                 // المستخدم غير مسجل دخول
-                window.location.href = 'login-fixed.html';
+                window.location.href = 'login.html';
                 return;
             }
 
             try {
-                currentUser = JSON.parse(user);
+                currentUser = JSON.parse(userData);
                 loadUserProfile();
             } catch (error) {
                 console.error('خطأ في تحميل بيانات المستخدم:', error);
@@ -371,9 +377,16 @@
         // تسجيل الخروج
         function logout() {
             if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                // حذف بيانات المستخدم
-                localStorage.removeItem('user');
-                sessionStorage.removeItem('user');
+                // Clear all stored data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('currentUser');
+                sessionStorage.removeItem('isLoggedIn');
+                
+                // Sign out from Supabase if available
+                if (supabaseClient) {
+                    supabaseClient.auth.signOut();
+                }
                 
                 // الانتقال إلى الصفحة الرئيسية
                 window.location.href = 'index.html';
@@ -398,3 +411,4 @@
     </script>
 </body>
 </html>
+

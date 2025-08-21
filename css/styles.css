@@ -805,6 +805,57 @@ body::before {
     display: inline-block;
 }
 
+/* Teacher details styling */
+.teacher-details {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    text-align: right;
+}
+
+.teacher-details p {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.teacher-bio {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #ccc;
+    line-height: 1.5;
+    text-align: right;
+    border-right: 3px solid #ff4d4d;
+}
+
+/* Loading container */
+.loading-container {
+    text-align: center;
+    padding: 3rem;
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.05);
+    border-radius: 12px;
+    margin: 2rem 0;
+    border: 1px solid rgba(255, 77, 77, 0.1);
+}
+
+.loading-spinner {
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Form Styles */
 .form-container {
     min-height: 100vh;

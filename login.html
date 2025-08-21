@@ -63,20 +63,21 @@
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
-                    <div class="password-input-container">
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="تأكيد كلمة المرور" required>
-                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword')">👁️</button>
-                    </div>
-                </div>
-                
                 <div class="checkbox-group">
                     <input type="checkbox" id="remember" name="remember">
                     <label for="remember">تذكرني</label>
                 </div>
                 
-                <button type="submit" class="form-submit">تسجيل الدخول</button>
+                <!-- Loading indicator -->
+                <div id="loginLoading" style="display: none; text-align: center; color: #ff4d4d; margin: 1rem 0;">
+                    <div style="font-size: 1.5rem;">🔄</div>
+                    <p>جاري تسجيل الدخول...</p>
+                </div>
+                
+                <!-- Error message -->
+                <div id="loginError" style="display: none; background: #ffebee; color: #c62828; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; border-right: 4px solid #c62828;"></div>
+                
+                <button type="submit" class="form-submit" id="loginButton">تسجيل الدخول</button>
                 
                 <div class="form-links">
                     <a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
@@ -89,21 +90,126 @@
     <script src="js/script.js"></script>
     <script src="js/supabase-config.js"></script>
     <script>
-        // التحقق من تأكيد كلمة المرور
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Real login system
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const remember = document.getElementById('remember').checked;
             
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('كلمة المرور وتأكيدها غير متطابقين');
-                return false;
+            const loginButton = document.getElementById('loginButton');
+            const loginLoading = document.getElementById('loginLoading');
+            const loginError = document.getElementById('loginError');
+            
+            // Show loading
+            loginButton.disabled = true;
+            loginLoading.style.display = 'block';
+            loginError.style.display = 'none';
+            
+            try {
+                // Check if Supabase functions are available
+                if (!window.supabaseFunctions) {
+                    throw new Error('خدمة قاعدة البيانات غير متاحة');
+                }
+                
+                // Try to login with Supabase Auth
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    // If Supabase auth fails, try custom login
+                    const loginResult = await attemptCustomLogin(email, password);
+                    if (!loginResult.success) {
+                        throw new Error(loginResult.error);
+                    }
+                    handleLoginSuccess(loginResult.user, remember);
+                } else {
+                    // Supabase auth success
+                    const user = data.user;
+                    
+                    // Get additional user data from students table
+                    const { data: studentData, error: studentError } = await window.supabaseClient
+                        .from('students')
+                        .select('*')
+                        .eq('email', email)
+                        .single();
+                    
+                    const userData = studentData || {
+                        id: user.id,
+                        email: user.email,
+                        name: user.user_metadata?.full_name || 'مستخدم',
+                        phone: user.user_metadata?.phone || '',
+                        created_at: user.created_at
+                    };
+                    
+                    handleLoginSuccess(userData, remember);
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                loginError.textContent = error.message || 'حدث خطأ في تسجيل الدخول';
+                loginError.style.display = 'block';
+            } finally {
+                loginButton.disabled = false;
+                loginLoading.style.display = 'none';
             }
+        });
+        
+        // Custom login for existing data
+        async function attemptCustomLogin(email, password) {
+            try {
+                // Check if user exists in students table
+                const { data: students, error } = await window.supabaseClient
+                    .from('students')
+                    .select('*')
+                    .eq('email', email);
+                
+                if (error) throw error;
+                
+                if (students && students.length > 0) {
+                    const student = students[0];
+                    
+                    // Simple password check (in production, use proper hashing)
+                    if (student.password === password || !student.password) {
+                        return { success: true, user: student };
+                    }
+                }
+                
+                return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Handle successful login
+        function handleLoginSuccess(user, remember) {
+            // Store user data
+            const storage = remember ? localStorage : sessionStorage;
+            storage.setItem('currentUser', JSON.stringify(user));
+            storage.setItem('isLoggedIn', 'true');
             
-            if (password.length < 6) {
-                e.preventDefault();
-                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-                return false;
+            // Show success message
+            const loginError = document.getElementById('loginError');
+            loginError.style.background = '#e8f5e8';
+            loginError.style.color = '#2e7d32';
+            loginError.style.borderRightColor = '#2e7d32';
+            loginError.textContent = `مرحباً ${user.name || user.full_name || 'بك'}! جاري التوجيه...`;
+            loginError.style.display = 'block';
+            
+            // Redirect to student dashboard
+            setTimeout(() => {
+                window.location.href = 'student-profile.html';
+            }, 1500);
+        }
+        
+        // Check if already logged in
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') || sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = 'student-profile.html';
             }
         });
         

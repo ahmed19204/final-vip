@@ -44,6 +44,26 @@
     margin: 1rem 0;
 }
 
+/* Loading container for main site */
+.loading-container {
+    text-align: center;
+    padding: 3rem;
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.05);
+    border-radius: 12px;
+    margin: 2rem 0;
+}
+
+.loading-spinner {
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Modal improvements */
 .modal {
     display: none;
@@ -900,11 +920,12 @@
 }
 
 .admin-sidebar-header img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
     margin-bottom: 1rem;
     object-fit: cover;
+    border: 2px solid #ff4d4d;
 }
 
 .admin-sidebar-header h3 {

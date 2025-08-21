@@ -148,7 +148,16 @@
                     </select>
                 </div>
                 
-                <button type="submit" class="form-submit">إنشاء الحساب</button>
+                <!-- Loading indicator -->
+                <div id="registerLoading" style="display: none; text-align: center; color: #ff4d4d; margin: 1rem 0;">
+                    <div style="font-size: 1.5rem;">🔄</div>
+                    <p>جاري إنشاء الحساب...</p>
+                </div>
+                
+                <!-- Error/Success message -->
+                <div id="registerMessage" style="display: none; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; border-right: 4px solid;"></div>
+                
+                <button type="submit" class="form-submit" id="registerButton">إنشاء الحساب</button>
                 
                 <div class="form-links">
                     <a href="login.html">لديك حساب بالفعل؟ سجل دخولك.</a>
@@ -160,41 +169,153 @@
     <script src="js/script.js"></script>
     <script src="js/supabase-config.js"></script>
     <script>
-        // التحقق من تأكيد كلمة المرور
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
+        // Real registration system
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('كلمة المرور وتأكيدها غير متطابقين');
-                return false;
+            // Get form data
+            const formData = new FormData(e.target);
+            const userData = {
+                full_name: formData.get('fullName'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirm_password: formData.get('confirmPassword'),
+                phone: formData.get('phone'),
+                birth_date: formData.get('birthDate'),
+                gender: formData.get('gender'),
+                grade: formData.get('grade'),
+                governorate: formData.get('governorate'),
+                country: formData.get('country')
+            };
+            
+            const registerButton = document.getElementById('registerButton');
+            const registerLoading = document.getElementById('registerLoading');
+            const registerMessage = document.getElementById('registerMessage');
+            
+            // Validation
+            if (userData.password !== userData.confirm_password) {
+                showMessage('كلمة المرور وتأكيدها غير متطابقين', 'error');
+                return;
             }
             
-            if (password.length < 6) {
-                e.preventDefault();
-                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-                return false;
+            if (userData.password.length < 6) {
+                showMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                return;
             }
             
-            // التحقق من رقم الهاتف
+            // Phone validation
             const phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
-            if (!phoneRegex.test(phone)) {
-                e.preventDefault();
-                alert('رقم الهاتف غير صحيح. يجب أن يبدأ بـ 01 ويحتوي على 11 رقم');
-                return false;
+            if (!phoneRegex.test(userData.phone)) {
+                showMessage('رقم الهاتف غير صحيح. يجب أن يبدأ بـ 01 ويحتوي على 11 رقم', 'error');
+                return;
             }
             
-            // التحقق من البريد الإلكتروني
+            // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                e.preventDefault();
-                alert('البريد الإلكتروني غير صحيح');
-                return false;
+            if (!emailRegex.test(userData.email)) {
+                showMessage('البريد الإلكتروني غير صحيح', 'error');
+                return;
+            }
+            
+            // Show loading
+            registerButton.disabled = true;
+            registerLoading.style.display = 'block';
+            registerMessage.style.display = 'none';
+            
+            try {
+                // Check if Supabase functions are available
+                if (!window.supabaseFunctions) {
+                    throw new Error('خدمة قاعدة البيانات غير متاحة');
+                }
+                
+                // Check if user already exists
+                const { data: existingUser, error: checkError } = await window.supabaseClient
+                    .from('students')
+                    .select('email')
+                    .eq('email', userData.email);
+                
+                if (existingUser && existingUser.length > 0) {
+                    throw new Error('البريد الإلكتروني مستخدم بالفعل');
+                }
+                
+                // Try to register with Supabase Auth first
+                let authUser = null;
+                try {
+                    const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
+                        email: userData.email,
+                        password: userData.password,
+                        options: {
+                            data: {
+                                full_name: userData.full_name,
+                                phone: userData.phone
+                            }
+                        }
+                    });
+                    
+                    if (!authError && authData.user) {
+                        authUser = authData.user;
+                    }
+                } catch (authError) {
+                    console.log('Auth registration failed, proceeding with custom registration');
+                }
+                
+                // Add to students table
+                const studentData = {
+                    name: userData.full_name,
+                    email: userData.email,
+                    password: userData.password, // In production, hash this
+                    phone: userData.phone,
+                    birth_date: userData.birth_date,
+                    gender: userData.gender,
+                    grade: userData.grade,
+                    governorate: userData.governorate,
+                    country: userData.country,
+                    status: 'active',
+                    auth_user_id: authUser?.id || null
+                };
+                
+                const result = await window.supabaseFunctions.addStudent(studentData);
+                
+                if (result.success) {
+                    showMessage('تم إنشاء الحساب بنجاح! جاري التوجيه لتسجيل الدخول...', 'success');
+                    
+                    // Clear form
+                    e.target.reset();
+                    
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    throw new Error(result.error || 'فشل في إنشاء الحساب');
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage(error.message || 'حدث خطأ في إنشاء الحساب', 'error');
+            } finally {
+                registerButton.disabled = false;
+                registerLoading.style.display = 'none';
             }
         });
+        
+        // Show message function
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('registerMessage');
+            messageDiv.textContent = message;
+            
+            if (type === 'error') {
+                messageDiv.style.background = '#ffebee';
+                messageDiv.style.color = '#c62828';
+                messageDiv.style.borderRightColor = '#c62828';
+            } else if (type === 'success') {
+                messageDiv.style.background = '#e8f5e8';
+                messageDiv.style.color = '#2e7d32';
+                messageDiv.style.borderRightColor = '#2e7d32';
+            }
+            
+            messageDiv.style.display = 'block';
+        }
         
         // إظهار/إخفاء كلمة المرور
         function togglePasswordVisibility(fieldId) {

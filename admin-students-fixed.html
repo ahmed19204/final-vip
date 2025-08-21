@@ -7,83 +7,21 @@
 	<link rel="stylesheet" href="css/admin-styles.css">
 	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
+<body>
 	<div class="admin-container">
-		<!-- Admin Sidebar -->
-		<aside class="admin-sidebar">
-			<div class="admin-sidebar-header">
-				<img src="images/vip-logo.jpg" alt="VIP Center">
-				<h3>لوحة التحكم</h3>
-				<div class="admin-role">مدير عام</div>
-			</div>
-			
-			<nav class="admin-nav">
-				<div class="admin-nav-item">
-					<a href="admin-dashboard.html" class="admin-nav-link">
-						<span class="admin-nav-icon">🏠</span>
-						<span>الرئيسية</span>
-					</a>
+		<header class="admin-header">
+			<div class="header-content">
+				<div class="logo-section">
+					<img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
+					<h1>إدارة الطلاب</h1>
 				</div>
-				<div class="admin-nav-item">
-					<a href="admin-courses.html" class="admin-nav-link">
-						<span class="admin-nav-icon">📚</span>
-						<span>إدارة الكورسات</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-teachers.html" class="admin-nav-link">
-						<span class="admin-nav-icon">👨‍🏫</span>
-						<span>إدارة المدرسين</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-videos.html" class="admin-nav-link">
-						<span class="admin-nav-icon">🎥</span>
-						<span>إدارة الفيديوهات</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-codes.html" class="admin-nav-link">
-						<span class="admin-nav-icon">🔐</span>
-						<span>إدارة الأكواد</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-students.html" class="admin-nav-link active">
-						<span class="admin-nav-icon">👥</span>
-						<span>إدارة الطلاب</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-subjects.html" class="admin-nav-link">
-						<span class="admin-nav-icon">📖</span>
-						<span>إدارة التخصصات</span>
-					</a>
-				</div>
-				<div class="admin-nav-item">
-					<a href="admin-settings.html" class="admin-nav-link">
-						<span class="admin-nav-icon">⚙️</span>
-						<span>الإعدادات</span>
-					</a>
-				</div>
-			</nav>
-		</aside>
-
-		<!-- Admin Main Content -->
-		<main class="admin-main">
-			<!-- Admin Header -->
-			<header class="admin-header">
-				<h1>إدارة الطلاب</h1>
 				<div class="admin-header-actions">
-					<button class="admin-btn admin-btn-primary" onclick="showAddStudentModal()">
-						<span>➕</span>
-						إضافة طالب جديد
-					</button>
+					<button class="admin-btn admin-btn-primary" onclick="showAddStudentModal()">➕ إضافة طالب</button>
 					<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
 				</div>
-			</header>
-
-			<div class="admin-table-container">
+			</div>
+		</header>
+		<div class="admin-table-container">
 			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
 				<h2 style="color:#fff;margin:0;">قائمة الطلاب</h2>
 				<input type="text" class="admin-form-input" placeholder="بحث باسم الطالب أو البريد" style="width:300px;" onkeyup="searchStudents(this.value)">
@@ -107,7 +45,6 @@
 				</tbody>
 			</table>
 		</div>
-		</main>
 	</div>
 
 	<!-- Add/Edit Student Modal -->
@@ -149,8 +86,6 @@
 		</div>
 	</div>
 
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-	<script src="js/supabase-config.js"></script>
 	<script src="js/admin-script.js"></script>
 	<script src="js/admin-students.js"></script>
 </body>
