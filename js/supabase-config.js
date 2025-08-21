@@ -93,12 +93,12 @@ async function deleteTeacher(id) {
 
 async function addCourse(courseData) {
     try {
-        // Clean and validate data
+        // Clean and validate data - Keep UUIDs as strings
         const cleanData = {
             ...courseData,
-            // Convert IDs to integers, set null if invalid
-            subject_id: courseData.subject_id && !isNaN(parseInt(courseData.subject_id)) ? parseInt(courseData.subject_id) : null,
-            teacher_id: courseData.teacher_id && !isNaN(parseInt(courseData.teacher_id)) ? parseInt(courseData.teacher_id) : null,
+            // Keep IDs as strings for UUID compatibility, set null if empty
+            subject_id: courseData.subject_id && courseData.subject_id.trim() !== '' ? courseData.subject_id : null,
+            teacher_id: courseData.teacher_id && courseData.teacher_id.trim() !== '' ? courseData.teacher_id : null,
             // Ensure numeric fields are properly typed
             price: parseFloat(courseData.price) || 0,
             duration_hours: parseInt(courseData.duration_hours) || 0
@@ -194,12 +194,12 @@ async function getAllStudents() {
 
 async function addVideo(videoData) {
     try {
-        // Clean and validate data
+        // Clean and validate data - Keep UUIDs as strings
         const cleanData = {
             ...videoData,
-            // Convert IDs to integers, set null if invalid
-            course_id: videoData.course_id && !isNaN(parseInt(videoData.course_id)) ? parseInt(videoData.course_id) : null,
-            teacher_id: videoData.teacher_id && !isNaN(parseInt(videoData.teacher_id)) ? parseInt(videoData.teacher_id) : null,
+            // Keep IDs as strings for UUID compatibility, set null if empty
+            course_id: videoData.course_id && videoData.course_id.trim() !== '' ? videoData.course_id : null,
+            teacher_id: videoData.teacher_id && videoData.teacher_id.trim() !== '' ? videoData.teacher_id : null,
             // Ensure numeric fields are properly typed
             duration_minutes: parseInt(videoData.duration_minutes) || 0,
             order_in_course: parseInt(videoData.order_in_course) || 0
@@ -268,16 +268,15 @@ async function updateVideo(id, videoData) {
 
 async function deleteVideo(id) {
     try {
-        // Convert id to integer to avoid UUID issues
-        const videoId = parseInt(id);
-        if (isNaN(videoId)) {
+        // Validate UUID format
+        if (!id || typeof id !== 'string' || id.trim() === '') {
             throw new Error('Invalid video ID');
         }
 
         const { error } = await supabaseClient
             .from('videos')
             .delete()
-            .eq('id', videoId);
+            .eq('id', id);
 
         if (error) throw error;
         return { success: true };
@@ -289,18 +288,17 @@ async function deleteVideo(id) {
 
 async function updateCourse(id, courseData) {
     try {
-        // Convert id to integer to avoid UUID issues
-        const courseId = parseInt(id);
-        if (isNaN(courseId)) {
+        // Validate UUID format
+        if (!id || typeof id !== 'string' || id.trim() === '') {
             throw new Error('Invalid course ID');
         }
 
-        // Clean and validate data
+        // Clean and validate data - Keep UUIDs as strings
         const cleanData = {
             ...courseData,
-            // Convert IDs to integers, set null if invalid
-            subject_id: courseData.subject_id && !isNaN(parseInt(courseData.subject_id)) ? parseInt(courseData.subject_id) : null,
-            teacher_id: courseData.teacher_id && !isNaN(parseInt(courseData.teacher_id)) ? parseInt(courseData.teacher_id) : null,
+            // Keep IDs as strings for UUID compatibility, set null if empty
+            subject_id: courseData.subject_id && courseData.subject_id.trim() !== '' ? courseData.subject_id : null,
+            teacher_id: courseData.teacher_id && courseData.teacher_id.trim() !== '' ? courseData.teacher_id : null,
             // Ensure numeric fields are properly typed
             price: parseFloat(courseData.price) || 0,
             duration_hours: parseInt(courseData.duration_hours) || 0
@@ -309,7 +307,7 @@ async function updateCourse(id, courseData) {
         const { data, error } = await supabaseClient
             .from('courses')
             .update(cleanData)
-            .eq('id', courseId)
+            .eq('id', id)
             .select();
 
         if (error) throw error;
@@ -322,16 +320,15 @@ async function updateCourse(id, courseData) {
 
 async function deleteCourse(id) {
     try {
-        // Convert id to integer to avoid UUID issues
-        const courseId = parseInt(id);
-        if (isNaN(courseId)) {
+        // Validate UUID format
+        if (!id || typeof id !== 'string' || id.trim() === '') {
             throw new Error('Invalid course ID');
         }
 
         const { error } = await supabaseClient
             .from('courses')
             .delete()
-            .eq('id', courseId);
+            .eq('id', id);
 
         if (error) throw error;
         return { success: true };

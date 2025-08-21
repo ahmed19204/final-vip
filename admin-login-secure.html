@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - دخول الإدارة الآمن</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="admin-login-card">
+            <div class="admin-logo">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
+                <h2>VIP Center</h2>
+                <p>لوحة التحكم الإدارية الآمنة</p>
+            </div>
+            
+            <!-- رسائل الأمان -->
+            <div id="securityAlert" class="security-alert" style="display: none;">
+                <div class="alert-content">
+                    <span class="alert-icon">🔒</span>
+                    <span class="alert-text"></span>
+                </div>
+            </div>
+            
+            <form id="secureAdminLoginForm" class="admin-login-form">
+                <div class="form-group">
+                    <label for="adminEmail" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="adminEmail" name="adminEmail" class="form-input" placeholder="أدخل البريد الإلكتروني" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminPassword" class="form-label">كلمة المرور</label>
+                    <div class="password-input-container">
+                        <input type="password" id="adminPassword" name="adminPassword" class="form-input" placeholder="أدخل كلمة المرور" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('adminPassword')">👁️</button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength" style="display: none;"></div>
+                </div>
+                
+                <!-- CAPTCHA بسيط -->
+                <div class="form-group">
+                    <label for="captcha" class="form-label">رمز التحقق</label>
+                    <div class="captcha-container">
+                        <span id="captchaDisplay" class="captcha-display"></span>
+                        <button type="button" onclick="refreshCaptcha()" class="captcha-refresh">🔄</button>
+                    </div>
+                    <input type="text" id="captcha" name="captcha" class="form-input" placeholder="أدخل رمز التحقق" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberDevice" name="rememberDevice">
+                    <label for="rememberDevice">تذكر هذا الجهاز لمدة 30 يوماً</label>
+                </div>
+                
+                <!-- Loading indicator -->
+                <div id="loginLoading" class="loading-indicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>جاري التحقق من البيانات...</p>
+                </div>
+                
+                <!-- Error message -->
+                <div id="loginError" class="error-message" style="display: none;"></div>
+                
+                <!-- Success message -->
+                <div id="loginSuccess" class="success-message" style="display: none;"></div>
+                
+                <button type="submit" id="loginButton" class="admin-login-btn">
+                    <span class="btn-icon">🔐</span>
+                    <span class="btn-text">دخول آمن</span>
+                </button>
+            </form>
+            
+            <!-- معلومات إضافية -->
+            <div class="login-info">
+                <div class="security-features">
+                    <h4>مميزات الأمان:</h4>
+                    <ul>
+                        <li>🔒 تشفير البيانات</li>
+                        <li>🛡️ حماية من الهجمات</li>
+                        <li>📱 مصادقة ثنائية</li>
+                        <li>⏰ انتهاء جلسة تلقائي</li>
+                    </ul>
+                </div>
+                
+                <div class="test-accounts">
+                    <h4>حسابات تجريبية:</h4>
+                    <p><strong>مدير عام:</strong> admin@vip-center.com</p>
+                    <p><strong>مدير محتوى:</strong> content@vip-center.com</p>
+                    <small>* استخدم كلمة مرور قوية في الإنتاج</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/secure-admin-auth.js"></script>
+    <script src="js/permissions-manager.js"></script>
+    
+    <script>
+        let captchaAnswer = 0;
+        let loginAttempts = 0;
+        const maxAttempts = 5;
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initSecureLogin();
+            refreshCaptcha();
+            checkDeviceFingerprint();
+        });
+        
+        // تهيئة نظام تسجيل الدخول الآمن
+        function initSecureLogin() {
+            const form = document.getElementById('secureAdminLoginForm');
+            form.addEventListener('submit', handleSecureLogin);
+            
+            // مراقبة قوة كلمة المرور
+            const passwordInput = document.getElementById('adminPassword');
+            passwordInput.addEventListener('input', checkPasswordStrength);
+            
+            // منع الإرسال المتعدد
+            preventMultipleSubmissions();
+        }
+        
+        // معالجة تسجيل الدخول الآمن
+        async function handleSecureLogin(e) {
+            e.preventDefault();
+            
+            if (loginAttempts >= maxAttempts) {
+                showError('تم تجاوز عدد المحاولات المسموحة. يرجى المحاولة لاحقاً.');
+                return;
+            }
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const captchaInput = document.getElementById('captcha').value;
+            const rememberDevice = document.getElementById('rememberDevice').checked;
+            
+            // التحقق من الكابتشا
+            if (parseInt(captchaInput) !== captchaAnswer) {
+                showError('رمز التحقق غير صحيح');
+                refreshCaptcha();
+                return;
+            }
+            
+            // إظهار مؤشر التحميل
+            showLoading(true);
+            
+            try {
+                // التحقق من قفل الحساب
+                const lockStatus = await window.permissionsManager.checkAccountLock(email);
+                if (lockStatus.locked) {
+                    throw new Error(`الحساب مقفل لمدة ${lockStatus.remainingMinutes} دقيقة`);
+                }
+                
+                // محاولة تسجيل الدخول
+                const result = await window.secureAdminAuth.login(email, password);
+                
+                if (result.success) {
+                    // إعادة تعيين محاولات تسجيل الدخول
+                    await window.permissionsManager.resetLoginAttempts(email);
+                    
+                    // حفظ الجهاز إذا طُلب ذلك
+                    if (rememberDevice) {
+                        saveDeviceFingerprint();
+                    }
+                    
+                    // تسجيل النشاط
+                    await window.permissionsManager.logActivity(
+                        result.user.id, 
+                        'login_success', 
+                        'admin_session', 
+                        null, 
+                        { device_remembered: rememberDevice }
+                    );
+                    
+                    showSuccess('تم تسجيل الدخول بنجاح! جاري التحويل...');
+                    
+                    // إعادة التوجيه بعد ثانيتين
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 2000);
+                    
+                } else {
+                    // زيادة عداد المحاولات
+                    loginAttempts++;
+                    const attemptsResult = await window.permissionsManager.incrementLoginAttempts(email);
+                    
+                    if (attemptsResult.locked) {
+                        showError('تم قفل الحساب بسبب المحاولات المتعددة الفاشلة');
+                    } else {
+                        const remaining = maxAttempts - loginAttempts;
+                        showError(`${result.error}. المحاولات المتبقية: ${remaining}`);
+                    }
+                    
+                    refreshCaptcha();
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'حدث خطأ في تسجيل الدخول');
+                refreshCaptcha();
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // إنشاء كابتشا جديدة
+        function refreshCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            captchaAnswer = num1 + num2;
+            
+            document.getElementById('captchaDisplay').textContent = `${num1} + ${num2} = ?`;
+            document.getElementById('captcha').value = '';
+        }
+        
+        // فحص قوة كلمة المرور
+        function checkPasswordStrength() {
+            const password = document.getElementById('adminPassword').value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthDiv.style.display = 'none';
+                return;
+            }
+            
+            const strength = window.permissionsManager.validatePasswordStrength(password);
+            strengthDiv.style.display = 'block';
+            
+            let strengthText = '';
+            let strengthClass = '';
+            
+            switch (strength.strength) {
+                case 'weak':
+                    strengthText = 'ضعيفة ❌';
+                    strengthClass = 'weak';
+                    break;
+                case 'medium':
+                    strengthText = 'متوسطة ⚠️';
+                    strengthClass = 'medium';
+                    break;
+                case 'strong':
+                    strengthText = 'قوية ✅';
+                    strengthClass = 'strong';
+                    break;
+            }
+            
+            strengthDiv.textContent = `قوة كلمة المرور: ${strengthText}`;
+            strengthDiv.className = `password-strength ${strengthClass}`;
+        }
+        
+        // إظهار/إخفاء كلمة المرور
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const button = field.nextElementSibling;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                field.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        // منع الإرسال المتعدد
+        function preventMultipleSubmissions() {
+            const form = document.getElementById('secureAdminLoginForm');
+            const button = document.getElementById('loginButton');
+            
+            form.addEventListener('submit', function() {
+                button.disabled = true;
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 3000);
+            });
+        }
+        
+        // إظهار/إخفاء مؤشر التحميل
+        function showLoading(show) {
+            const loading = document.getElementById('loginLoading');
+            const button = document.getElementById('loginButton');
+            
+            if (show) {
+                loading.style.display = 'block';
+                button.disabled = true;
+            } else {
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+        
+        // إظهار رسالة خطأ
+        function showError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // إخفاء رسالة النجاح
+            document.getElementById('loginSuccess').style.display = 'none';
+            
+            // إخفاء الرسالة بعد 10 ثوانِ
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 10000);
+        }
+        
+        // إظهار رسالة نجاح
+        function showSuccess(message) {
+            const successDiv = document.getElementById('loginSuccess');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            
+            // إخفاء رسالة الخطأ
+            document.getElementById('loginError').style.display = 'none';
+        }
+        
+        // إنشاء بصمة الجهاز
+        function generateDeviceFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Device fingerprint', 2, 2);
+            
+            const fingerprint = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                canvas.toDataURL()
+            ].join('|');
+            
+            return btoa(fingerprint);
+        }
+        
+        // حفظ بصمة الجهاز
+        function saveDeviceFingerprint() {
+            const fingerprint = generateDeviceFingerprint();
+            localStorage.setItem('deviceFingerprint', fingerprint);
+        }
+        
+        // فحص بصمة الجهاز
+        function checkDeviceFingerprint() {
+            const savedFingerprint = localStorage.getItem('deviceFingerprint');
+            const currentFingerprint = generateDeviceFingerprint();
+            
+            if (savedFingerprint && savedFingerprint === currentFingerprint) {
+                showSecurityAlert('تم التعرف على الجهاز 🔓', 'success');
+                document.getElementById('rememberDevice').checked = true;
+            } else if (savedFingerprint) {
+                showSecurityAlert('جهاز جديد تم اكتشافه 🔍', 'warning');
+            }
+        }
+        
+        // إظهار تنبيه أمني
+        function showSecurityAlert(message, type) {
+            const alert = document.getElementById('securityAlert');
+            const text = alert.querySelector('.alert-text');
+            
+            text.textContent = message;
+            alert.className = `security-alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // مراقبة محاولات الاختراق
+        let suspiciousActivity = 0;
+        
+        document.addEventListener('keydown', function(e) {
+            // كشف محاولات استخدام أدوات المطورين
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                suspiciousActivity++;
+                
+                if (suspiciousActivity > 3) {
+                    showSecurityAlert('تم اكتشاف نشاط مشبوه! 🚨', 'danger');
+                    // يمكن إضافة المزيد من الإجراءات الأمنية هنا
+                }
+            }
+        });
+    </script>
+    
+    <style>
+        /* تحسينات CSS للصفحة الآمنة */
+        .security-alert {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .security-alert.success {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: #28a745;
+        }
+        
+        .security-alert.danger {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+        }
+        
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+        
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .captcha-display {
+            background: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .captcha-refresh {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .password-strength.weak {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .password-strength.medium {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .password-strength.strong {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .login-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        .security-features, .test-accounts {
+            margin-bottom: 20px;
+        }
+        
+        .security-features h4, .test-accounts h4 {
+            color: #ff4d4d;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .security-features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .security-features li {
+            color: #ccc;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+        
+        .test-accounts p {
+            color: #ccc;
+            font-size: 12px;
+            margin: 5px 0;
+        }
+        
+        .test-accounts small {
+            color: #999;
+            font-size: 10px;
+        }
+        
+        .loading-indicator {
+            text-align: center;
+            color: #ff4d4d;
+            margin: 15px 0;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #333;
+            border-top: 2px solid #ff4d4d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            color: #28a745;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</body>
+</html>

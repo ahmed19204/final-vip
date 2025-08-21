@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - غير متصل بالإنترنت</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tahoma', Arial, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+
+        .offline-container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .offline-title {
+            font-size: 2rem;
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .offline-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .retry-btn {
+            background: linear-gradient(135deg, #ff4d4d, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        .offline-tips {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            text-align: right;
+        }
+
+        .offline-tips h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .offline-tips ul {
+            list-style: none;
+        }
+
+        .offline-tips li {
+            margin: 0.5rem 0;
+            padding-right: 1rem;
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .offline-tips li::before {
+            content: "•";
+            color: #ff4d4d;
+            position: absolute;
+            right: 0;
+        }
+
+        .network-status {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .network-status.online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .network-status.offline {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 480px) {
+            .offline-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .offline-title {
+                font-size: 1.5rem;
+            }
+
+            .offline-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon pulse">📡</div>
+        <h1 class="offline-title">غير متصل بالإنترنت</h1>
+        <p class="offline-message">
+            يبدو أنك غير متصل بالإنترنت حالياً. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.
+        </p>
+        
+        <button class="retry-btn" onclick="retryConnection()">
+            إعادة المحاولة
+        </button>
+        
+        <div class="network-status" id="networkStatus">
+            جاري فحص الاتصال...
+        </div>
+
+        <div class="offline-tips">
+            <h3>نصائح للاستخدام أثناء عدم الاتصال:</h3>
+            <ul>
+                <li>يمكنك تصفح الصفحات التي زرتها مسبقاً</li>
+                <li>الصور والملفات المحفوظة ستظهر بشكل طبيعي</li>
+                <li>سيتم حفظ البيانات المدخلة وإرسالها عند عودة الاتصال</li>
+                <li>تأكد من قوة إشارة الواي فاي أو بيانات الجوال</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // فحص حالة الاتصال
+        function checkConnectionStatus() {
+            const statusElement = document.getElementById('networkStatus');
+            
+            if (navigator.onLine) {
+                statusElement.textContent = '✅ متصل بالإنترنت';
+                statusElement.className = 'network-status online';
+                
+                // إعادة التوجيه التلقائي عند عودة الاتصال
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                statusElement.textContent = '❌ غير متصل بالإنترنت';
+                statusElement.className = 'network-status offline';
+            }
+        }
+
+        // إعادة المحاولة
+        function retryConnection() {
+            const retryBtn = document.querySelector('.retry-btn');
+            retryBtn.textContent = 'جاري المحاولة...';
+            retryBtn.disabled = true;
+            
+            // محاولة جلب صفحة بسيطة للتحقق من الاتصال
+            fetch('/', { cache: 'no-cache' })
+                .then(() => {
+                    retryBtn.textContent = 'تم الاتصال!';
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                })
+                .catch(() => {
+                    retryBtn.textContent = 'إعادة المحاولة';
+                    retryBtn.disabled = false;
+                    checkConnectionStatus();
+                });
+        }
+
+        // مراقبة تغيير حالة الاتصال
+        window.addEventListener('online', checkConnectionStatus);
+        window.addEventListener('offline', checkConnectionStatus);
+
+        // فحص الحالة عند تحميل الصفحة
+        checkConnectionStatus();
+
+        // فحص دوري كل 5 ثوانِ
+        setInterval(checkConnectionStatus, 5000);
+
+        // محاولة إعادة الاتصال التلقائي كل 10 ثوانِ
+        setInterval(() => {
+            if (!navigator.onLine) {
+                fetch('/', { cache: 'no-cache' })
+                    .then(() => {
+                        checkConnectionStatus();
+                    })
+                    .catch(() => {
+                        // فشل الاتصال
+                    });
+            }
+        }, 10000);
+
+        // حفظ البيانات المدخلة في النماذج
+        function saveFormData() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                localStorage.setItem(`offline_form_${form.id}`, JSON.stringify(data));
+            });
+        }
+
+        // استرجاع البيانات المحفوظة عند عودة الاتصال
+        function restoreFormData() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                const savedData = localStorage.getItem(`offline_form_${form.id}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    Object.keys(data).forEach(key => {
+                        const input = form.querySelector(`[name="${key}"]`);
+                        if (input) {
+                            input.value = data[key];
+                        }
+                    });
+                }
+            });
+        }
+
+        // تطبيق الحفظ التلقائي للنماذج
+        document.addEventListener('input', saveFormData);
+        
+        // استرجاع البيانات عند تحميل الصفحة
+        window.addEventListener('load', restoreFormData);
+    </script>
+</body>
+</html>
