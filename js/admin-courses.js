@@ -116,8 +116,8 @@ async function handleAddCourse(event) {
     const courseData = {
         title: formData.get('title'),
         description: formData.get('description'),
-        subject_id: formData.get('subject_id') ? parseInt(formData.get('subject_id')) : null,
-        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        subject_id: formData.get('subject_id') && formData.get('subject_id').trim() !== '' ? formData.get('subject_id') : null,
+        teacher_id: formData.get('teacher_id') && formData.get('teacher_id').trim() !== '' ? formData.get('teacher_id') : null,
         price: parseFloat(formData.get('price')) || 0.00,
         duration_hours: parseInt(formData.get('duration_hours')) || 0,
         level: formData.get('level'),
@@ -178,8 +178,8 @@ async function handleUpdateCourse(event) {
     const courseData = {
         title: formData.get('title'),
         description: formData.get('description'),
-        subject_id: formData.get('subject_id') ? parseInt(formData.get('subject_id')) : null,
-        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        subject_id: formData.get('subject_id') && formData.get('subject_id').trim() !== '' ? formData.get('subject_id') : null,
+        teacher_id: formData.get('teacher_id') && formData.get('teacher_id').trim() !== '' ? formData.get('teacher_id') : null,
         price: parseFloat(formData.get('price')) || 0.00,
         duration_hours: parseInt(formData.get('duration_hours')) || 0,
         level: formData.get('level'),

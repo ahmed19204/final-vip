@@ -235,18 +235,17 @@ async function getAllVideos() {
 
 async function updateVideo(id, videoData) {
     try {
-        // Convert id to integer to avoid UUID issues
-        const videoId = parseInt(id);
-        if (isNaN(videoId)) {
+        // Validate UUID format
+        if (!id || typeof id !== 'string' || id.trim() === '') {
             throw new Error('Invalid video ID');
         }
 
-        // Clean and validate data
+        // Clean and validate data - Keep UUIDs as strings
         const cleanData = {
             ...videoData,
-            // Convert IDs to integers, set null if invalid
-            course_id: videoData.course_id && !isNaN(parseInt(videoData.course_id)) ? parseInt(videoData.course_id) : null,
-            teacher_id: videoData.teacher_id && !isNaN(parseInt(videoData.teacher_id)) ? parseInt(videoData.teacher_id) : null,
+            // Keep IDs as strings for UUID compatibility, set null if empty
+            course_id: videoData.course_id && videoData.course_id.trim() !== '' ? videoData.course_id : null,
+            teacher_id: videoData.teacher_id && videoData.teacher_id.trim() !== '' ? videoData.teacher_id : null,
             // Ensure numeric fields are properly typed
             duration_minutes: parseInt(videoData.duration_minutes) || 0,
             order_in_course: parseInt(videoData.order_in_course) || 0
@@ -255,7 +254,7 @@ async function updateVideo(id, videoData) {
         const { data, error } = await supabaseClient
             .from('videos')
             .update(cleanData)
-            .eq('id', videoId)
+            .eq('id', id)
             .select();
 
         if (error) throw error;

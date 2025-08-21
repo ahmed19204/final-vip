@@ -116,8 +116,8 @@ async function handleAddVideo(event) {
     const videoData = {
         title: formData.get('title'),
         description: formData.get('description'),
-        course_id: parseInt(formData.get('course_id')),
-        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        course_id: formData.get('course_id') && formData.get('course_id').trim() !== '' ? formData.get('course_id') : null,
+        teacher_id: formData.get('teacher_id') && formData.get('teacher_id').trim() !== '' ? formData.get('teacher_id') : null,
         video_url: formData.get('video_url'),
         thumbnail_url: thumbnailUrl || formData.get('thumbnail_url') || null,
         duration_minutes: parseInt(formData.get('duration_minutes')) || 0,
@@ -177,8 +177,8 @@ async function handleUpdateVideo(event) {
     const videoData = {
         title: formData.get('title'),
         description: formData.get('description'),
-        course_id: parseInt(formData.get('course_id')),
-        teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
+        course_id: formData.get('course_id') && formData.get('course_id').trim() !== '' ? formData.get('course_id') : null,
+        teacher_id: formData.get('teacher_id') && formData.get('teacher_id').trim() !== '' ? formData.get('teacher_id') : null,
         video_url: formData.get('video_url'),
         thumbnail_url: formData.get('thumbnail_url') || null,
         duration_minutes: parseInt(formData.get('duration_minutes')) || 0,

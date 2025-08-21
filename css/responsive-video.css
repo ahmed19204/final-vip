@@ -1,0 +1,562 @@
+/* تصميم متجاوب متقدم لمشغل الفيديو */
+
+/* تصميم أساسي للحاوي */
+.video-main-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+/* حاوي الفيديو المتجاوب */
+.responsive-video-container {
+    position: relative;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin: 1rem 0;
+}
+
+/* مشغل الفيديو متجاوب */
+.responsive-video-player {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* نسبة 16:9 */
+    height: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+.responsive-video-player iframe,
+.responsive-video-player video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: inherit;
+}
+
+/* تحسين عرض الفيديو */
+.responsive-video-player video {
+    object-fit: contain;
+    background: #000;
+}
+
+/* عناصر التحكم المخصصة */
+.video-controls-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.responsive-video-container:hover .video-controls-overlay {
+    opacity: 1;
+}
+
+/* شريط التقدم */
+.video-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.video-progress-fill {
+    height: 100%;
+    background: #ff4d4d;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* أزرار التحكم */
+.video-control-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.video-control-left,
+.video-control-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-control-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+    font-size: 1rem;
+}
+
+.video-control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* عرض الوقت */
+.video-time-display {
+    color: white;
+    font-size: 0.9rem;
+    font-family: monospace;
+}
+
+/* معلومات الفيديو */
+.video-info-section {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-title-main {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    line-height: 1.3;
+}
+
+.video-description-main {
+    color: #ccc;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.video-meta-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.video-meta-item {
+    background: rgba(255, 77, 77, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+}
+
+.video-meta-label {
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.video-meta-value {
+    color: #fff;
+    font-size: 1rem;
+}
+
+/* رسائل الحالة */
+.video-status-message {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    font-size: 1.1rem;
+}
+
+.video-status-loading {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.video-status-error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.video-status-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* أيقونة التحميل */
+.video-loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 193, 7, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffc107;
+    animation: video-spin 1s ease-in-out infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes video-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* التصميم المتجاوب */
+
+/* شاشات كبيرة جداً */
+@media (min-width: 1400px) {
+    .video-main-container {
+        padding: 0 2rem;
+    }
+    
+    .responsive-video-container {
+        border-radius: 16px;
+    }
+    
+    .video-title-main {
+        font-size: 2.2rem;
+    }
+    
+    .video-description-main {
+        font-size: 1.1rem;
+    }
+    
+    .video-info-section {
+        padding: 2rem;
+    }
+}
+
+/* شاشات كبيرة */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .video-title-main {
+        font-size: 2rem;
+    }
+    
+    .video-meta-info {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* شاشات متوسطة */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .video-main-container {
+        padding: 0 1.5rem;
+    }
+    
+    .video-title-main {
+        font-size: 1.8rem;
+    }
+    
+    .video-info-section {
+        padding: 1.25rem;
+    }
+    
+    .video-meta-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* تابلت أفقي */
+@media (min-width: 768px) and (max-width: 991px) {
+    .video-main-container {
+        padding: 0 1rem;
+    }
+    
+    .responsive-video-container {
+        border-radius: 10px;
+    }
+    
+    .video-title-main {
+        font-size: 1.6rem;
+    }
+    
+    .video-description-main {
+        font-size: 0.95rem;
+    }
+    
+    .video-info-section {
+        padding: 1rem;
+    }
+    
+    .video-meta-info {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .video-control-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+/* تابلت عمودي */
+@media (min-width: 576px) and (max-width: 767px) {
+    .video-main-container {
+        padding: 0 0.75rem;
+    }
+    
+    .responsive-video-player {
+        padding-bottom: 60%; /* نسبة أعلى قليلاً للشاشات الصغيرة */
+    }
+    
+    .video-title-main {
+        font-size: 1.4rem;
+        line-height: 1.4;
+    }
+    
+    .video-description-main {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .video-info-section {
+        padding: 0.875rem;
+        margin: 0.75rem 0;
+    }
+    
+    .video-meta-info {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .video-meta-item {
+        padding: 0.5rem;
+    }
+    
+    .video-controls-overlay {
+        padding: 0.75rem;
+    }
+    
+    .video-control-btn {
+        padding: 0.375rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* جوال كبير */
+@media (min-width: 400px) and (max-width: 575px) {
+    .video-main-container {
+        padding: 0 0.5rem;
+    }
+    
+    .responsive-video-container {
+        margin: 0.75rem 0;
+        border-radius: 8px;
+    }
+    
+    .responsive-video-player {
+        padding-bottom: 62.5%; /* نسبة 16:10 للشاشات الصغيرة */
+    }
+    
+    .video-title-main {
+        font-size: 1.25rem;
+        line-height: 1.3;
+        margin-bottom: 0.375rem;
+    }
+    
+    .video-description-main {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+    }
+    
+    .video-info-section {
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 8px;
+    }
+    
+    .video-meta-info {
+        grid-template-columns: 1fr;
+        gap: 0.375rem;
+    }
+    
+    .video-meta-item {
+        padding: 0.5rem;
+        border-radius: 6px;
+    }
+    
+    .video-meta-label {
+        font-size: 0.8rem;
+    }
+    
+    .video-meta-value {
+        font-size: 0.9rem;
+    }
+    
+    .video-controls-overlay {
+        padding: 0.5rem;
+    }
+    
+    .video-control-btn {
+        padding: 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    .video-time-display {
+        font-size: 0.8rem;
+    }
+}
+
+/* جوال صغير */
+@media (max-width: 399px) {
+    .video-main-container {
+        padding: 0 0.25rem;
+    }
+    
+    .responsive-video-container {
+        margin: 0.5rem 0;
+        border-radius: 6px;
+    }
+    
+    .responsive-video-player {
+        padding-bottom: 65%; /* نسبة أكثر تربيعاً للشاشات الصغيرة جداً */
+    }
+    
+    .video-title-main {
+        font-size: 1.1rem;
+        line-height: 1.25;
+        margin-bottom: 0.25rem;
+    }
+    
+    .video-description-main {
+        font-size: 0.8rem;
+        line-height: 1.35;
+        margin-bottom: 0.5rem;
+    }
+    
+    .video-info-section {
+        padding: 0.5rem;
+        margin: 0.375rem 0;
+        border-radius: 6px;
+    }
+    
+    .video-meta-info {
+        gap: 0.25rem;
+    }
+    
+    .video-meta-item {
+        padding: 0.375rem;
+        border-radius: 4px;
+    }
+    
+    .video-meta-label {
+        font-size: 0.75rem;
+        margin-bottom: 0.125rem;
+    }
+    
+    .video-meta-value {
+        font-size: 0.8rem;
+    }
+    
+    .video-controls-overlay {
+        padding: 0.375rem;
+    }
+    
+    .video-control-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+    }
+    
+    .video-control-left,
+    .video-control-right {
+        justify-content: center;
+        gap: 0.25rem;
+    }
+    
+    .video-control-btn {
+        padding: 0.25rem;
+        font-size: 0.75rem;
+        min-width: 2rem;
+    }
+    
+    .video-time-display {
+        font-size: 0.75rem;
+        text-align: center;
+    }
+    
+    .video-status-message {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* اتجاه أفقي للجوال */
+@media (max-height: 500px) and (orientation: landscape) {
+    .responsive-video-player {
+        padding-bottom: 80vh;
+        max-height: 80vh;
+    }
+    
+    .video-info-section {
+        display: none; /* إخفاء المعلومات في الوضع الأفقي لتوفير مساحة */
+    }
+}
+
+/* تحسينات للشاشات عالية الكثافة */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .responsive-video-container {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    
+    .video-control-btn {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* وضع التباين العالي */
+@media (prefers-contrast: high) {
+    .responsive-video-container {
+        border: 2px solid #fff;
+    }
+    
+    .video-info-section {
+        border: 1px solid #fff;
+    }
+    
+    .video-meta-item {
+        border: 1px solid #ff4d4d;
+    }
+}
+
+/* وضع تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+    .video-controls-overlay,
+    .video-progress-fill,
+    .video-control-btn,
+    .video-loading-spinner {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* طباعة */
+@media print {
+    .responsive-video-container,
+    .video-controls-overlay {
+        display: none;
+    }
+    
+    .video-info-section {
+        background: white;
+        color: black;
+        border: 1px solid black;
+    }
+    
+    .video-title-main {
+        color: black;
+    }
+}

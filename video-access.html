@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIP Center - فتح الفيديو</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive-video.css">
     <style>
+        /* Container متجاوب */
         .video-container {
-            max-width: 800px;
-            margin: 2rem auto;
+            max-width: 1200px;
+            margin: 1rem auto;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1rem;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 95%;
         }
         
+        /* مشغل الفيديو متجاوب */
         .video-player {
             width: 100%;
-            height: 400px;
+            min-height: 300px;
             background: #000;
             border-radius: 10px;
             display: flex;
@@ -26,6 +30,29 @@
             justify-content: center;
             color: #fff;
             font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* فيديو متجاوب */
+        .video-player video,
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        
+        /* نسبة عرض للفيديو */
+        .video-player {
+            aspect-ratio: 16/9;
+        }
+        
+        /* للجوال - نسبة مختلفة */
+        @media (max-width: 768px) {
+            .video-player {
+                aspect-ratio: 16/10;
+                min-height: 250px;
+            }
         }
         
         .code-form {
@@ -115,6 +142,214 @@
             color: #ccc;
             font-size: 0.9rem;
         }
+        
+        /* التصميم المتجاوب الشامل */
+        
+        /* للكمبيوتر الكبير */
+        @media (min-width: 1200px) {
+            .video-container {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+            
+            .video-player {
+                min-height: 450px;
+            }
+            
+            .code-input {
+                max-width: 400px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* للكمبيوتر المحمول والتابلت الأفقي */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .video-container {
+                padding: 1.5rem;
+                width: 90%;
+            }
+            
+            .video-player {
+                min-height: 400px;
+            }
+        }
+        
+        /* للتابلت العمودي */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .video-container {
+                padding: 1.25rem;
+                width: 95%;
+                margin: 1.5rem auto;
+            }
+            
+            .video-player {
+                min-height: 350px;
+            }
+            
+            .code-input {
+                max-width: 350px;
+                padding: 0.9rem;
+                font-size: 1.1rem;
+            }
+            
+            .submit-btn {
+                padding: 0.9rem 1.8rem;
+                font-size: 1rem;
+            }
+        }
+        
+        /* للجوال الكبير */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .video-container {
+                padding: 1rem;
+                width: 95%;
+                margin: 1rem auto;
+            }
+            
+            .video-player {
+                min-height: 280px;
+                aspect-ratio: 16/9;
+            }
+            
+            .code-input {
+                max-width: 300px;
+                padding: 0.8rem;
+                font-size: 1rem;
+            }
+            
+            .submit-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.95rem;
+            }
+            
+            .video-title {
+                font-size: 1.3rem;
+            }
+            
+            .video-info {
+                margin-top: 1.5rem;
+                padding: 0.8rem;
+            }
+        }
+        
+        /* للجوال الصغير */
+        @media (max-width: 575px) {
+            .video-container {
+                padding: 0.75rem;
+                width: 98%;
+                margin: 0.5rem auto;
+                border-radius: 10px;
+            }
+            
+            .video-player {
+                min-height: 220px;
+                aspect-ratio: 16/9;
+                border-radius: 8px;
+            }
+            
+            .code-form {
+                margin-top: 1.5rem;
+            }
+            
+            .code-input {
+                max-width: 280px;
+                padding: 0.7rem;
+                font-size: 0.9rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .submit-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+                border-radius: 6px;
+            }
+            
+            .video-title {
+                font-size: 1.1rem;
+            }
+            
+            .video-description {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+            
+            .video-info {
+                margin-top: 1rem;
+                padding: 0.6rem;
+                border-radius: 6px;
+            }
+            
+            .course-info {
+                margin-top: 0.8rem;
+                padding: 0.6rem;
+                border-radius: 6px;
+            }
+            
+            .course-details {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .page-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+        }
+        
+        /* للشاشات الصغيرة جداً */
+        @media (max-width: 320px) {
+            .video-container {
+                padding: 0.5rem;
+                width: 99%;
+            }
+            
+            .video-player {
+                min-height: 180px;
+            }
+            
+            .code-input {
+                max-width: 250px;
+                font-size: 0.85rem;
+            }
+            
+            .submit-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* تحسينات إضافية للفيديو */
+        .video-player video {
+            object-fit: contain;
+        }
+        
+        .video-player iframe {
+            border: none;
+        }
+        
+        /* لضمان عدم تمدد الفيديو خارج الحدود */
+        .video-player {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* تحسين النص على الشاشات الصغيرة */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .error-message, .success-message {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+                margin: 0.5rem 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -138,7 +373,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="container">
+        <div class="video-main-container">
             <div class="video-container">
                 <h1 class="page-title">🔓 فتح الفيديو</h1>
                 <p class="page-subtitle">أدخل كود الوصول لمشاهدة المحتوى التعليمي</p>
@@ -152,18 +387,24 @@
                 </div>
                 
                 <!-- Video Player -->
-                <div class="video-player" id="videoPlayer">
-                    <div>أدخل كود الوصول لمشاهدة الفيديو</div>
+                <div class="video-player responsive-video-container" id="videoPlayer">
+                    <div class="video-status-message">أدخل كود الوصول لمشاهدة الفيديو</div>
                 </div>
                 
                 <!-- Video Info (hidden initially) -->
-                <div class="video-info" id="videoInfo" style="display: none;">
-                    <div class="video-title" id="videoTitle"></div>
-                    <div class="video-description" id="videoDescription"></div>
+                <div class="video-info-section" id="videoInfo" style="display: none;">
+                    <div class="video-title-main" id="videoTitle"></div>
+                    <div class="video-description-main" id="videoDescription"></div>
                     
-                    <div class="course-info">
-                        <div class="course-title" id="courseTitle"></div>
-                        <div class="course-details" id="courseDetails"></div>
+                    <div class="video-meta-info" id="courseMeta">
+                        <div class="video-meta-item">
+                            <div class="video-meta-label">الكورس</div>
+                            <div class="video-meta-value" id="courseTitle"></div>
+                        </div>
+                        <div class="video-meta-item">
+                            <div class="video-meta-label">التفاصيل</div>
+                            <div class="video-meta-value" id="courseDetails"></div>
+                        </div>
                     </div>
                 </div>
                 
@@ -309,9 +550,12 @@
             }
         }
         
-        // Display video
+        // Display video with responsive design
         function displayVideo(video) {
             const videoPlayer = document.getElementById('videoPlayer');
+            
+            // Add responsive classes
+            videoPlayer.className = 'video-player responsive-video-container';
             
             if (video.video_url) {
                 // Check if it's a YouTube URL
@@ -319,14 +563,14 @@
                     const videoId = extractYouTubeId(video.video_url);
                     if (videoId) {
                         videoPlayer.innerHTML = `
-                            <iframe 
-                                width="100%" 
-                                height="100%" 
-                                src="https://www.youtube.com/embed/${videoId}" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
+                            <div class="responsive-video-player">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
                         `;
                         return;
                     }
@@ -334,15 +578,21 @@
                 
                 // For direct video files
                 videoPlayer.innerHTML = `
-                    <video width="100%" height="100%" controls>
-                        <source src="${video.video_url}" type="video/mp4">
-                        <source src="${video.video_url}" type="video/webm">
-                        <source src="${video.video_url}" type="video/ogg">
-                        متصفحك لا يدعم تشغيل الفيديو.
-                    </video>
+                    <div class="responsive-video-player">
+                        <video controls preload="metadata" poster="${video.thumbnail_url || ''}">
+                            <source src="${video.video_url}" type="video/mp4">
+                            <source src="${video.video_url}" type="video/webm">
+                            <source src="${video.video_url}" type="video/ogg">
+                            متصفحك لا يدعم تشغيل الفيديو.
+                        </video>
+                    </div>
                 `;
             } else {
-                videoPlayer.innerHTML = '<div>لا يوجد فيديو متاح</div>';
+                videoPlayer.innerHTML = `
+                    <div class="video-status-message video-status-error">
+                        <span>⚠️ لا يوجد فيديو متاح</span>
+                    </div>
+                `;
             }
         }
         
@@ -391,7 +641,12 @@
         // Utility functions
         function showLoading(message) {
             const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = `<div class="loading">${message}</div>`;
+            messageContainer.innerHTML = `
+                <div class="video-status-message video-status-loading">
+                    ${message}
+                    <span class="video-loading-spinner"></span>
+                </div>
+            `;
         }
         
         function hideLoading() {
@@ -401,10 +656,20 @@
         
         function showMessage(message, type) {
             const messageContainer = document.getElementById('messageContainer');
-            const messageClass = type === 'error' ? 'error-message' : 
-                               type === 'success' ? 'success-message' : 'info-message';
+            let statusClass = 'video-status-message';
             
-            messageContainer.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            switch(type) {
+                case 'error':
+                    statusClass += ' video-status-error';
+                    break;
+                case 'success':
+                    statusClass += ' video-status-success';
+                    break;
+                default:
+                    statusClass += ' video-status-loading';
+            }
+            
+            messageContainer.innerHTML = `<div class="${statusClass}">${message}</div>`;
             
             // Auto hide success messages after 5 seconds
             if (type === 'success') {
