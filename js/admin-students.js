@@ -321,8 +321,99 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Show add student modal
+function showAddStudentModal() {
+    const modal = document.getElementById('studentModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    const modalTitle = document.getElementById('studentModalTitle');
+    if (modalTitle) {
+        modalTitle.textContent = 'إضافة طالب جديد';
+    }
+    
+    const form = document.getElementById('studentForm');
+    if (form) {
+        form.reset();
+    }
+}
+
+// Close student modal
+function closeStudentModal() {
+    const modal = document.getElementById('studentModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// View student details
+function viewStudent(studentId) {
+    const student = studentsData.find(s => s.id === studentId);
+    if (student) {
+        showNotification(`عرض تفاصيل الطالب: ${student.name}`, 'info');
+    }
+}
+
+// Edit student
+function editStudent(studentId) {
+    handleEditStudent(studentId);
+}
+
+// Delete student
+function deleteStudent(studentId) {
+    handleDeleteStudent(studentId);
+}
+
+// Filter students
+function filterStudents(filter) {
+    let filteredStudents = studentsData;
+    
+    switch(filter) {
+        case 'active':
+            filteredStudents = studentsData.filter(s => s.status === 'active');
+            break;
+        case 'inactive':
+            filteredStudents = studentsData.filter(s => s.status === 'inactive');
+            break;
+        case 'premium':
+            filteredStudents = studentsData.filter(s => s.subscription_type === 'premium');
+            break;
+        case 'basic':
+            filteredStudents = studentsData.filter(s => s.subscription_type === 'basic');
+            break;
+    }
+    
+    displayStudents(filteredStudents);
+}
+
+// Search students
+function searchStudents(searchTerm) {
+    if (!searchTerm) {
+        displayStudents(studentsData);
+        return;
+    }
+    
+    const filtered = studentsData.filter(student => 
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (student.phone && student.phone.includes(searchTerm))
+    );
+    
+    displayStudents(filtered);
+}
+
 // Export functions for global use
 window.handleEditStudent = handleEditStudent;
 window.handleUpdateStudent = handleUpdateStudent;
 window.handleDeleteStudent = handleDeleteStudent;
 window.handleStudentSearch = handleStudentSearch;
+window.showAddStudentModal = showAddStudentModal;
+window.closeStudentModal = closeStudentModal;
+window.viewStudent = viewStudent;
+window.editStudent = editStudent;
+window.deleteStudent = deleteStudent;
+window.filterStudents = filterStudents;
+window.searchStudents = searchStudents;

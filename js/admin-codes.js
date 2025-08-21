@@ -332,9 +332,80 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Show add code modal
+function showAddCodeModal() {
+    const modal = document.getElementById('codeModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    const modalTitle = document.getElementById('codeModalTitle');
+    if (modalTitle) {
+        modalTitle.textContent = 'إنشاء كود جديد';
+    }
+    
+    const form = document.getElementById('codeForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // Populate courses dropdown
+    populateCoursesDropdown();
+}
+
+// Close code modal
+function closeCodeModal() {
+    const modal = document.getElementById('codeModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// View code details
+function viewCode(codeId) {
+    const code = codesData.find(c => c.id === codeId);
+    if (code) {
+        showNotification(`كود الوصول: ${code.code}`, 'info');
+    }
+}
+
+// Edit code
+function editCode(codeId) {
+    handleEditCode(codeId);
+}
+
+// Delete code
+function deleteCode(codeId) {
+    handleDeleteCode(codeId);
+}
+
+// Generate random code
+function generateRandomCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    
+    const codeInput = document.getElementById('accessCode');
+    if (codeInput) {
+        codeInput.value = code;
+    }
+    
+    return code;
+}
+
 // Export functions for global use
 window.handleEditCode = handleEditCode;
 window.handleUpdateCode = handleUpdateCode;
 window.handleDeleteCode = handleDeleteCode;
 window.handleCodeSearch = handleCodeSearch;
+window.showAddCodeModal = showAddCodeModal;
+window.closeCodeModal = closeCodeModal;
+window.viewCode = viewCode;
+window.editCode = editCode;
+window.deleteCode = deleteCode;
+window.generateRandomCode = generateRandomCode;
 window.generateRandomCode = generateRandomCode;

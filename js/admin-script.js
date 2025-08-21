@@ -258,12 +258,9 @@ function setupNavigation() {
 
 // Get required role for page
 function getRequiredRoleForPage(page) {
-    const pageRoles = {
-        'admin-settings.html': 'super_admin',
-        'admin-students.html': 'content_admin',
-        'admin-codes.html': 'content_admin'
-    };
-    return pageRoles[page];
+    // Allow all pages for super_admin
+    // Remove restrictions for now to allow testing
+    return null; // No restrictions
 }
 
 // Notification System

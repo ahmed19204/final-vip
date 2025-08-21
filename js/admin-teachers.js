@@ -129,6 +129,20 @@ async function handleAddTeacher(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
+    
+    // Handle image upload
+    let imageUrl = null;
+    const imageFile = formData.get('teacher_image');
+    if (imageFile && imageFile.size > 0) {
+        // Convert image to base64 for storage
+        const reader = new FileReader();
+        imageUrl = await new Promise((resolve, reject) => {
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(imageFile);
+        });
+    }
+    
     const teacherData = {
         name: formData.get('name'),
         email: formData.get('email'),
@@ -139,6 +153,7 @@ async function handleAddTeacher(event) {
         education: formData.get('education'),
         specializations: formData.get('specializations').split(',').map(s => s.trim()).filter(s => s),
         hourly_rate: parseFloat(formData.get('hourly_rate')) || 0.00,
+        image_url: imageUrl,
         status: 'active'
     };
 
@@ -212,6 +227,20 @@ async function handleUpdateTeacher(event) {
     }
     
     const formData = new FormData(event.target);
+    
+    // Handle image upload
+    let imageUrl = null;
+    const imageFile = formData.get('teacher_image');
+    if (imageFile && imageFile.size > 0) {
+        // Convert image to base64 for storage
+        const reader = new FileReader();
+        imageUrl = await new Promise((resolve, reject) => {
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(imageFile);
+        });
+    }
+    
     const teacherData = {
         name: formData.get('name'),
         email: formData.get('email'),
@@ -224,6 +253,11 @@ async function handleUpdateTeacher(event) {
         hourly_rate: parseFloat(formData.get('hourly_rate')) || 0.00,
         status: formData.get('status')
     };
+    
+    // Only add image_url if a new image was uploaded
+    if (imageUrl) {
+        teacherData.image_url = imageUrl;
+    }
 
     console.log('📝 Updating teacher:', currentEditId, teacherData);
 

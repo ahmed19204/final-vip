@@ -140,12 +140,18 @@
                 const teacherCard = document.createElement('div');
                 teacherCard.className = 'teacher-card';
                 
-                // Get teacher avatar (first letter of name or emoji)
-                const avatar = teacher.name ? teacher.name.charAt(0) : '👨‍🏫';
+                // Get teacher image or avatar
+                let imageHtml;
+                if (teacher.image_url) {
+                    imageHtml = `<img src="${teacher.image_url}" alt="${teacher.name}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                } else {
+                    const avatar = teacher.name ? teacher.name.charAt(0) : '👨‍🏫';
+                    imageHtml = `<span style="font-size: 2rem; font-weight: bold; color: white;">${avatar}</span>`;
+                }
                 
                 teacherCard.innerHTML = `
-                    <div class="teacher-image" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: linear-gradient(135deg, #ff4d4d, #ff6b6b); border-radius: 50%; color: white; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem;">
-                        ${avatar}
+                    <div class="teacher-image" style="display: flex; align-items: center; justify-content: center; width: 120px; height: 120px; background: ${teacher.image_url ? 'transparent' : 'linear-gradient(135deg, #ff4d4d, #ff6b6b)'}; border-radius: 50%; overflow: hidden; margin: 0 auto 1rem; border: 3px solid #ff4d4d;">
+                        ${imageHtml}
                     </div>
                     <h3 class="teacher-name">${teacher.name}</h3>
                     <p class="teacher-subject">${teacher.subject || 'تخصص عام'}</p>

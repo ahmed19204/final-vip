@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Setup event listeners
 function setupEventListeners() {
     // Add course form submission
-    const addCourseForm = document.getElementById('addCourseForm');
-    if (addCourseForm) {
-        addCourseForm.addEventListener('submit', handleAddCourse);
+    const courseForm = document.getElementById('courseForm');
+    if (courseForm) {
+        courseForm.addEventListener('submit', handleAddCourse);
     }
 
     // Search functionality
@@ -379,8 +379,106 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Show add course modal
+function showAddCourseModal() {
+    const modal = document.getElementById('courseModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    const modalTitle = document.getElementById('courseModalTitle');
+    if (modalTitle) {
+        modalTitle.textContent = 'إضافة كورس جديد';
+    }
+    
+    const form = document.getElementById('courseForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // Populate dropdowns
+    populateSubjectsDropdown();
+    populateTeachersDropdown();
+}
+
+// Close course modal
+function closeCourseModal() {
+    const modal = document.getElementById('courseModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// View course details
+function viewCourse(courseId) {
+    const course = coursesData.find(c => c.id === courseId);
+    if (course) {
+        showNotification(`عرض تفاصيل الكورس: ${course.title}`, 'info');
+    }
+}
+
+// Edit course
+function editCourse(courseId) {
+    handleEditCourse(courseId);
+}
+
+// Delete course
+function deleteCourse(courseId) {
+    handleDeleteCourse(courseId);
+}
+
+// Filter courses
+function filterCourses(filter) {
+    let filteredCourses = coursesData;
+    
+    switch(filter) {
+        case 'featured':
+            filteredCourses = coursesData.filter(c => c.status === 'featured');
+            break;
+        case 'active':
+            filteredCourses = coursesData.filter(c => c.status === 'active');
+            break;
+        case 'inactive':
+            filteredCourses = coursesData.filter(c => c.status === 'inactive');
+            break;
+        case 'physics':
+        case 'chemistry':
+        case 'biology':
+        case 'math':
+            filteredCourses = coursesData.filter(c => c.subject && c.subject.toLowerCase() === filter);
+            break;
+    }
+    
+    displayCourses(filteredCourses);
+}
+
+// Search courses
+function searchCourses(searchTerm) {
+    if (!searchTerm) {
+        displayCourses(coursesData);
+        return;
+    }
+    
+    const filtered = coursesData.filter(course => 
+        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (course.teacher_name && course.teacher_name.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    
+    displayCourses(filtered);
+}
+
 // Export functions for global use
 window.handleEditCourse = handleEditCourse;
 window.handleUpdateCourse = handleUpdateCourse;
 window.handleDeleteCourse = handleDeleteCourse;
 window.handleCourseSearch = handleCourseSearch;
+window.showAddCourseModal = showAddCourseModal;
+window.closeCourseModal = closeCourseModal;
+window.viewCourse = viewCourse;
+window.editCourse = editCourse;
+window.deleteCourse = deleteCourse;
+window.filterCourses = filterCourses;
+window.searchCourses = searchCourses;

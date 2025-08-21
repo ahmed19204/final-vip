@@ -318,8 +318,97 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Show add subject modal
+function showAddSubjectModal() {
+    const modal = document.getElementById('subjectModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    const modalTitle = document.getElementById('subjectModalTitle');
+    if (modalTitle) {
+        modalTitle.textContent = 'إضافة تخصص جديد';
+    }
+    
+    const form = document.getElementById('subjectForm');
+    if (form) {
+        form.reset();
+    }
+}
+
+// Close subject modal
+function closeSubjectModal() {
+    const modal = document.getElementById('subjectModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// View subject details
+function viewSubject(subjectId) {
+    const subject = subjectsData.find(s => s.id === subjectId);
+    if (subject) {
+        showNotification(`عرض تفاصيل التخصص: ${subject.name}`, 'info');
+    }
+}
+
+// Edit subject
+function editSubject(subjectId) {
+    handleEditSubject(subjectId);
+}
+
+// Delete subject
+function deleteSubject(subjectId) {
+    handleDeleteSubject(subjectId);
+}
+
+// Filter subjects
+function filterSubjects(filter) {
+    let filteredSubjects = subjectsData;
+    
+    switch(filter) {
+        case 'active':
+            filteredSubjects = subjectsData.filter(s => s.status === 'active');
+            break;
+        case 'inactive':
+            filteredSubjects = subjectsData.filter(s => s.status === 'inactive');
+            break;
+        case 'beginner':
+        case 'intermediate':
+        case 'advanced':
+            filteredSubjects = subjectsData.filter(s => s.difficulty_level === filter);
+            break;
+    }
+    
+    displaySubjects(filteredSubjects);
+}
+
+// Search subjects
+function searchSubjects(searchTerm) {
+    if (!searchTerm) {
+        displaySubjects(subjectsData);
+        return;
+    }
+    
+    const filtered = subjectsData.filter(subject => 
+        subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (subject.description && subject.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    
+    displaySubjects(filtered);
+}
+
 // Export functions for global use
 window.handleEditSubject = handleEditSubject;
 window.handleUpdateSubject = handleUpdateSubject;
 window.handleDeleteSubject = handleDeleteSubject;
 window.handleSubjectSearch = handleSubjectSearch;
+window.showAddSubjectModal = showAddSubjectModal;
+window.closeSubjectModal = closeSubjectModal;
+window.viewSubject = viewSubject;
+window.editSubject = editSubject;
+window.deleteSubject = deleteSubject;
+window.filterSubjects = filterSubjects;
+window.searchSubjects = searchSubjects;

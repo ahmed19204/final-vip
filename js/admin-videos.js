@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Setup event listeners
 function setupEventListeners() {
     // Add video form submission
-    const addVideoForm = document.getElementById('addVideoForm');
-    if (addVideoForm) {
-        addVideoForm.addEventListener('submit', handleAddVideo);
+    const videoForm = document.getElementById('videoForm');
+    if (videoForm) {
+        videoForm.addEventListener('submit', handleAddVideo);
     }
 
     // Search functionality
@@ -389,9 +389,113 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Show add video modal
+function showAddVideoModal() {
+    const modal = document.getElementById('videoModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    const modalTitle = document.getElementById('videoModalTitle');
+    if (modalTitle) {
+        modalTitle.textContent = 'إضافة فيديو جديد';
+    }
+    
+    const form = document.getElementById('videoForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // Populate dropdowns
+    populateCoursesDropdown();
+    populateTeachersDropdown();
+}
+
+// Close video modal
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// View video details
+function viewVideo(videoId) {
+    const video = videosData.find(v => v.id === videoId);
+    if (video) {
+        showNotification(`عرض تفاصيل الفيديو: ${video.title}`, 'info');
+        // Open video in new tab if URL exists
+        if (video.video_url) {
+            window.open(video.video_url, '_blank');
+        }
+    }
+}
+
+// Edit video
+function editVideo(videoId) {
+    handleEditVideo(videoId);
+}
+
+// Delete video
+function deleteVideo(videoId) {
+    handleDeleteVideo(videoId);
+}
+
+// Filter videos
+function filterVideos(filter) {
+    let filteredVideos = videosData;
+    
+    switch(filter) {
+        case 'public':
+            filteredVideos = videosData.filter(v => !v.requires_code);
+            break;
+        case 'private':
+            filteredVideos = videosData.filter(v => v.requires_code);
+            break;
+        case 'active':
+            filteredVideos = videosData.filter(v => v.status === 'active');
+            break;
+        case 'inactive':
+            filteredVideos = videosData.filter(v => v.status === 'inactive');
+            break;
+        default:
+            // Filter by course ID if numeric
+            if (!isNaN(filter)) {
+                filteredVideos = videosData.filter(v => v.course_id == filter);
+            }
+    }
+    
+    displayVideos(filteredVideos);
+}
+
+// Search videos
+function searchVideos(searchTerm) {
+    if (!searchTerm) {
+        displayVideos(videosData);
+        return;
+    }
+    
+    const filtered = videosData.filter(video => 
+        video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (video.description && video.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (video.teacher_name && video.teacher_name.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    
+    displayVideos(filtered);
+}
+
 // Export functions for global use
 window.handleEditVideo = handleEditVideo;
 window.handleUpdateVideo = handleUpdateVideo;
 window.handleDeleteVideo = handleDeleteVideo;
 window.handleVideoSearch = handleVideoSearch;
+window.showAddVideoModal = showAddVideoModal;
+window.closeVideoModal = closeVideoModal;
+window.viewVideo = viewVideo;
+window.editVideo = editVideo;
+window.deleteVideo = deleteVideo;
+window.filterVideos = filterVideos;
+window.searchVideos = searchVideos;
 window.simulateUpload = simulateUpload;
