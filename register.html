@@ -6,6 +6,70 @@
     <title>VIP Center - إنشاء حساب جديد</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Divider Styles */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #999;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Google Button Styles */
+        .google-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            color: #3c4043;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #c6c6c6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .google-btn:active {
+            background: #f1f3f4;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+        }
+        
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .google-btn svg {
+            flex-shrink: 0;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -159,8 +223,24 @@
                 
                 <button type="submit" class="form-submit" id="registerButton">إنشاء الحساب</button>
                 
+                <!-- Divider -->
+                <div class="divider">
+                    <span>أو</span>
+                </div>
+                
+                <!-- Google Registration Button -->
+                <button type="button" id="googleRegisterBtn" class="google-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
+                        <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17z"/>
+                        <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14z"/>
+                        <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7z"/>
+                    </svg>
+                    التسجيل بـ Google
+                </button>
+                
                 <div class="form-links">
-                    <a href="login.html">لديك حساب بالفعل؟ سجل دخولك.</a>
+                    <a href="login-simple.html">لديك حساب بالفعل؟ سجل دخولك.</a>
                 </div>
             </form>
         </div>
@@ -316,6 +396,48 @@
             
             messageDiv.style.display = 'block';
         }
+        
+        // Google Registration Handler
+        document.getElementById('googleRegisterBtn').addEventListener('click', async function() {
+            const googleBtn = this;
+            const originalText = googleBtn.innerHTML;
+            
+            try {
+                // إظهار حالة التحميل
+                googleBtn.disabled = true;
+                googleBtn.innerHTML = `
+                    <div style="width: 18px; height: 18px; border: 2px solid #ccc; border-top: 2px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    جاري التسجيل بـ Google...
+                `;
+                
+                // محاولة التسجيل بـ Google
+                const result = await window.supabaseFunctions.signInWithGoogle();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'فشل في التسجيل بـ Google');
+                }
+                
+                // سيتم التوجيه تلقائياً بواسطة Google OAuth
+                
+            } catch (error) {
+                console.error('Google registration error:', error);
+                showMessage(error.message || 'حدث خطأ في التسجيل بـ Google', 'error');
+                
+                // إعادة تعيين الزر
+                googleBtn.disabled = false;
+                googleBtn.innerHTML = originalText;
+            }
+        });
+        
+        // إضافة أنماط CSS للدوران
+        const spinStyle = document.createElement('style');
+        spinStyle.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(spinStyle);
         
         // إظهار/إخفاء كلمة المرور
         function togglePasswordVisibility(fieldId) {

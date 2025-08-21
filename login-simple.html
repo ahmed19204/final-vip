@@ -290,11 +290,7 @@
                 </div>
             </form>
             
-            <div class="demo-accounts">
-                <h4>🧪 حسابات تجريبية:</h4>
-                <p><strong>طالب:</strong> student@vip.com | 123456</p>
-                <p><strong>مدير:</strong> admin@vip.com | admin123</p>
-            </div>
+
         </div>
     </div>
 
@@ -361,25 +357,7 @@
                 }
                 
                 // الحسابات التجريبية
-                const testAccounts = {
-                    'student@vip.com': { password: '123456', name: 'طالب تجريبي', phone: '01000000000', role: 'student' },
-                    'admin@vip.com': { password: 'admin123', name: 'مدير تجريبي', phone: '01111111111', role: 'admin' }
-                };
-                
-                if (testAccounts[email] && testAccounts[email].password === password) {
-                    return {
-                        success: true,
-                        user: {
-                            id: 'test_' + Date.now(),
-                            email: email,
-                            name: testAccounts[email].name,
-                            phone: testAccounts[email].phone,
-                            role: testAccounts[email].role,
-                            created_at: new Date().toISOString(),
-                            isTestAccount: true
-                        }
-                    };
-                }
+                // لا توجد حسابات تجريبية - فقط الحسابات الحقيقية من قاعدة البيانات
                 
                 return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
                 
