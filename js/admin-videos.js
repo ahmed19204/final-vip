@@ -99,13 +99,27 @@ async function handleAddVideo(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
+    
+    // Handle thumbnail upload
+    let thumbnailUrl = null;
+    const thumbnailFile = formData.get('video_thumbnail');
+    if (thumbnailFile && thumbnailFile.size > 0) {
+        // Convert image to base64 for storage
+        const reader = new FileReader();
+        thumbnailUrl = await new Promise((resolve, reject) => {
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(thumbnailFile);
+        });
+    }
+    
     const videoData = {
         title: formData.get('title'),
         description: formData.get('description'),
         course_id: parseInt(formData.get('course_id')),
         teacher_id: formData.get('teacher_id') ? parseInt(formData.get('teacher_id')) : null,
         video_url: formData.get('video_url'),
-        thumbnail_url: formData.get('thumbnail_url') || null,
+        thumbnail_url: thumbnailUrl || formData.get('thumbnail_url') || null,
         duration_minutes: parseInt(formData.get('duration_minutes')) || 0,
         order_in_course: parseInt(formData.get('order_in_course')) || 0,
         status: 'active'

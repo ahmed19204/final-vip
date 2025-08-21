@@ -99,6 +99,20 @@ async function handleAddCourse(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
+    
+    // Handle image upload
+    let imageUrl = null;
+    const imageFile = formData.get('course_image');
+    if (imageFile && imageFile.size > 0) {
+        // Convert image to base64 for storage
+        const reader = new FileReader();
+        imageUrl = await new Promise((resolve, reject) => {
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(imageFile);
+        });
+    }
+    
     const courseData = {
         title: formData.get('title'),
         description: formData.get('description'),
@@ -108,6 +122,7 @@ async function handleAddCourse(event) {
         duration_hours: parseInt(formData.get('duration_hours')) || 0,
         level: formData.get('level'),
         requires_code: formData.get('requires_code') === 'on',
+        image_url: imageUrl,
         status: 'active'
     };
 
@@ -470,6 +485,25 @@ function searchCourses(searchTerm) {
     displayCourses(filtered);
 }
 
+// Handle course image upload
+function handleCourseImageUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('courseImagePreview');
+            if (preview) {
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-top: 1rem;">
+                    <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">صورة الكورس الجديدة</p>
+                `;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
 // Export functions for global use
 window.handleEditCourse = handleEditCourse;
 window.handleUpdateCourse = handleUpdateCourse;
@@ -482,3 +516,4 @@ window.editCourse = editCourse;
 window.deleteCourse = deleteCourse;
 window.filterCourses = filterCourses;
 window.searchCourses = searchCourses;
+window.handleCourseImageUpload = handleCourseImageUpload;

@@ -211,6 +211,92 @@ async function getAllVideos() {
     }
 }
 
+async function updateVideo(id, videoData) {
+    try {
+        // Convert id to integer to avoid UUID issues
+        const videoId = parseInt(id);
+        if (isNaN(videoId)) {
+            throw new Error('Invalid video ID');
+        }
+
+        const { data, error } = await supabaseClient
+            .from('videos')
+            .update(videoData)
+            .eq('id', videoId)
+            .select();
+
+        if (error) throw error;
+        return { success: true, data: data[0] };
+    } catch (error) {
+        console.error('Error updating video:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function deleteVideo(id) {
+    try {
+        // Convert id to integer to avoid UUID issues
+        const videoId = parseInt(id);
+        if (isNaN(videoId)) {
+            throw new Error('Invalid video ID');
+        }
+
+        const { error } = await supabaseClient
+            .from('videos')
+            .delete()
+            .eq('id', videoId);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting video:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function updateCourse(id, courseData) {
+    try {
+        // Convert id to integer to avoid UUID issues
+        const courseId = parseInt(id);
+        if (isNaN(courseId)) {
+            throw new Error('Invalid course ID');
+        }
+
+        const { data, error } = await supabaseClient
+            .from('courses')
+            .update(courseData)
+            .eq('id', courseId)
+            .select();
+
+        if (error) throw error;
+        return { success: true, data: data[0] };
+    } catch (error) {
+        console.error('Error updating course:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function deleteCourse(id) {
+    try {
+        // Convert id to integer to avoid UUID issues
+        const courseId = parseInt(id);
+        if (isNaN(courseId)) {
+            throw new Error('Invalid course ID');
+        }
+
+        const { error } = await supabaseClient
+            .from('courses')
+            .delete()
+            .eq('id', courseId);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting course:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 async function addAccessCode(codeData) {
     try {
         const { data, error } = await supabaseClient
@@ -304,12 +390,16 @@ window.supabaseFunctions = {
     deleteTeacher,
     addCourse,
     getAllCourses,
+    updateCourse,
+    deleteCourse,
     addSubject,
     getAllSubjects,
     addStudent,
     getAllStudents,
     addVideo,
     getAllVideos,
+    updateVideo,
+    deleteVideo,
     addAccessCode,
     getAllAccessCodes,
     validateAccessCode,
