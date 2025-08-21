@@ -93,9 +93,20 @@ async function deleteTeacher(id) {
 
 async function addCourse(courseData) {
     try {
+        // Clean and validate data
+        const cleanData = {
+            ...courseData,
+            // Convert IDs to integers, set null if invalid
+            subject_id: courseData.subject_id && !isNaN(parseInt(courseData.subject_id)) ? parseInt(courseData.subject_id) : null,
+            teacher_id: courseData.teacher_id && !isNaN(parseInt(courseData.teacher_id)) ? parseInt(courseData.teacher_id) : null,
+            // Ensure numeric fields are properly typed
+            price: parseFloat(courseData.price) || 0,
+            duration_hours: parseInt(courseData.duration_hours) || 0
+        };
+
         const { data, error } = await supabaseClient
             .from('courses')
-            .insert([courseData])
+            .insert([cleanData])
             .select();
 
         if (error) throw error;
@@ -183,9 +194,20 @@ async function getAllStudents() {
 
 async function addVideo(videoData) {
     try {
+        // Clean and validate data
+        const cleanData = {
+            ...videoData,
+            // Convert IDs to integers, set null if invalid
+            course_id: videoData.course_id && !isNaN(parseInt(videoData.course_id)) ? parseInt(videoData.course_id) : null,
+            teacher_id: videoData.teacher_id && !isNaN(parseInt(videoData.teacher_id)) ? parseInt(videoData.teacher_id) : null,
+            // Ensure numeric fields are properly typed
+            duration_minutes: parseInt(videoData.duration_minutes) || 0,
+            order_in_course: parseInt(videoData.order_in_course) || 0
+        };
+
         const { data, error } = await supabaseClient
             .from('videos')
-            .insert([videoData])
+            .insert([cleanData])
             .select();
 
         if (error) throw error;
@@ -219,9 +241,20 @@ async function updateVideo(id, videoData) {
             throw new Error('Invalid video ID');
         }
 
+        // Clean and validate data
+        const cleanData = {
+            ...videoData,
+            // Convert IDs to integers, set null if invalid
+            course_id: videoData.course_id && !isNaN(parseInt(videoData.course_id)) ? parseInt(videoData.course_id) : null,
+            teacher_id: videoData.teacher_id && !isNaN(parseInt(videoData.teacher_id)) ? parseInt(videoData.teacher_id) : null,
+            // Ensure numeric fields are properly typed
+            duration_minutes: parseInt(videoData.duration_minutes) || 0,
+            order_in_course: parseInt(videoData.order_in_course) || 0
+        };
+
         const { data, error } = await supabaseClient
             .from('videos')
-            .update(videoData)
+            .update(cleanData)
             .eq('id', videoId)
             .select();
 
@@ -262,9 +295,20 @@ async function updateCourse(id, courseData) {
             throw new Error('Invalid course ID');
         }
 
+        // Clean and validate data
+        const cleanData = {
+            ...courseData,
+            // Convert IDs to integers, set null if invalid
+            subject_id: courseData.subject_id && !isNaN(parseInt(courseData.subject_id)) ? parseInt(courseData.subject_id) : null,
+            teacher_id: courseData.teacher_id && !isNaN(parseInt(courseData.teacher_id)) ? parseInt(courseData.teacher_id) : null,
+            // Ensure numeric fields are properly typed
+            price: parseFloat(courseData.price) || 0,
+            duration_hours: parseInt(courseData.duration_hours) || 0
+        };
+
         const { data, error } = await supabaseClient
             .from('courses')
-            .update(courseData)
+            .update(cleanData)
             .eq('id', courseId)
             .select();
 
