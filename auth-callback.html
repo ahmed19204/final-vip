@@ -189,9 +189,13 @@
                     localStorage.setItem('currentUser', JSON.stringify(result.user));
                     localStorage.setItem('isLoggedIn', 'true');
                     
-                    // التوجيه إلى الصفحة الرئيسية
+                    // تحديد البيئة وإعادة التوجيه
+                    const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+                    const homeUrl = isProduction ? 'https://vip-center-1.vercel.app/home.html' : 'home.html';
+                    
+                    console.log('🏠 Redirecting to:', homeUrl);
                     setTimeout(() => {
-                        window.location.href = 'home.html';
+                        window.location.href = homeUrl;
                     }, 2000);
                     
                 } else {

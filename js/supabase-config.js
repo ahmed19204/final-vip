@@ -32,10 +32,17 @@ async function testSupabaseConnection() {
 // Google OAuth Functions
 async function signInWithGoogle() {
     try {
+        // تحديد البيئة (تطوير أم إنتاج)
+        const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        const baseUrl = isProduction ? 'https://vip-center-1.vercel.app' : window.location.origin;
+        
+        console.log('🌐 OAuth Environment:', isProduction ? 'Production' : 'Development');
+        console.log('🔗 Redirect URL:', `${baseUrl}/auth-callback.html`);
+        
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/auth-callback.html`,
+                redirectTo: `${baseUrl}/auth-callback.html`,
                 queryParams: {
                     access_type: 'offline',
                     prompt: 'consent'
