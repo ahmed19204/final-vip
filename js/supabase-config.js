@@ -29,6 +29,119 @@ async function testSupabaseConnection() {
     }
 }
 
+// Google OAuth Functions
+async function signInWithGoogle() {
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth-callback.html`,
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent'
+                }
+            }
+        });
+
+        if (error) throw error;
+        return { success: true, data };
+    } catch (error) {
+        console.error('Google OAuth error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function handleOAuthCallback() {
+    try {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        
+        if (error) throw error;
+        if (!user) return { success: false, error: 'No user found' };
+
+        // Check if user exists in our users table
+        const { data: existingUser, error: fetchError } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('email', user.email)
+            .single();
+
+        let userData;
+
+        if (fetchError && fetchError.code === 'PGRST116') {
+            // User doesn't exist, create new user
+            const newUser = {
+                email: user.email,
+                name: user.user_metadata.full_name || user.user_metadata.name || 'مستخدم جديد',
+                avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture,
+                provider: 'google',
+                provider_id: user.id,
+                last_login: new Date().toISOString()
+            };
+
+            const { data: createdUser, error: createError } = await supabaseClient
+                .from('users')
+                .insert([newUser])
+                .select()
+                .single();
+
+            if (createError) throw createError;
+            userData = createdUser;
+        } else if (existingUser) {
+            // User exists, update last login
+            const { data: updatedUser, error: updateError } = await supabaseClient
+                .from('users')
+                .update({ last_login: new Date().toISOString() })
+                .eq('id', existingUser.id)
+                .select()
+                .single();
+
+            if (updateError) throw updateError;
+            userData = updatedUser;
+        } else {
+            throw fetchError;
+        }
+
+        return { success: true, user: userData, supabaseUser: user };
+    } catch (error) {
+        console.error('OAuth callback error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function getCurrentUser() {
+    try {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        
+        if (error) throw error;
+        if (!user) return { success: false, error: 'Not authenticated' };
+
+        // Get user data from our users table
+        const { data: userData, error: fetchError } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('email', user.email)
+            .single();
+
+        if (fetchError) throw fetchError;
+
+        return { success: true, user: userData, supabaseUser: user };
+    } catch (error) {
+        console.error('Get current user error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function signOut() {
+    try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('Sign out error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Database interaction functions
 async function addTeacher(teacherData) {
     try {
@@ -424,6 +537,12 @@ async function updateCodeUsage(codeId) {
 // Export functions for use in other files
 window.supabaseFunctions = {
     testSupabaseConnection,
+    // Google OAuth functions
+    signInWithGoogle,
+    handleOAuthCallback,
+    getCurrentUser,
+    signOut,
+    // Database functions
     addTeacher,
     getAllTeachers,
     updateTeacher,

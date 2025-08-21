@@ -284,7 +284,7 @@
                     
                     // Redirect to login after 2 seconds
                     setTimeout(() => {
-                        window.location.href = 'login.html';
+                        window.location.href = 'login-simple.html';
                     }, 2000);
                 } else {
                     throw new Error(result.error || 'فشل في إنشاء الحساب');
@@ -327,5 +327,6 @@
             }
         }
     </script>
+    <script src="js/auth-manager.js"></script>
 </body>
 </html>

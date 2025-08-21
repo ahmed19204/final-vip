@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - تسجيل الدخول</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* تصميم صفحة تسجيل الدخول البسيط */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            padding: 2rem 1rem;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 2rem auto;
+            border: 2px solid #ff4d4d;
+            object-fit: cover;
+        }
+        
+        .login-title {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff4d4d, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .login-subtitle {
+            color: #ccc;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .form-input:focus {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ff4d4d, #ff6b6b);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 77, 77, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .login-links a {
+            color: #ff4d4d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .login-links a:hover {
+            color: #ff6b6b;
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .message.error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+        
+        .message.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+        
+        .loading {
+            display: none;
+            color: #ff4d4d;
+            margin: 1rem 0;
+        }
+        
+        .demo-accounts {
+            background: rgba(255, 77, 77, 0.05);
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        
+        .demo-accounts h4 {
+            color: #ff4d4d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-accounts p {
+            color: #ccc;
+            margin: 0.2rem 0;
+        }
+        
+        /* Divider Styles */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #999;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Google Button Styles */
+        .google-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            color: #3c4043;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #c6c6c6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .google-btn:active {
+            background: #f1f3f4;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+        }
+        
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .google-btn svg {
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+            
+            .google-btn {
+                font-size: 0.9rem;
+                padding: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <img src="images/vip-logo.jpg" alt="VIP Center" class="login-logo">
+            <h1 class="login-title">مرحباً بك</h1>
+            <p class="login-subtitle">سجل دخولك للوصول إلى حسابك</p>
+            
+            <form id="loginForm">
+                <div id="message" class="message"></div>
+                <div id="loading" class="loading">🔄 جاري تسجيل الدخول...</div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" class="form-input" placeholder="البريد الإلكتروني" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" class="form-input" placeholder="كلمة المرور" required>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="login-btn">تسجيل الدخول</button>
+                
+                <!-- Divider -->
+                <div class="divider">
+                    <span>أو</span>
+                </div>
+                
+                <!-- Google Login Button -->
+                <button type="button" id="googleLoginBtn" class="google-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
+                        <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 0 1-7.18-2.53H1.83v2.07A8 8 0 0 0 8.98 17z"/>
+                        <path fill="#FBBC05" d="M4.5 10.49a4.8 4.8 0 0 1 0-3.07V5.35H1.83a8 8 0 0 0 0 7.28l2.67-2.14z"/>
+                        <path fill="#EA4335" d="M8.98 4.72c1.16 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.35L4.5 7.42a4.77 4.77 0 0 1 4.48-2.7z"/>
+                    </svg>
+                    تسجيل الدخول بـ Google
+                </button>
+                
+                <div class="login-links">
+                    <a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
+                    <a href="register.html">إنشاء حساب جديد</a>
+                </div>
+            </form>
+            
+            <div class="demo-accounts">
+                <h4>🧪 حسابات تجريبية:</h4>
+                <p><strong>طالب:</strong> student@vip.com | 123456</p>
+                <p><strong>مدير:</strong> admin@vip.com | admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loading = document.getElementById('loading');
+            const message = document.getElementById('message');
+            
+            // إظهار التحميل
+            loginBtn.disabled = true;
+            loading.style.display = 'block';
+            message.style.display = 'none';
+            
+            try {
+                // محاولة تسجيل الدخول
+                const loginResult = await attemptLogin(email, password);
+                
+                if (loginResult.success) {
+                    // حفظ بيانات المستخدم
+                    localStorage.setItem('currentUser', JSON.stringify(loginResult.user));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    // رسالة نجاح
+                    showMessage(`مرحباً ${loginResult.user.name || 'بك'}! جاري التوجيه...`, 'success');
+                    
+                    // التوجيه إلى الصفحة الرئيسية (نفس شكل الموقع)
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                } else {
+                    showMessage(loginResult.error || 'خطأ في تسجيل الدخول', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('حدث خطأ غير متوقع', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+        
+        async function attemptLogin(email, password) {
+            try {
+                // التحقق من قاعدة البيانات أولاً (الحسابات الحقيقية)
+                if (window.supabaseClient) {
+                    const { data: students, error } = await window.supabaseClient
+                        .from('students')
+                        .select('*')
+                        .eq('email', email);
+                    
+                    if (!error && students && students.length > 0) {
+                        const student = students[0];
+                        if (student.password === password || !student.password) {
+                            return { success: true, user: student };
+                        }
+                    }
+                }
+                
+                // الحسابات التجريبية
+                const testAccounts = {
+                    'student@vip.com': { password: '123456', name: 'طالب تجريبي', phone: '01000000000', role: 'student' },
+                    'admin@vip.com': { password: 'admin123', name: 'مدير تجريبي', phone: '01111111111', role: 'admin' }
+                };
+                
+                if (testAccounts[email] && testAccounts[email].password === password) {
+                    return {
+                        success: true,
+                        user: {
+                            id: 'test_' + Date.now(),
+                            email: email,
+                            name: testAccounts[email].name,
+                            phone: testAccounts[email].phone,
+                            role: testAccounts[email].role,
+                            created_at: new Date().toISOString(),
+                            isTestAccount: true
+                        }
+                    };
+                }
+                
+                return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
+                
+            } catch (error) {
+                console.error('Login attempt error:', error);
+                return { success: false, error: 'خطأ في الاتصال بالخادم' };
+            }
+        }
+        
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+        }
+        
+        // Google Login Handler
+        document.getElementById('googleLoginBtn').addEventListener('click', async function() {
+            const googleBtn = this;
+            const originalText = googleBtn.innerHTML;
+            
+            try {
+                // إظهار حالة التحميل
+                googleBtn.disabled = true;
+                googleBtn.innerHTML = `
+                    <div style="width: 18px; height: 18px; border: 2px solid #ccc; border-top: 2px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    جاري تسجيل الدخول بـ Google...
+                `;
+                
+                // محاولة تسجيل الدخول بـ Google
+                const result = await window.supabaseFunctions.signInWithGoogle();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'فشل في تسجيل الدخول بـ Google');
+                }
+                
+                // سيتم التوجيه تلقائياً بواسطة Google OAuth
+                
+            } catch (error) {
+                console.error('Google login error:', error);
+                showMessage(error.message || 'حدث خطأ في تسجيل الدخول بـ Google', 'error');
+                
+                // إعادة تعيين الزر
+                googleBtn.disabled = false;
+                googleBtn.innerHTML = originalText;
+            }
+        });
+        
+        // إضافة أنماط CSS للدوران
+        const spinStyle = document.createElement('style');
+        spinStyle.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(spinStyle);
+        
+        // التحقق من تسجيل الدخول المسبق
+        window.addEventListener('load', async function() {
+            // التحقق من callback OAuth
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessToken = urlParams.get('access_token');
+            const refreshToken = urlParams.get('refresh_token');
+            
+            if (accessToken) {
+                // معالجة OAuth callback
+                try {
+                    const result = await window.supabaseFunctions.handleOAuthCallback();
+                    if (result.success) {
+                        // حفظ بيانات المستخدم
+                        localStorage.setItem('currentUser', JSON.stringify(result.user));
+                        localStorage.setItem('isLoggedIn', 'true');
+                        
+                        showMessage(`مرحباً ${result.user.name}! تم تسجيل الدخول بنجاح`, 'success');
+                        
+                        // التوجيه إلى الصفحة الرئيسية
+                        setTimeout(() => {
+                            window.location.href = 'home.html';
+                        }, 1500);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('OAuth callback error:', error);
+                    showMessage('حدث خطأ في معالجة تسجيل الدخول', 'error');
+                }
+            }
+            
+            // التحقق من تسجيل الدخول المحلي
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = 'home.html';
+            }
+        });
+    </script>
+</body>
+</html>
