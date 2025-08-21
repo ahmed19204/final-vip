@@ -8,32 +8,72 @@
 	<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body">
-	<div class="admin-container">
-		<header class="admin-header">
-			<div class="header-content">
-				<div class="logo-section">
-					<img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
-					<h1>الإعدادات</h1>
-				</div>
-				<div class="admin-role">مدير عام</div>
-			</div>
-			<div class="admin-header-actions">
-				<a href="admin-login.html" class="admin-logout-btn">تسجيل الخروج</a>
-			</div>
-		</header>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <img src="images/vip-logo.jpg" alt="VIP Center">
+            <h3>لوحة التحكم</h3>
+            <div class="admin-role">مدير النظام</div>
+        </div>
+        
+        <nav class="admin-nav">
+            <div class="admin-nav-item">
+                <a href="admin-dashboard.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">🏠</span>
+                    <span>الرئيسية</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-teachers.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">👨‍🏫</span>
+                    <span>إدارة المدرسين</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-students.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">👥</span>
+                    <span>إدارة الطلاب</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-courses.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">📚</span>
+                    <span>إدارة الكورسات</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-subjects.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">📖</span>
+                    <span>إدارة التخصصات</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-videos.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">🎥</span>
+                    <span>إدارة الفيديوهات</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-codes.html" class="admin-nav-link">
+                    <span class="admin-nav-icon">🎫</span>
+                    <span>إدارة الأكواد</span>
+                </a>
+            </div>
+            <div class="admin-nav-item">
+                <a href="admin-settings.html" class="admin-nav-link active">
+                    <span class="admin-nav-icon">⚙️</span>
+                    <span>الإعدادات</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
 
-		<aside class="admin-sidebar">
-			<nav class="admin-nav">
-				<div class="admin-nav-item"><a href="admin-dashboard.html" class="admin-nav-link"><span class="admin-nav-icon">🏠</span><span>الرئيسية</span></a></div>
-				<div class="admin-nav-item"><a href="admin-settings.html" class="admin-nav-link active"><span class="admin-nav-icon">⚙️</span><span>الإعدادات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-courses.html" class="admin-nav-link"><span class="admin-nav-icon">📚</span><span>الكورسات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-teachers.html" class="admin-nav-link"><span class="admin-nav-icon">👨‍🏫</span><span>المدرسين</span></a></div>
-				<div class="admin-nav-item"><a href="admin-videos.html" class="admin-nav-link"><span class="admin-nav-icon">🎥</span><span>الفيديوهات</span></a></div>
-				<div class="admin-nav-item"><a href="admin-codes.html" class="admin-nav-link"><span class="admin-nav-icon">🔐</span><span>الأكواد</span></a></div>
-			</nav>
-		</aside>
-
-		<main class="admin-main">
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>إعدادات النظام</h1>
+        </div>
 			<div class="admin-form-container">
 				<h2 style="color:#fff;margin-bottom:1rem;">إعدادات قاعدة البيانات</h2>
 				<div class="admin-form-row">
@@ -82,8 +122,7 @@
 				</div>
 				<p style="color:#cccccc; margin-top:0.5rem;">يمكن توسيع التوثيق لاحقاً (OpenAPI/Swagger).</p>
 			</div>
-		</main>
-	</div>
+    </main>
 
 	<script src="js/admin-script.js"></script>
 	<script src="js/supabase-config.js"></script>
