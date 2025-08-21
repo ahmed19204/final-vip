@@ -165,6 +165,19 @@
 					<input type="number" name="hourly_rate" class="admin-form-input" min="0" step="0.01" value="0">
 				</div>
 
+				<!-- Teacher Image Upload -->
+				<div class="admin-form-group">
+					<label class="admin-form-label">صورة المدرس</label>
+					<div class="admin-file-upload">
+						<input type="file" id="teacherImage" name="teacher_image" class="admin-file-input" accept="image/*" onchange="handleTeacherImageUpload(this)">
+						<label for="teacherImage" class="admin-file-label">
+							<span>🖼️</span>
+							<span>اختر صورة المدرس</span>
+						</label>
+					</div>
+					<div id="teacherImagePreview" class="admin-file-preview" style="display: none;"></div>
+				</div>
+
 				<div class="admin-form-group">
 					<label class="admin-form-label">السيرة الذاتية</label>
 					<textarea name="bio" class="admin-form-input" rows="4" placeholder="اكتب السيرة الذاتية للمدرس..."></textarea>
@@ -237,6 +250,19 @@
 							<option value="suspended">معلق</option>
 						</select>
 					</div>
+				</div>
+
+				<!-- Teacher Image Upload for Edit -->
+				<div class="admin-form-group">
+					<label class="admin-form-label">صورة المدرس</label>
+					<div class="admin-file-upload">
+						<input type="file" id="editTeacherImage" name="teacher_image" class="admin-file-input" accept="image/*" onchange="handleEditTeacherImageUpload(this)">
+						<label for="editTeacherImage" class="admin-file-label">
+							<span>🖼️</span>
+							<span>تغيير صورة المدرس</span>
+						</label>
+					</div>
+					<div id="editTeacherImagePreview" class="admin-file-preview" style="display: none;"></div>
 				</div>
 
 				<div class="admin-form-group">

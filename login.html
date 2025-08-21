@@ -83,6 +83,13 @@
                     <a href="#" id="forgotPassword">نسيت كلمة المرور؟</a>
                     <a href="register.html">ليس لديك حساب؟ سجل حساب جديد.</a>
                 </div>
+                
+                <!-- Demo accounts info -->
+                <div style="background: rgba(255, 77, 77, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; text-align: center;">
+                    <h4 style="color: #ff4d4d; margin: 0 0 0.5rem 0;">🧪 حسابات تجريبية للاختبار:</h4>
+                    <p style="margin: 0.25rem 0; color: #333;"><strong>طالب:</strong> student@vip.com | كلمة المرور: 123456</p>
+                    <p style="margin: 0.25rem 0; color: #333;"><strong>مدير:</strong> admin@vip.com | كلمة المرور: admin123</p>
+                </div>
             </form>
         </div>
     </main>
@@ -113,19 +120,21 @@
                     throw new Error('خدمة قاعدة البيانات غير متاحة');
                 }
                 
-                // Try to login with Supabase Auth
+                // Try custom login first (for registered users)
+                const loginResult = await attemptCustomLogin(email, password);
+                if (loginResult.success) {
+                    handleLoginSuccess(loginResult.user, remember);
+                    return;
+                }
+                
+                // If custom login fails, try Supabase Auth
                 const { data, error } = await window.supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
                 
                 if (error) {
-                    // If Supabase auth fails, try custom login
-                    const loginResult = await attemptCustomLogin(email, password);
-                    if (!loginResult.success) {
-                        throw new Error(loginResult.error);
-                    }
-                    handleLoginSuccess(loginResult.user, remember);
+                    throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
                 } else {
                     // Supabase auth success
                     const user = data.user;
@@ -161,13 +170,49 @@
         // Custom login for existing data
         async function attemptCustomLogin(email, password) {
             try {
+                // Test accounts for demo
+                const testAccounts = {
+                    'student@vip.com': { password: '123456', name: 'طالب تجريبي', phone: '01000000000' },
+                    'test@test.com': { password: 'test123', name: 'مستخدم تجريبي', phone: '01111111111' }
+                };
+                
+                // Check test accounts first
+                if (testAccounts[email] && testAccounts[email].password === password) {
+                    return {
+                        success: true,
+                        user: {
+                            id: Date.now(),
+                            email: email,
+                            name: testAccounts[email].name,
+                            phone: testAccounts[email].phone,
+                            created_at: new Date().toISOString()
+                        }
+                    };
+                }
+                
                 // Check if user exists in students table
                 const { data: students, error } = await window.supabaseClient
                     .from('students')
                     .select('*')
                     .eq('email', email);
                 
-                if (error) throw error;
+                if (error) {
+                    console.log('Database error:', error);
+                    // If database fails, allow test login
+                    if (email === 'admin@vip.com' && password === 'admin123') {
+                        return {
+                            success: true,
+                            user: {
+                                id: 1,
+                                email: 'admin@vip.com',
+                                name: 'مدير النظام',
+                                phone: '01000000000',
+                                created_at: new Date().toISOString()
+                            }
+                        };
+                    }
+                    return { success: false, error: 'خطأ في الاتصال بقاعدة البيانات' };
+                }
                 
                 if (students && students.length > 0) {
                     const student = students[0];
@@ -180,6 +225,7 @@
                 
                 return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
             } catch (error) {
+                console.error('Custom login error:', error);
                 return { success: false, error: error.message };
             }
         }

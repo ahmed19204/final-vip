@@ -431,8 +431,47 @@ window.addEventListener('click', function(event) {
     }
 });
 
+// Image upload handling
+function handleTeacherImageUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('teacherImagePreview');
+            if (preview) {
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-top: 1rem;">
+                    <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">صورة المدرس الجديدة</p>
+                `;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function handleEditTeacherImageUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('editTeacherImagePreview');
+            if (preview) {
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-top: 1rem;">
+                    <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">صورة المدرس الجديدة</p>
+                `;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
 // Export functions for global use
 window.handleEditTeacher = handleEditTeacher;
 window.handleUpdateTeacher = handleUpdateTeacher;
 window.handleDeleteTeacher = handleDeleteTeacher;
 window.handleTeacherSearch = handleTeacherSearch;
+window.handleTeacherImageUpload = handleTeacherImageUpload;
+window.handleEditTeacherImageUpload = handleEditTeacherImageUpload;

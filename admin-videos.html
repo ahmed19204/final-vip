@@ -7,22 +7,12 @@
     <link rel="stylesheet" href="css/admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="admin-body">
     <div class="admin-container">
-        <header class="admin-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <img src="images/vip-logo.jpg" alt="VIP Center" class="admin-logo">
-                    <h1>إدارة الفيديوهات</h1>
-                </div>
-                <div class="admin-role">مدير عام</div>
-            </div>
-        </header>
-
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <img src="vip-logo.jpg" alt="VIP Center">
+                <img src="images/vip-logo.jpg" alt="VIP Center">
                 <h3>لوحة التحكم</h3>
                 <div class="admin-role">مدير عام</div>
             </div>
@@ -427,6 +417,8 @@
         }
     </style>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="js/admin-script.js"></script>
     <script src="js/admin-videos.js"></script>
 </body>
