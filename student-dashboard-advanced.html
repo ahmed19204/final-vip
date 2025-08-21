@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Center - لوحة تحكم الطالب</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/student-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="header-left">
+                <img src="images/vip-logo.jpg" alt="VIP Center" class="header-logo">
+                <div class="user-info">
+                    <h2 id="studentName">مرحباً، أحمد محمد</h2>
+                    <span id="studentLevel">طالب مميز</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="wallet-display">
+                    <div class="wallet-icon">💰</div>
+                    <div class="wallet-info">
+                        <span class="wallet-label">رصيدك</span>
+                        <span class="wallet-amount" id="walletAmount">250.00 جنيه</span>
+                    </div>
+                </div>
+                <button class="add-funds-btn" onclick="showAddFundsModal()">
+                    <span>+</span> شحن رصيد
+                </button>
+                <div class="user-menu">
+                    <button class="user-menu-btn" onclick="toggleUserMenu()">
+                        <img src="images/default-avatar.png" alt="الملف الشخصي" class="user-avatar">
+                        <span>⚙️</span>
+                    </button>
+                    <div class="user-menu-dropdown" id="userMenuDropdown">
+                        <a href="#" onclick="showProfileModal()">الملف الشخصي</a>
+                        <a href="#" onclick="showNotificationsModal()">الإشعارات</a>
+                        <a href="#" onclick="showSettingsModal()">الإعدادات</a>
+                        <a href="#" onclick="logout()">تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+        <!-- Statistics Cards -->
+        <section class="stats-section">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <h3 id="totalCourses">12</h3>
+                        <p>الكورسات المسجلة</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="completedCourses">8</h3>
+                        <p>الكورسات المكتملة</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="progressPercent">75%</h3>
+                        <p>معدل التقدم</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-info">
+                        <h3 id="studyHours">145</h3>
+                        <p>ساعات الدراسة</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <div class="actions-container">
+                <button class="action-btn" onclick="showCourseCatalog()">
+                    <span class="action-icon">🛒</span>
+                    <span>تصفح الكورسات</span>
+                </button>
+                <button class="action-btn" onclick="showAddCodeModal()">
+                    <span class="action-icon">🎫</span>
+                    <span>إدخال كود خصم</span>
+                </button>
+                <button class="action-btn" onclick="showCertificates()">
+                    <span class="action-icon">🏆</span>
+                    <span>الشهادات</span>
+                </button>
+                <button class="action-btn" onclick="showTransactionHistory()">
+                    <span class="action-icon">📊</span>
+                    <span>سجل المعاملات</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Course Sections -->
+        <div class="dashboard-content">
+            <!-- Current Courses -->
+            <section class="courses-section">
+                <div class="section-header">
+                    <h2>الكورسات الحالية</h2>
+                    <button class="view-all-btn" onclick="showAllCourses()">عرض الكل</button>
+                </div>
+                <div class="courses-grid" id="currentCoursesGrid">
+                    <!-- Current courses will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Recommended Courses -->
+            <section class="courses-section">
+                <div class="section-header">
+                    <h2>كورسات مقترحة لك</h2>
+                    <button class="view-all-btn" onclick="showRecommendedCourses()">عرض الكل</button>
+                </div>
+                <div class="courses-grid" id="recommendedCoursesGrid">
+                    <!-- Recommended courses will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Course Catalog Modal -->
+    <div class="modal" id="courseCatalogModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>🛒 كتالوج الكورسات</h2>
+                <button class="modal-close" onclick="closeModal('courseCatalogModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Search and Filter -->
+                <div class="catalog-filters">
+                    <input type="text" id="courseSearch" placeholder="ابحث عن كورس..." class="search-input">
+                    <select id="subjectFilter" class="filter-select">
+                        <option value="">جميع التخصصات</option>
+                    </select>
+                    <select id="levelFilter" class="filter-select">
+                        <option value="">جميع المستويات</option>
+                        <option value="beginner">مبتدئ</option>
+                        <option value="intermediate">متوسط</option>
+                        <option value="advanced">متقدم</option>
+                    </select>
+                    <select id="priceFilter" class="filter-select">
+                        <option value="">جميع الأسعار</option>
+                        <option value="free">مجاني</option>
+                        <option value="paid">مدفوع</option>
+                    </select>
+                </div>
+
+                <!-- Courses Grid -->
+                <div class="catalog-courses-grid" id="catalogCoursesGrid">
+                    <!-- Courses will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Funds Modal -->
+    <div class="modal" id="addFundsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 شحن رصيد</h2>
+                <button class="modal-close" onclick="closeModal('addFundsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="funds-options">
+                    <h3>اختر طريقة الشحن:</h3>
+                    <div class="payment-methods">
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('card')">
+                            <span class="payment-icon">💳</span>
+                            <span>بطاقة ائتمان</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('wallet')">
+                            <span class="payment-icon">📱</span>
+                            <span>محفظة إلكترونية</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('bank')">
+                            <span class="payment-icon">🏦</span>
+                            <span>تحويل بنكي</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('code')">
+                            <span class="payment-icon">🎫</span>
+                            <span>كود شحن</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Amount Selection -->
+                <div class="amount-selection">
+                    <h3>اختر المبلغ:</h3>
+                    <div class="amount-buttons">
+                        <button class="amount-btn" onclick="selectAmount(50)">50 جنيه</button>
+                        <button class="amount-btn" onclick="selectAmount(100)">100 جنيه</button>
+                        <button class="amount-btn" onclick="selectAmount(200)">200 جنيه</button>
+                        <button class="amount-btn" onclick="selectAmount(500)">500 جنيه</button>
+                    </div>
+                    <input type="number" id="customAmount" placeholder="أو أدخل مبلغ مخصص" class="custom-amount-input">
+                </div>
+
+                <!-- Payment Form -->
+                <div class="payment-form" id="paymentForm" style="display: none;">
+                    <!-- Payment form will be populated based on selected method -->
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="processPayment()">تأكيد الدفع</button>
+                    <button class="btn btn-secondary" onclick="closeModal('addFundsModal')">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Discount Code Modal -->
+    <div class="modal" id="addCodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎫 إدخال كود خصم</h2>
+                <button class="modal-close" onclick="closeModal('addCodeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="code-input-section">
+                    <label for="discountCode">كود الخصم:</label>
+                    <input type="text" id="discountCode" placeholder="أدخل كود الخصم" class="code-input">
+                    <button class="btn btn-primary" onclick="validateDiscountCode()">تحقق من الكود</button>
+                </div>
+
+                <div class="code-result" id="codeResult" style="display: none;">
+                    <!-- Code validation result will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Purchase Modal -->
+    <div class="modal" id="coursePurchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛒 شراء كورس</h2>
+                <button class="modal-close" onclick="closeModal('coursePurchaseModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="course-purchase-info" id="coursePurchaseInfo">
+                    <!-- Course info will be populated here -->
+                </div>
+
+                <div class="purchase-options">
+                    <h3>طريقة الدفع:</h3>
+                    <div class="purchase-methods">
+                        <label class="purchase-method">
+                            <input type="radio" name="purchaseMethod" value="wallet" checked>
+                            <span class="method-icon">💰</span>
+                            <span>من الرصيد (<span id="currentBalance">250.00</span> جنيه)</span>
+                        </label>
+                        <label class="purchase-method">
+                            <input type="radio" name="purchaseMethod" value="discount">
+                            <span class="method-icon">🎫</span>
+                            <span>كود خصم مباشر</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="discount-code-section" id="discountCodeSection" style="display: none;">
+                    <input type="text" id="purchaseDiscountCode" placeholder="أدخل كود الخصم" class="discount-input">
+                    <button class="btn btn-secondary" onclick="applyPurchaseDiscount()">تطبيق</button>
+                </div>
+
+                <div class="purchase-summary">
+                    <div class="summary-row">
+                        <span>سعر الكورس:</span>
+                        <span id="originalPrice">150.00 جنيه</span>
+                    </div>
+                    <div class="summary-row" id="discountRow" style="display: none;">
+                        <span>الخصم:</span>
+                        <span id="discountAmount">-30.00 جنيه</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>المبلغ الإجمالي:</span>
+                        <span id="totalPrice">150.00 جنيه</span>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="completePurchase()">تأكيد الشراء</button>
+                    <button class="btn btn-secondary" onclick="closeModal('coursePurchaseModal')">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div class="modal" id="transactionHistoryModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>📊 سجل المعاملات</h2>
+                <button class="modal-close" onclick="closeModal('transactionHistoryModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-filters">
+                    <select id="transactionType" class="filter-select">
+                        <option value="">جميع المعاملات</option>
+                        <option value="purchase">شراء كورس</option>
+                        <option value="refund">استرداد</option>
+                        <option value="topup">شحن رصيد</option>
+                    </select>
+                    <input type="date" id="dateFrom" class="date-input">
+                    <input type="date" id="dateTo" class="date-input">
+                </div>
+
+                <div class="transactions-list" id="transactionsList">
+                    <!-- Transactions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notificationToast">
+        <div class="toast-content">
+            <span class="toast-icon" id="toastIcon">✅</span>
+            <span class="toast-message" id="toastMessage">تم بنجاح!</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/student-dashboard.js"></script>
+    <script src="js/wallet-system.js"></script>
+    <script src="js/course-purchase.js"></script>
+</body>
+</html>
