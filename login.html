@@ -170,27 +170,7 @@
         // Custom login for existing data
         async function attemptCustomLogin(email, password) {
             try {
-                // Test accounts for demo
-                const testAccounts = {
-                    'student@vip.com': { password: '123456', name: 'طالب تجريبي', phone: '01000000000' },
-                    'test@test.com': { password: 'test123', name: 'مستخدم تجريبي', phone: '01111111111' }
-                };
-                
-                // Check test accounts first
-                if (testAccounts[email] && testAccounts[email].password === password) {
-                    return {
-                        success: true,
-                        user: {
-                            id: Date.now(),
-                            email: email,
-                            name: testAccounts[email].name,
-                            phone: testAccounts[email].phone,
-                            created_at: new Date().toISOString()
-                        }
-                    };
-                }
-                
-                // Check if user exists in students table
+                // Check if user exists in students table FIRST (real accounts have priority)
                 const { data: students, error } = await window.supabaseClient
                     .from('students')
                     .select('*')
@@ -198,22 +178,10 @@
                 
                 if (error) {
                     console.log('Database error:', error);
-                    // If database fails, allow test login
-                    if (email === 'admin@vip.com' && password === 'admin123') {
-                        return {
-                            success: true,
-                            user: {
-                                id: 1,
-                                email: 'admin@vip.com',
-                                name: 'مدير النظام',
-                                phone: '01000000000',
-                                created_at: new Date().toISOString()
-                            }
-                        };
-                    }
                     return { success: false, error: 'خطأ في الاتصال بقاعدة البيانات' };
                 }
                 
+                // If real user found, authenticate them
                 if (students && students.length > 0) {
                     const student = students[0];
                     
@@ -221,6 +189,26 @@
                     if (student.password === password || !student.password) {
                         return { success: true, user: student };
                     }
+                }
+                
+                // Only check test accounts if no real account found
+                const testAccounts = {
+                    'student@vip.com': { password: '123456', name: 'طالب تجريبي', phone: '01000000000' },
+                    'admin@vip.com': { password: 'admin123', name: 'مدير تجريبي', phone: '01111111111' }
+                };
+                
+                if (testAccounts[email] && testAccounts[email].password === password) {
+                    return {
+                        success: true,
+                        user: {
+                            id: 'test_' + Date.now(),
+                            email: email,
+                            name: testAccounts[email].name,
+                            phone: testAccounts[email].phone,
+                            created_at: new Date().toISOString(),
+                            isTestAccount: true
+                        }
+                    };
                 }
                 
                 return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };

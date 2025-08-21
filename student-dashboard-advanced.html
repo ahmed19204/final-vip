@@ -6,10 +6,221 @@
     <title>VIP Center - لوحة تحكم الطالب</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/student-dashboard.css">
+    <style>
+        /* تحسينات للتماسك مع باقي الموقع */
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            font-family: 'Tahoma', Arial, sans-serif;
+        }
+        
+        .dashboard-header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid #ff4d4d;
+        }
+        
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #ff4d4d;
+            object-fit: cover;
+        }
+        
+        .user-info h2 {
+            background: linear-gradient(45deg, #ff4d4d, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: #ff4d4d;
+            box-shadow: 0 15px 35px rgba(255, 77, 77, 0.2);
+        }
+        
+        .course-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        
+        .course-card:hover {
+            border-color: rgba(255, 77, 77, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 77, 77, 0.15);
+            border-color: #ff4d4d;
+            transform: translateY(-3px);
+        }
+        
+        .modal-content {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff4d4d, #ff6b6b);
+            border: none;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4);
+        }
+        
+        .no-courses-message {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .no-courses-message h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .no-courses-message p {
+            color: #ccc;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Navigation Bar */
+        .main-nav {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 77, 77, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .nav-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff4d4d;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #ff4d4d, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo">
+                    <img src="images/vip-logo.jpg" alt="VIP Center">
+                    <span>VIP Center</span>
+                </a>
+            </div>
+            <div class="nav-center">
+                <ul class="nav-menu">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="home.html">الكورسات</a></li>
+                    <li><a href="teachers.html">المدرسين</a></li>
+                    <li><a href="student-dashboard-advanced.html" class="active">لوحة التحكم</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav>
+
     <!-- Header -->
     <header class="dashboard-header">
         <div class="header-container">
