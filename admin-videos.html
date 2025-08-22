@@ -8,9 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body">
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">☰</button>
+
     <div class="admin-container">
         <!-- Admin Sidebar -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="adminSidebar">
             <div class="admin-sidebar-header">
                 <img src="images/vip-logo.jpg" alt="VIP Center">
                 <h3>لوحة التحكم</h3>
@@ -231,11 +234,11 @@
                 <div class="admin-form-row">
                     <div class="admin-form-group">
                         <label class="admin-form-label">عنوان الفيديو *</label>
-                        <input type="text" id="videoTitle" class="admin-form-input" placeholder="أدخل عنوان الفيديو" required>
+                        <input type="text" id="videoTitle" name="title" class="admin-form-input" placeholder="أدخل عنوان الفيديو" required>
                     </div>
                     <div class="admin-form-group">
                         <label class="admin-form-label">التخصص *</label>
-                        <select id="videoSubject" class="admin-form-select" required>
+                        <select id="videoSubject" name="subject" class="admin-form-select" required>
                             <option value="">اختر التخصص</option>
                             <option value="physics">الفيزياء</option>
                             <option value="chemistry">الكيمياء</option>
@@ -250,7 +253,7 @@
                 <div class="admin-form-row">
                     <div class="admin-form-group">
                         <label class="admin-form-label">المدرس *</label>
-                        <select id="videoTeacher" class="admin-form-select" required>
+                        <select id="videoTeacher" name="teacher_id" class="admin-form-select" required>
                             <option value="">اختر المدرس</option>
                             <option value="1">أ. مصطفى إبراهيم - فيزياء</option>
                             <option value="2">أ. إيمان خفاجي - أحياء</option>
@@ -260,13 +263,13 @@
                     </div>
                     <div class="admin-form-group">
                         <label class="admin-form-label">الكود المطلوب (اختياري)</label>
-                        <input type="text" id="videoCode" class="admin-form-input" placeholder="أدخل الكود أو اتركه فارغاً للمجاني">
+                        <input type="text" id="videoCode" name="access_code" class="admin-form-input" placeholder="أدخل الكود أو اتركه فارغاً للمجاني">
                     </div>
                 </div>
 
                 <div class="admin-form-group">
                     <label class="admin-form-label">وصف الفيديو</label>
-                    <textarea id="videoDescription" class="admin-form-textarea" placeholder="أدخل وصف تفصيلي للفيديو..."></textarea>
+                    <textarea id="videoDescription" name="description" class="admin-form-textarea" placeholder="أدخل وصف تفصيلي للفيديو..."></textarea>
                 </div>
 
                 <div class="admin-form-row">
@@ -313,7 +316,7 @@
                 <!-- External Link Section -->
                 <div id="linkSection" class="admin-form-group" style="display: none;">
                     <label class="admin-form-label">رابط الفيديو</label>
-                    <input type="url" id="videoUrl" class="admin-form-input" placeholder="أدخل رابط الفيديو">
+                    <input type="url" id="videoUrl" name="video_url" class="admin-form-input" placeholder="أدخل رابط الفيديو">
                     <small style="color: #cccccc; margin-top: 0.5rem; display: block;">
                         مثال: https://www.youtube.com/watch?v=VIDEO_ID أو https://vimeo.com/VIDEO_ID
                     </small>

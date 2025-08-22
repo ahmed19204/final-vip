@@ -100,6 +100,28 @@ async function handleAddVideo(event) {
     
     const formData = new FormData(event.target);
     
+    // Get form values directly from form elements to ensure we capture them
+    const title = document.getElementById('videoTitle').value.trim();
+    const description = document.getElementById('videoDescription').value.trim();
+    const teacherId = document.getElementById('videoTeacher').value.trim();
+    const videoUrl = document.getElementById('videoUrl').value.trim();
+    
+    // Validate required fields
+    if (!title) {
+        showNotification('يرجى إدخال عنوان الفيديو', 'error');
+        return;
+    }
+    
+    if (!teacherId) {
+        showNotification('يرجى اختيار المدرس', 'error');
+        return;
+    }
+    
+    if (!videoUrl) {
+        showNotification('يرجى إدخال رابط الفيديو', 'error');
+        return;
+    }
+    
     // Handle thumbnail upload
     let thumbnailUrl = null;
     const thumbnailFile = formData.get('video_thumbnail');
@@ -114,14 +136,13 @@ async function handleAddVideo(event) {
     }
     
     const videoData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
-        course_id: formData.get('course_id') && formData.get('course_id').trim() !== '' ? formData.get('course_id') : null,
-        teacher_id: formData.get('teacher_id') && formData.get('teacher_id').trim() !== '' ? formData.get('teacher_id') : null,
-        video_url: formData.get('video_url'),
-        thumbnail_url: thumbnailUrl || formData.get('thumbnail_url') || null,
-        duration_minutes: parseInt(formData.get('duration_minutes')) || 0,
-        order_in_course: parseInt(formData.get('order_in_course')) || 0,
+        title: title,
+        description: description || null,
+        teacher_id: teacherId,
+        video_url: videoUrl,
+        thumbnail_url: thumbnailUrl || null,
+        duration_minutes: 0, // Default value
+        order_in_course: 0, // Default value
         status: 'active'
     };
 
@@ -133,7 +154,7 @@ async function handleAddVideo(event) {
         if (result.success) {
             showNotification('تم إضافة الفيديو بنجاح', 'success');
             event.target.reset();
-            closeModal('addVideoModal');
+            closeVideoModal();
             loadInitialData(); // Reload data
         } else {
             showNotification(`خطأ في إضافة الفيديو: ${result.error}`, 'error');
@@ -500,6 +521,71 @@ function searchVideos(searchTerm) {
     displayVideos(filtered);
 }
 
+// Toggle video source display
+function toggleVideoSource() {
+    const sourceType = document.getElementById('videoSourceType').value;
+    const uploadSection = document.getElementById('uploadSection');
+    const linkSection = document.getElementById('linkSection');
+    
+    // Hide both sections first
+    if (uploadSection) uploadSection.style.display = 'none';
+    if (linkSection) linkSection.style.display = 'none';
+    
+    // Show appropriate section based on selection
+    switch(sourceType) {
+        case 'upload':
+            if (uploadSection) uploadSection.style.display = 'block';
+            break;
+        case 'youtube':
+        case 'vimeo':
+        case 'external':
+            if (linkSection) linkSection.style.display = 'block';
+            break;
+    }
+}
+
+// Handle video file upload
+function handleVideoUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const fileSize = formatFileSize(file.size);
+        showNotification(`تم اختيار الملف: ${file.name} (${fileSize})`, 'info');
+        
+        // Show upload progress simulation
+        const progressContainer = document.getElementById('uploadProgress');
+        if (progressContainer) {
+            progressContainer.style.display = 'block';
+            simulateUpload();
+        }
+    }
+}
+
+// Handle thumbnail upload
+function handleThumbnailUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('thumbnailPreview');
+            if (preview) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="معاينة الصورة المصغرة" style="max-width: 200px; max-height: 120px; border-radius: 8px;">`;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+        showNotification(`تم اختيار الصورة المصغرة: ${file.name}`, 'info');
+    }
+}
+
+// Format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 بايت';
+    const k = 1024;
+    const sizes = ['بايت', 'كيلو بايت', 'ميجا بايت', 'جيجا بايت'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
 // Export functions for global use
 window.handleEditVideo = handleEditVideo;
 window.handleUpdateVideo = handleUpdateVideo;
@@ -513,3 +599,6 @@ window.deleteVideo = deleteVideo;
 window.filterVideos = filterVideos;
 window.searchVideos = searchVideos;
 window.simulateUpload = simulateUpload;
+window.toggleVideoSource = toggleVideoSource;
+window.handleVideoUpload = handleVideoUpload;
+window.handleThumbnailUpload = handleThumbnailUpload;

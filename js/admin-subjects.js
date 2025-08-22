@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Setup event listeners
 function setupEventListeners() {
     // Add subject form submission
-    const addSubjectForm = document.getElementById('addSubjectForm');
-    if (addSubjectForm) {
-        addSubjectForm.addEventListener('submit', handleAddSubject);
+    const subjectForm = document.getElementById('subjectForm');
+    if (subjectForm) {
+        subjectForm.addEventListener('submit', handleAddSubject);
     }
 
     // Search functionality
@@ -55,12 +55,21 @@ async function loadSubjectsData() {
 async function handleAddSubject(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
+    // Get form values directly from form elements
+    const name = document.getElementById('subjectName').value.trim();
+    const description = document.getElementById('subjectDescription').value.trim();
+    
+    // Validate required fields
+    if (!name) {
+        showNotification('يرجى إدخال اسم التخصص', 'error');
+        return;
+    }
+    
     const subjectData = {
-        name: formData.get('name'),
-        description: formData.get('description'),
-        grade_level: formData.get('grade_level'),
-        difficulty_level: formData.get('difficulty_level'),
+        name: name,
+        description: description || null,
+        grade_level: 'الثانوية العامة', // Default value
+        difficulty_level: 'متوسط', // Default value
         status: 'active'
     };
 
@@ -72,7 +81,7 @@ async function handleAddSubject(event) {
         if (result.success) {
             showNotification('تم إضافة التخصص بنجاح', 'success');
             event.target.reset();
-            closeModal('addSubjectModal');
+            closeSubjectModal();
             loadSubjectsData(); // Reload data
         } else {
             showNotification(`خطأ في إضافة التخصص: ${result.error}`, 'error');

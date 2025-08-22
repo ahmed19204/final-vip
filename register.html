@@ -307,17 +307,30 @@
             try {
                 // Check if Supabase functions are available
                 if (!window.supabaseFunctions) {
-                    throw new Error('خدمة قاعدة البيانات غير متاحة');
+                    throw new Error('خدمة قاعدة البيانات غير متاحة. يرجى إعادة تحميل الصفحة والمحاولة مرة أخرى.');
                 }
                 
                 // Check if user already exists
-                const { data: existingUser, error: checkError } = await window.supabaseClient
-                    .from('students')
-                    .select('email')
-                    .eq('email', userData.email);
+                let existingUser = null;
+                try {
+                    const { data, error: checkError } = await window.supabaseClient
+                        .from('students')
+                        .select('email')
+                        .eq('email', userData.email);
+                    
+                    if (checkError) {
+                        console.error('Error checking existing user:', checkError);
+                        // Continue with registration attempt even if check fails
+                    } else {
+                        existingUser = data;
+                    }
+                } catch (checkError) {
+                    console.error('Exception checking existing user:', checkError);
+                    // Continue with registration attempt
+                }
                 
                 if (existingUser && existingUser.length > 0) {
-                    throw new Error('البريد الإلكتروني مستخدم بالفعل');
+                    throw new Error('البريد الإلكتروني مستخدم بالفعل. يرجى استخدام بريد إلكتروني آخر أو تسجيل الدخول.');
                 }
                 
                 // Try to register with Supabase Auth first
@@ -345,7 +358,7 @@
                 const studentData = {
                     name: userData.full_name,
                     email: userData.email,
-                    password: userData.password, // In production, hash this
+                    password_hash: userData.password, // In production, hash this properly
                     phone: userData.phone,
                     birth_date: userData.birth_date,
                     gender: userData.gender,
@@ -356,25 +369,40 @@
                     auth_user_id: authUser?.id || null
                 };
                 
+                console.log('Attempting to register student with data:', studentData);
                 const result = await window.supabaseFunctions.addStudent(studentData);
                 
                 if (result.success) {
-                    showMessage('تم إنشاء الحساب بنجاح! جاري التوجيه لتسجيل الدخول...', 'success');
+                    showMessage('🎉 تم إنشاء الحساب بنجاح! جاري التوجيه لتسجيل الدخول...', 'success');
                     
                     // Clear form
                     e.target.reset();
                     
-                    // Redirect to login after 2 seconds
+                    // Redirect to login after 3 seconds
                     setTimeout(() => {
                         window.location.href = 'login-simple.html';
-                    }, 2000);
+                    }, 3000);
                 } else {
-                    throw new Error(result.error || 'فشل في إنشاء الحساب');
+                    console.error('Registration failed:', result.error);
+                    throw new Error(result.error || 'فشل في إنشاء الحساب. يرجى المحاولة مرة أخرى.');
                 }
                 
             } catch (error) {
                 console.error('Registration error:', error);
-                showMessage(error.message || 'حدث خطأ في إنشاء الحساب', 'error');
+                let errorMessage = 'حدث خطأ في إنشاء الحساب';
+                
+                // Provide more specific error messages
+                if (error.message.includes('duplicate key')) {
+                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+                } else if (error.message.includes('network')) {
+                    errorMessage = 'مشكلة في الاتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى';
+                } else if (error.message.includes('validation')) {
+                    errorMessage = 'البيانات المدخلة غير صحيحة. يرجى التحقق من جميع الحقول';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                showMessage(errorMessage, 'error');
             } finally {
                 registerButton.disabled = false;
                 registerLoading.style.display = 'none';
