@@ -83,6 +83,9 @@ async function handleAddSubject(event) {
             event.target.reset();
             closeSubjectModal();
             loadSubjectsData(); // Reload data
+            
+            // Notify other tabs/windows about content update
+            localStorage.setItem('vip-content-updated', Date.now());
         } else {
             showNotification(`خطأ في إضافة التخصص: ${result.error}`, 'error');
         }

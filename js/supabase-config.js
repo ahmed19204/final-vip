@@ -574,6 +574,37 @@ async function updateCodeUsage(codeId) {
     }
 }
 
+async function deleteAccessCode(codeId) {
+    try {
+        const { error } = await supabaseClient
+            .from('access_codes')
+            .delete()
+            .eq('id', codeId);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting access code:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function updateAccessCode(codeId, updates) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('access_codes')
+            .update(updates)
+            .eq('id', codeId)
+            .select();
+
+        if (error) throw error;
+        return { success: true, data: data[0] };
+    } catch (error) {
+        console.error('Error updating access code:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Export functions for use in other files
 window.supabaseFunctions = {
     testSupabaseConnection,
@@ -602,7 +633,9 @@ window.supabaseFunctions = {
     addAccessCode,
     getAllAccessCodes,
     validateAccessCode,
-    updateCodeUsage
+    updateCodeUsage,
+    deleteAccessCode,
+    updateAccessCode
 };
 
 // Test connection on load

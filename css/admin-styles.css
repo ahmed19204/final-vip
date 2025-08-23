@@ -1495,3 +1495,322 @@
         transition: none;
     }
 }
+
+/* ========================================
+   ENHANCED CODES SYSTEM STYLES
+   ======================================== */
+
+/* Code Preview Styles */
+.code-preview {
+    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.code-preview h4 {
+    color: #ff4d4d;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.preview-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 77, 77, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.preview-code {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff4d4d;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 2px dashed rgba(255, 77, 77, 0.5);
+    min-width: 120px;
+    text-align: center;
+}
+
+.preview-details {
+    flex: 1;
+}
+
+.preview-details p {
+    margin: 0.25rem 0;
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+.preview-details strong {
+    color: #ffffff;
+}
+
+/* Code Table Enhancements */
+.code-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.code-value {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #ff4d4d;
+    font-size: 1rem;
+}
+
+.code-type {
+    font-size: 0.8rem;
+    color: #888;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Usage Progress Bar */
+.usage-info {
+    min-width: 80px;
+}
+
+.usage-text {
+    font-size: 0.9rem;
+    color: #cccccc;
+    margin-bottom: 0.25rem;
+}
+
+.usage-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.usage-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Action Buttons for Codes */
+.btn-copy {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    margin-right: 0.25rem;
+}
+
+.btn-copy:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+    border: none;
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    margin-right: 0.25rem;
+}
+
+.btn-edit:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Checkbox Group Styles */
+.admin-form-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.admin-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    color: #cccccc;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.admin-checkbox:hover {
+    color: #ffffff;
+}
+
+.admin-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 77, 77, 0.3);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.admin-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: #ff4d4d;
+    border-color: #ff4d4d;
+}
+
+.admin-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* Status Badge Enhancements */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-inactive {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.status-expired {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* Form Conditional Sections */
+.admin-form-group[style*="display: none"] {
+    display: none !important;
+}
+
+/* Enhanced Modal Styles for Codes */
+.modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+/* Loading States */
+.loading-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #888;
+}
+
+.loading-spinner {
+    font-size: 2rem;
+    animation: spin 2s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Enhancements for Codes */
+@media screen and (max-width: 768px) {
+    .code-preview {
+        padding: 1rem;
+    }
+    
+    .preview-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .preview-code {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .admin-form-checkbox-group {
+        gap: 0.5rem;
+    }
+    
+    .admin-checkbox {
+        font-size: 0.85rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .btn-copy, .btn-edit, .btn-delete {
+        margin-right: 0;
+        margin-bottom: 0.25rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Print Styles for Codes */
+@media print {
+    .code-preview,
+    .admin-form-checkbox-group,
+    .action-buttons {
+        display: none !important;
+    }
+    
+    .code-value {
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+    }
+}

@@ -75,7 +75,7 @@ body::before {
 }
 
 .logo-img {
-    width: 150px;
+    width: clamp(100px, 15vw, 150px);
     height: auto;
     max-height: 50px;
     object-fit: contain;
@@ -1421,4 +1421,187 @@ input[type="tel"] {
 
 .password-input-container .form-input {
     padding-right: 40px;
+}
+
+/* ========================================
+   RESPONSIVE IMAGES SYSTEM
+   ======================================== */
+
+/* Global Image Responsiveness */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Logo Responsiveness - Enhanced */
+.logo img,
+.logo-img,
+.form-logo img {
+    width: clamp(80px, 12vw, 150px);
+    height: auto;
+    max-height: clamp(30px, 8vh, 60px);
+    object-fit: contain;
+    border-radius: 0;
+}
+
+/* Course Images */
+.course-image,
+.course img,
+.course-card img {
+    width: 100%;
+    height: clamp(150px, 20vh, 250px);
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-image:hover,
+.course img:hover,
+.course-card img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 77, 77, 0.3);
+}
+
+/* Teacher Images */
+.teacher-image,
+.teacher img,
+.teacher-card img,
+.teacher-avatar {
+    width: clamp(80px, 15vw, 120px);
+    height: clamp(80px, 15vw, 120px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 77, 77, 0.3);
+    transition: all 0.3s ease;
+}
+
+.teacher-image:hover,
+.teacher img:hover,
+.teacher-card img:hover {
+    border-color: #ff4d4d;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+}
+
+/* Subject Images */
+.subject-image,
+.subject img,
+.subject-card img {
+    width: 100%;
+    height: clamp(120px, 18vh, 200px);
+    object-fit: cover;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* Video Thumbnails */
+.video-thumbnail,
+.video img,
+.video-card img {
+    width: 100%;
+    height: clamp(140px, 20vh, 220px);
+    object-fit: cover;
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Hero Section Images */
+.hero img,
+.hero-image {
+    width: 100%;
+    height: clamp(300px, 50vh, 600px);
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* Feature Images */
+.feature img,
+.feature-image {
+    width: clamp(60px, 10vw, 100px);
+    height: clamp(60px, 10vw, 100px);
+    object-fit: contain;
+    margin: 0 auto 1rem auto;
+}
+
+/* Admin Panel Images */
+.admin-sidebar-header img {
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* Form Images */
+.form-card img,
+.form-logo img {
+    width: clamp(80px, 15vw, 120px);
+    height: auto;
+    max-height: clamp(60px, 12vh, 100px);
+    margin: 0 auto 1.5rem auto;
+    object-fit: contain;
+}
+
+/* Mobile Specific Image Optimizations */
+@media screen and (max-width: 768px) {
+    .logo img,
+    .logo-img {
+        width: clamp(70px, 20vw, 100px);
+        max-height: 35px;
+    }
+    
+    .course-image,
+    .course img,
+    .course-card img {
+        height: clamp(120px, 25vh, 180px);
+        border-radius: 8px;
+    }
+    
+    .teacher-image,
+    .teacher img,
+    .teacher-card img {
+        width: clamp(60px, 20vw, 80px);
+        height: clamp(60px, 20vw, 80px);
+    }
+    
+    .video-thumbnail,
+    .video img {
+        height: clamp(100px, 22vh, 150px);
+        border-radius: 8px;
+    }
+    
+    .hero img,
+    .hero-image {
+        height: clamp(200px, 35vh, 300px);
+        border-radius: 12px;
+    }
+}
+
+/* Small Mobile Optimizations */
+@media screen and (max-width: 480px) {
+    .logo img,
+    .logo-img {
+        width: clamp(60px, 25vw, 80px);
+        max-height: 30px;
+    }
+    
+    .course-image,
+    .course img {
+        height: clamp(100px, 30vh, 140px);
+    }
+    
+    .teacher-image,
+    .teacher img {
+        width: clamp(50px, 25vw, 60px);
+        height: clamp(50px, 25vw, 60px);
+    }
+    
+    .video-thumbnail,
+    .video img {
+        height: clamp(80px, 25vh, 120px);
+    }
 }

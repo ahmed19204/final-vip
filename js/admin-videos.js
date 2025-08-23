@@ -156,6 +156,9 @@ async function handleAddVideo(event) {
             event.target.reset();
             closeVideoModal();
             loadInitialData(); // Reload data
+            
+            // Notify other tabs/windows about content update
+            localStorage.setItem('vip-content-updated', Date.now());
         } else {
             showNotification(`خطأ في إضافة الفيديو: ${result.error}`, 'error');
         }
