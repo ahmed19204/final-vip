@@ -1427,7 +1427,7 @@ input[type="tel"] {
    RESPONSIVE IMAGES SYSTEM
    ======================================== */
 
-/* Global Image Responsiveness */
+/* Global Image Responsiveness - Enhanced */
 img {
     max-width: 100%;
     height: auto;
@@ -1435,6 +1435,25 @@ img {
     object-fit: cover;
     border-radius: 8px;
     transition: all 0.3s ease;
+    /* Force smaller sizes for all images */
+    max-height: 300px;
+}
+
+/* Override for very large images */
+img[src*="shutterstock"] {
+    max-width: 80% !important;
+    max-height: 200px !important;
+    margin: 0 auto;
+}
+
+/* General image size constraints */
+.content img,
+.main-content img,
+.section img {
+    max-width: 90%;
+    max-height: 250px;
+    margin: 0 auto;
+    object-fit: cover;
 }
 
 /* Logo Responsiveness - Enhanced */
@@ -1448,12 +1467,14 @@ img {
     border-radius: 0;
 }
 
-/* Course Images */
+/* Course Images - More Constrained */
 .course-image,
 .course img,
-.course-card img {
+.course-card img,
+.course-bg {
     width: 100%;
-    height: clamp(150px, 20vh, 250px);
+    height: clamp(120px, 15vh, 180px);
+    max-height: 180px !important;
     object-fit: cover;
     border-radius: 12px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1510,11 +1531,12 @@ img {
     transition: all 0.3s ease;
 }
 
-/* Hero Section Images */
+/* Hero Section Images - Smaller */
 .hero img,
 .hero-image {
     width: 100%;
-    height: clamp(300px, 50vh, 600px);
+    height: clamp(200px, 30vh, 350px);
+    max-height: 350px !important;
     object-fit: cover;
     border-radius: 20px;
 }
@@ -1590,8 +1612,10 @@ img {
     }
     
     .course-image,
-    .course img {
-        height: clamp(100px, 30vh, 140px);
+    .course img,
+    .course-bg {
+        height: clamp(80px, 25vh, 120px) !important;
+        max-height: 120px !important;
     }
     
     .teacher-image,
@@ -1602,6 +1626,117 @@ img {
     
     .video-thumbnail,
     .video img {
-        height: clamp(80px, 25vh, 120px);
+        height: clamp(80px, 20vh, 100px);
+        max-height: 100px !important;
     }
+    
+    /* Force smaller images on mobile */
+    img {
+        max-height: 200px !important;
+    }
+    
+    .hero img,
+    .hero-image {
+        height: clamp(150px, 25vh, 200px) !important;
+        max-height: 200px !important;
+    }
+}
+
+/* ========================================
+   ADDITIONAL IMAGE SIZE CONSTRAINTS
+   ======================================== */
+
+/* Force reasonable sizes for all page images */
+.page-content img,
+.main-section img,
+.content-area img,
+.article img,
+.post img {
+    max-width: 85% !important;
+    max-height: 300px !important;
+    margin: 1rem auto !important;
+    display: block !important;
+    object-fit: cover !important;
+}
+
+/* Specific overrides for problematic images */
+img[width],
+img[height] {
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 250px !important;
+}
+
+/* Container-based image sizing */
+.image-container {
+    max-width: 100%;
+    height: auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+/* Responsive image scaling */
+@media screen and (min-width: 1200px) {
+    img {
+        max-height: 400px !important;
+    }
+    
+    .course-image,
+    .course img,
+    .course-bg {
+        max-height: 220px !important;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    img {
+        max-height: 280px !important;
+    }
+    
+    .course-image,
+    .course img,
+    .course-bg {
+        max-height: 160px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    img {
+        max-height: 220px !important;
+    }
+    
+    .course-image,
+    .course img,
+    .course-bg {
+        max-height: 140px !important;
+    }
+    
+    .hero img,
+    .hero-image {
+        max-height: 250px !important;
+    }
+}
+
+/* Prevent images from breaking layout */
+* img {
+    max-width: 100% !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Special handling for background images */
+.bg-image,
+[style*="background-image"] {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    max-height: 300px !important;
 }

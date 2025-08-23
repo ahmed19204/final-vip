@@ -1,0 +1,274 @@
+/* Image Size Fixes - VIP Center
+   Specific fixes for oversized images */
+
+/* ========================================
+   CRITICAL IMAGE SIZE OVERRIDES
+   ======================================== */
+
+/* Force all images to reasonable sizes */
+img {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 250px !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+    display: block !important;
+}
+
+/* Specific overrides for different contexts */
+.course-card img,
+.course-image img,
+.course img,
+img[src*="course"] {
+    max-height: 150px !important;
+    width: 100% !important;
+}
+
+/* Logo specific fixes */
+.logo img,
+.logo-img,
+img[src*="logo"] {
+    max-height: 50px !important;
+    max-width: 150px !important;
+    object-fit: contain !important;
+    border-radius: 0 !important;
+}
+
+/* Teacher images */
+.teacher-card img,
+.teacher-image img,
+img[src*="teacher"] {
+    max-height: 100px !important;
+    max-width: 100px !important;
+    border-radius: 50% !important;
+}
+
+/* Hero/banner images */
+.hero img,
+.hero-image,
+.banner img,
+img[src*="hero"],
+img[src*="banner"] {
+    max-height: 300px !important;
+    width: 100% !important;
+}
+
+/* Video thumbnails */
+.video-thumbnail img,
+.video-card img,
+img[src*="video"] {
+    max-height: 160px !important;
+    width: 100% !important;
+}
+
+/* Subject/category images */
+.subject-card img,
+.subject-image img,
+img[src*="subject"] {
+    max-height: 120px !important;
+    width: 100% !important;
+}
+
+/* ========================================
+   MOBILE SPECIFIC OVERRIDES
+   ======================================== */
+
+@media screen and (max-width: 768px) {
+    img {
+        max-height: 180px !important;
+    }
+    
+    .course-card img,
+    .course-image img,
+    .course img {
+        max-height: 120px !important;
+    }
+    
+    .hero img,
+    .hero-image,
+    .banner img {
+        max-height: 200px !important;
+    }
+    
+    .teacher-card img,
+    .teacher-image img {
+        max-height: 80px !important;
+        max-width: 80px !important;
+    }
+    
+    .video-thumbnail img,
+    .video-card img {
+        max-height: 120px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    img {
+        max-height: 150px !important;
+    }
+    
+    .course-card img,
+    .course-image img,
+    .course img {
+        max-height: 100px !important;
+    }
+    
+    .hero img,
+    .hero-image,
+    .banner img {
+        max-height: 160px !important;
+    }
+    
+    .teacher-card img,
+    .teacher-image img {
+        max-height: 60px !important;
+        max-width: 60px !important;
+    }
+    
+    .video-thumbnail img,
+    .video-card img {
+        max-height: 100px !important;
+    }
+    
+    .logo img,
+    .logo-img {
+        max-height: 35px !important;
+        max-width: 100px !important;
+    }
+}
+
+/* ========================================
+   LAYOUT FIXES
+   ======================================== */
+
+/* Ensure images don't break container layout */
+.container img,
+.content img,
+.section img {
+    max-width: 95% !important;
+    margin: 0 auto !important;
+}
+
+/* Grid/card layout fixes */
+.grid img,
+.card img,
+.item img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 180px !important;
+}
+
+/* Prevent images from overflowing */
+.overflow-hidden {
+    overflow: hidden !important;
+}
+
+.image-wrapper {
+    overflow: hidden !important;
+    border-radius: 8px !important;
+    max-height: 200px !important;
+}
+
+.image-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Lazy loading styles */
+img[loading="lazy"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+img[loading="lazy"]:not([src]) {
+    background: #f0f0f0;
+    min-height: 100px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Error state styling */
+img[data-error="true"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    min-height: 100px;
+}
+
+img[data-error="true"]::after {
+    content: '🖼️';
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    img {
+        max-height: 200px !important;
+        max-width: 100% !important;
+        page-break-inside: avoid !important;
+    }
+    
+    .hero img,
+    .banner img {
+        max-height: 150px !important;
+    }
+    
+    .logo img {
+        max-height: 30px !important;
+    }
+}
+
+/* ========================================
+   HIGH DPI SUPPORT
+   ======================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+    img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY IMPROVEMENTS
+   ======================================== */
+
+/* Ensure images have proper focus states */
+img:focus {
+    outline: 2px solid #ff4d4d;
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    img {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    img {
+        border: 1px solid #000;
+    }
+}
